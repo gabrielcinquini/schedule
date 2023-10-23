@@ -46,7 +46,7 @@ export default function HeaderCadastro({ user }: { user: UseMeType }) {
   const handleRegisterPatient = async (data: RegisterPatientFormType) => {
     try {
       const newPatient = await axios.post(
-        `${process.env.NEXT_PUBLIC_APIURL}/api/patient`,
+        "/api/patient",
         {
           name: data.name,
           lastName: data.lastName,

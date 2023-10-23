@@ -15,7 +15,7 @@ export function useServices({user}: {user: UseMeType}) {
     try {
       if(!user) return
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_APIURL}/api/services/${user.id}`
+        `/api/services/${user.id}`
       );
       setServices(response.data);
     } catch (error) {

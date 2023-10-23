@@ -14,7 +14,7 @@ export function useSchedules({user}: {user: UseMeType}) {
   async function getSchedules() {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_APIURL}/api/schedules/${user.id}`
+        `/api/schedules/${user.id}`
       );
       setSchedules(response.data);
     } catch (error) {

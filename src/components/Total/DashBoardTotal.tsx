@@ -26,7 +26,7 @@ export default function DashBoardTotal({ user }: { user: UseMeType }) {
   const handleDelete = async (id: string) => {
     try {
       await axios.delete(
-        `${process.env.NEXT_PUBLIC_APIURL}/api/services/${id}`
+        `/api/services/${id}`
       );
 
       setServices(services.filter((service) => service.id !== id));

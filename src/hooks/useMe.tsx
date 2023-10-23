@@ -20,7 +20,7 @@ export function useMe() {
       if (!token) throw new Error("Token missing");
 
       const response = await axios.get<UseMeType>(
-        `${process.env.NEXT_PUBLIC_APIURL}/api/me`,
+        "/api/me",
         {
           headers: { Authorization: token },
         }

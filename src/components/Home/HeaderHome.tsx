@@ -86,7 +86,7 @@ export default function HeaderHome({ user }: { user: UseMeType }) {
         .replace(",", ".");
 
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_APIURL}/api/schedules`,
+        "/api/schedules",
         {
           name: selectedPatient.name,
           lastName: selectedPatient.lastName,

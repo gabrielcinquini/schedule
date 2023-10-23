@@ -17,7 +17,7 @@ export function usePatients({user}: {user: UseMeType}) {
     try {
       if (!user) return;
       const response = await axios.get<PatientType[]>(
-        `${process.env.NEXT_PUBLIC_APIURL}/api/patient/${user.id}`
+        `/api/patient/${user.id}`
       );
       setPatients(response.data);
     } catch (error) {

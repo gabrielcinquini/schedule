@@ -30,7 +30,7 @@ export default function Home() {
   const handleLogin = async (data: LoginUserType) => {
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_APIURL}/api/login`,
+        "/api/login",
         {
           username: data.username,
           password: data.password,

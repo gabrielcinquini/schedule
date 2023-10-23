@@ -27,7 +27,7 @@ export default function DashboardCadastro() {
 
   const handleDelete = async (id: string) => {
     try {
-      await axios.delete(`${process.env.NEXT_PUBLIC_APIURL}/api/patient/${id}`);
+      await axios.delete(`/api/patient/${id}`);
 
       setPatients(
         patients.filter((schedule: PatientType) => schedule.id !== id)

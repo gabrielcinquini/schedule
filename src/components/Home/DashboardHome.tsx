@@ -29,7 +29,7 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
   const handleDelete = async (id: string) => {
     try {
       await axios.delete(
-        `${process.env.NEXT_PUBLIC_APIURL}/api/schedules/${id}`
+        `/api/schedules/${id}`
       );
 
       setSchedules(schedules.filter((schedule) => schedule.id !== id));
@@ -40,7 +40,7 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
 
   const handleComplete = async (schedule: ScheduleType) => {
     try {
-      await axios.post(`${process.env.NEXT_PUBLIC_APIURL}/api/services`, {
+      await axios.post("/api/services", {
         name: schedule.name,
         lastName: schedule.lastName,
         date: schedule.date,
@@ -57,7 +57,7 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
 
   const handleNotComplete = async (schedule: ScheduleType) => {
     try {
-      await axios.post(`${process.env.NEXT_PUBLIC_APIURL}/api/services`, {
+      await axios.post("/api/services", {
         name: schedule.name,
         lastName: schedule.lastName,
         date: schedule.date,

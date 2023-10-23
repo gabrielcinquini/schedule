@@ -30,10 +30,7 @@ export default function Home() {
     user: Omit<RegisterUserType, "confirmPassword">
   ) => {
     try {
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_APIURL}/api/register`,
-        user
-      );
+      const res = await axios.post("/api/register", user);
 
       const token = res.data.accessToken;
       localStorage.setItem("token", token);
