@@ -6,7 +6,6 @@ import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import axios, { AxiosError } from "axios";
 import { toast, ToastContainer } from "react-toastify";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ErrorMessage from "../ErrorMessage";
@@ -47,7 +46,6 @@ export default function HeaderHome({ user }: { user: UseMeType }) {
   });
   if (!schedules || !patients) return <p>Loading...</p>;
 
-  const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPatientConvenio, setSelectedPatientConvenio] = useState("");
 

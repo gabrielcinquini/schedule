@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { UseMeType, useMeSchema } from "@/validations/validations";
+import { UseMeType } from "@/validations/validations";
 import { useStore } from "@/store";
 
 export function useMe() {

@@ -3,8 +3,6 @@
 import DashboardCadastro from '@/components/Cadastro/DashBoardCadastro';
 import HeaderCadastro from '@/components/Cadastro/HeaderCadastro'
 import { useMe } from '@/hooks/useMe';
-import { usePatients } from '@/hooks/usePatients';
-import { useStore } from '@/store';
 import React from 'react'
 
 export default function page() {

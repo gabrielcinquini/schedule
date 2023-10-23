@@ -6,7 +6,6 @@ import React, { useState } from "react";
 import Modal from "react-modal";
 import axios, { AxiosError } from "axios";
 import { toast, ToastContainer } from "react-toastify";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ErrorMessage from "../ErrorMessage";
@@ -35,8 +34,6 @@ export default function HeaderCadastro({ user }: { user: UseMeType }) {
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
   if (!patients) return <p>Loading...</p>;
-
-  const router = useRouter();
 
   const openModal = () => {
     setIsModalOpen(true);
