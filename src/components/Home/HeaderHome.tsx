@@ -165,17 +165,17 @@ export default function HeaderHome({ user }: { user: UseMeType }) {
           X
         </button>
         <div className="text-slate-800">
-          <div className="p-16">
-            <h1 className="text-gray-800 bolder text-4xl mb-12">
+          <div className="p-16 max-sm:p-1">
+            <h1 className="text-gray-800 bolder text-4xl mb-12 max-sm:text-xl">
               Agendar paciente
             </h1>
             {patients.length > 0 ? (
               <form
-                className="flex flex-col gap-4"
+                className="flex flex-col gap-4 max-sm:gap-2 max-sm:text-sm"
                 onSubmit={handleSubmit(handleRegisterSchedule)}
               >
                 <select
-                  className="bg-slate-200 rounded-md p-4 appearance-none"
+                  className="bg-slate-200 rounded-md p-4 appearance-none max-sm:p-3"
                   {...register("patientId", {
                     value: patients[0].id,
                     onChange: handleChange,
@@ -190,7 +190,7 @@ export default function HeaderHome({ user }: { user: UseMeType }) {
                 <input
                   autoComplete="off"
                   type="date"
-                  className="bg-slate-200 rounded-md p-4 appearance-none"
+                  className="bg-slate-200 rounded-md p-4 appearance-none max-sm:p-3"
                   placeholder="Data"
                   {...register("date")}
                 />
@@ -198,7 +198,7 @@ export default function HeaderHome({ user }: { user: UseMeType }) {
                 <input
                   autoComplete="off"
                   type="time"
-                  className="bg-slate-200 rounded-md p-4 appearance-none"
+                  className="bg-slate-200 rounded-md p-4 appearance-none max-sm:p-3"
                   placeholder="Hora"
                   {...register("time")}
                 />
@@ -207,7 +207,7 @@ export default function HeaderHome({ user }: { user: UseMeType }) {
                   <input
                     autoComplete="off"
                     type="text"
-                    className="bg-slate-200 rounded-md p-4 appearance-none"
+                    className="bg-slate-200 rounded-md p-4 appearance-none max-sm:p-3"
                     placeholder="Valor"
                     {...register("value", {
                       onChange: formatValue,
@@ -216,11 +216,11 @@ export default function HeaderHome({ user }: { user: UseMeType }) {
                 )}
                 <input
                   type="submit"
-                  className="text-white bg-green-400 py-6 rounded-md hover:cursor-pointer text-lg"
+                  className="text-white bg-green-400 py-6 rounded-md hover:cursor-pointer text-lg max-sm:p-5 max-sm:text-base"
                 />
               </form>
             ) : (
-              <p className="text-center text-2xl text-red-800 font-bold">
+              <p className="text-center text-2xl text-red-800 font-bold max-sm:text-xl">
                 Nenhum paciente cadastrado!
               </p>
             )}

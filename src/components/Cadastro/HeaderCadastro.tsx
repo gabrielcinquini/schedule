@@ -95,7 +95,7 @@ export default function HeaderCadastro({ user }: { user: UseMeType }) {
             backgroundColor: "rgba(0, 0, 0, 0.5)",
           },
           content: {
-            width: window.innerWidth < 828 ? "70%" : "40%",
+            width: window.innerWidth < 828 ? "80%" : "40%",
             height: "75%",
             margin: "auto",
           },
@@ -108,18 +108,18 @@ export default function HeaderCadastro({ user }: { user: UseMeType }) {
           X
         </button>
         <div className="text-slate-800">
-          <div className="p-16">
-            <h1 className="text-gray-800 bolder text-4xl mb-12">
-              Agendar paciente
+          <div className="p-16 max-sm:p-1">
+            <h1 className="text-gray-800 bolder text-4xl mb-12 max-sm:text-2xl">
+              Cadastrar paciente
             </h1>
             <form
-              className="flex flex-col gap-4"
+              className="flex flex-col gap-4 max-sm:gap-2 max-sm:text-sm"
               onSubmit={handleSubmit(handleRegisterPatient)}
             >
               <input
                 autoComplete="off"
                 type="text"
-                className="bg-slate-200 rounded-md p-4 appearance-none"
+                className="bg-slate-200 rounded-md p-4 appearance-none max-sm:p-3"
                 placeholder="Nome"
                 {...register("name", {
                   onChange: formatName,
@@ -129,7 +129,7 @@ export default function HeaderCadastro({ user }: { user: UseMeType }) {
               <input
                 autoComplete="off"
                 type="text"
-                className="bg-slate-200 rounded-md p-4 appearance-none"
+                className="bg-slate-200 rounded-md p-4 appearance-none max-sm:p-3"
                 placeholder="Sobrenome"
                 {...register("lastName", {
                   onChange: formatName,
@@ -141,12 +141,12 @@ export default function HeaderCadastro({ user }: { user: UseMeType }) {
               <input
                 autoComplete="off"
                 type="text"
-                className="bg-slate-200 rounded-md p-4 appearance-none"
+                className="bg-slate-200 rounded-md p-4 appearance-none max-sm:p-3"
                 placeholder="CPF"
                 {...register("cpf")}
               />
               {errors.cpf && <ErrorMessage message={errors.cpf.message} />}
-              <select className="p-4 border-none" {...register("convenio")}>
+              <select className="p-4 border-none max-sm:p-3" {...register("convenio")}>
                 <option value="Sessão">Sessão</option>
                 <option value="Convênio">Convênio</option>
                 <option value="Isento">Isento</option>
@@ -156,7 +156,7 @@ export default function HeaderCadastro({ user }: { user: UseMeType }) {
               )}
               <input
                 type="submit"
-                className="text-white bg-green-400 py-6 rounded-md hover:cursor-pointer text-lg"
+                className="text-white bg-green-400 p-6 rounded-md hover:cursor-pointer text-lg max-sm:p-5 max-sm:text-base"
               />
             </form>
           </div>
