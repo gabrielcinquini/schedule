@@ -71,14 +71,23 @@ export function formatValue(event: React.ChangeEvent<HTMLInputElement>) {
   event.target.setSelectionRange(newPos, newPos);
 }
 
+export function formatCPF(event: React.ChangeEvent<HTMLInputElement>) {
+  const currentValue = event.target.value.replace(/[^\d]/g, ''); // Remove todos os caracteres não numéricos
+  const currentPos = event.target.selectionStart || 0;
 
-function formatarNumeroInput(inputUsuario: string): string {
+  // Adiciona separadores ao CPF
+  const formattedCPF = currentValue
+    .replace(/^(\d{3})(\d{1,3})?(\d{1,3})?(\d{1,2})?$/, (_, p1, p2, p3, p4) => {
+      let result = p1;
+      if (p2) result += `.${p2}`;
+      if (p3) result += `.${p3}`;
+      if (p4) result += `-${p4}`;
+      return result;
+    });
 
-  const numerosFormatados: string = inputUsuario.replace(",", ".");
+  event.target.value = formattedCPF;
 
-  if (/^\d+(?:\.\d{1,2})?$/.test(numerosFormatados)) {
-    return numerosFormatados;
-  } else {
-    return "";
-  }
+  // Define a nova posição do cursor após a formatação
+  const newPos = currentPos + formattedCPF.length - currentValue.length;
+  event.target.setSelectionRange(newPos, newPos);
 }

@@ -15,7 +15,7 @@ import {
   UseMeType,
   PatientType,
 } from "@/validations/validations";
-import { formatName } from "@/utils/utils";
+import { formatCPF, formatName } from "@/utils/utils";
 import Header from "../Header";
 import { usePatients } from "@/hooks/usePatients";
 
@@ -45,16 +45,13 @@ export default function HeaderCadastro({ user }: { user: UseMeType }) {
 
   const handleRegisterPatient = async (data: RegisterPatientFormType) => {
     try {
-      const newPatient = await axios.post(
-        "/api/patient",
-        {
-          name: data.name,
-          lastName: data.lastName,
-          cpf: data.cpf,
-          convenio: data.convenio,
-          userId: data.userId,
-        }
-      );
+      const newPatient = await axios.post("/api/patient", {
+        name: data.name,
+        lastName: data.lastName,
+        cpf: data.cpf,
+        convenio: data.convenio,
+        userId: data.userId,
+      });
       toast.success("Paciente cadastrado com sucesso!", {
         position: toast.POSITION.TOP_RIGHT,
       });
@@ -143,10 +140,15 @@ export default function HeaderCadastro({ user }: { user: UseMeType }) {
                 type="text"
                 className="bg-slate-200 rounded-md p-4 appearance-none max-sm:p-3"
                 placeholder="CPF"
-                {...register("cpf")}
+                {...register("cpf", {
+                  onChange: formatCPF,
+                })}
               />
               {errors.cpf && <ErrorMessage message={errors.cpf.message} />}
-              <select className="p-4 border-none max-sm:p-3" {...register("convenio")}>
+              <select
+                className="p-4 border-none max-sm:p-3"
+                {...register("convenio")}
+              >
                 <option value="Sessão">Sessão</option>
                 <option value="Convênio">Convênio</option>
                 <option value="Isento">Isento</option>
