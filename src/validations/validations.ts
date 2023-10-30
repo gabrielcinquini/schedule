@@ -196,3 +196,22 @@ export const serviceFormSchema = serviceSchema.pick({
   userId: true,
 });
 export type ServiceFormSchemaType = z.infer<typeof serviceFormSchema>;
+
+export const forgotPasswordFormSchema = z
+  .object({
+    id: z.string().uuid().optional(),
+    newPassword: z.string().min(5, "Mínimo de 5 caracteres"),
+    confirmPassword: z.string(),
+  })
+  .refine(
+    (data) => {
+      if (data.newPassword !== data.confirmPassword) return false;
+      return true;
+    },
+    {
+      message: "As senhas não coincidem",
+      path: ["confirmPassword"],
+    }
+  );
+
+export type ForgotPasswordFormSchemaType = z.infer<typeof forgotPasswordFormSchema>

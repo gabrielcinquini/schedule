@@ -5,6 +5,7 @@ import { calcularTotal } from "@/utils/utils";
 import { useSchedules } from "@/hooks/useSchedules";
 import { useServices } from "@/hooks/useServices";
 import { useStore } from "@/store";
+import { useRouter } from "next/navigation";
 
 type HeaderType = {
   user: UseMeType;
@@ -26,6 +27,8 @@ export default function Header({
   }));
   if (!schedules || !services) return <p>Loading...</p>;
 
+  const router = useRouter();
+
   const completedServices = services.filter(
     (service) => service.isComplete === true
   );
@@ -41,15 +44,25 @@ export default function Header({
   return (
     <header className="bg-purple-900 h-1/4 w-full lg:py-12 lg:px-32 flex flex-col md:py-8 md:px-12 max-sm:py-2 max-sm:px-4">
       <div className="flex justify-between">
-        <span>
-          Olá {user.name}
+        <div className="flex flex-col gap-8">
+          <div>
+            <span>Olá {user.name}</span>
+            <button
+              className="ml-4 bg-slate-900 p-2 rounded-md"
+              onClick={handleLogout}
+            >
+              Logout
+            </button>
+          </div>
+          <div>
           <button
-            className="ml-4 bg-slate-900 p-2 rounded-md"
-            onClick={handleLogout}
-          >
-            Logout
-          </button>
-        </span>
+              className="ml-4 bg-zinc-700 p-1 rounded-md"
+              onClick={() => router.push('/forgot-password')}
+            >
+              Alterar Senha
+            </button>
+          </div>
+        </div>
         <Card
           currentPage={currentPage}
           totalHome={new Intl.NumberFormat("pt-br", {
