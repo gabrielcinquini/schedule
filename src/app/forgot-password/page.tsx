@@ -1,7 +1,5 @@
 "use client";
 
-import "react-toastify/dist/ReactToastify.css";
-
 import ErrorMessage from "@/components/ErrorMessage";
 import { useMe } from "@/hooks/useMe";
 import {
@@ -12,7 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios, { AxiosError } from "axios";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 export default function page() {
@@ -26,7 +24,7 @@ export default function page() {
     resolver: zodResolver(forgotPasswordFormSchema),
   });
 
-  const router = useRouter()
+  const router = useRouter();
   const { user } = useMe();
 
   if (!user) return <p>Loading...</p>;
@@ -37,19 +35,13 @@ export default function page() {
     try {
       data.id = user.id;
       const res = await axios.post("/api/forgotPassword/", data);
-      toast.success("Senha alterada com sucesso!", {
-        position: toast.POSITION.TOP_RIGHT,
-      });
+      toast.success("Senha alterada com sucesso!");
       reset();
     } catch (err) {
       if (err instanceof AxiosError) {
-        toast.error(err.response?.data.message, {
-          position: toast.POSITION.TOP_RIGHT,
-        });
+        toast.error(err.response?.data.message);
       } else {
-        toast.error("Ocorreu algum erro inesperado", {
-          position: toast.POSITION.TOP_RIGHT,
-        });
+        toast.error("Ocorreu algum erro inesperado");
       }
     }
   };
@@ -86,12 +78,14 @@ export default function page() {
             className="text-white px-6 py-2 w-full rounded-xl bg-lime-600 hover:cursor-pointer"
             type="submit"
           />
-          <button className="text-white px-6 py-2 w-full rounded-xl bg-slate-700 hover:cursor-pointer" onClick={() => router.push('/home')}>
+          <button
+            className="text-white px-6 py-2 w-full rounded-xl bg-slate-700 hover:cursor-pointer"
+            onClick={() => router.push("/home")}
+          >
             Voltar
           </button>
         </div>
       </form>
-      <ToastContainer />
     </div>
   );
 }

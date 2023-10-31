@@ -1,14 +1,10 @@
 "use client";
 
-import "react-toastify/dist/ReactToastify.css";
-
-import { ToastContainer, toast } from "react-toastify";
 import { Trash2, CheckSquare, XSquare } from "lucide-react";
 import { ScheduleType, UseMeType } from "@/validations/validations";
 import { useState } from "react";
 import { getDate } from "@/utils/utils";
 import axios from "axios";
-import { useSchedules } from "@/hooks/useSchedules";
 import { useStore } from "@/store";
 
 export default function DashboardHome({ user }: { user: UseMeType }) {

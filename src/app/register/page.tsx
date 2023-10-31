@@ -1,8 +1,6 @@
 "use client";
 
-import "react-toastify/dist/ReactToastify.css";
-
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "sonner";
 import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import {
@@ -39,9 +37,7 @@ export default function Home() {
       if (err instanceof AxiosError) {
         console.error(err);
       } else {
-        toast.error("Não foi possível conectar com o banco de dados", {
-          position: toast.POSITION.TOP_RIGHT,
-        });
+        toast.error("Não foi possível conectar com o banco de dados");
       }
     }
   };
@@ -98,8 +94,6 @@ export default function Home() {
           type="submit"
         />
       </form>
-
-      <ToastContainer />
     </div>
   );
 }

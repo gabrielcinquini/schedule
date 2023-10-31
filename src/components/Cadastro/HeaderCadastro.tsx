@@ -1,11 +1,9 @@
 "use client";
 
-import "react-toastify/dist/ReactToastify.css";
-
 import React, { useState } from "react";
 import Modal from "react-modal";
 import axios, { AxiosError } from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ErrorMessage from "../ErrorMessage";
@@ -52,9 +50,7 @@ export default function HeaderCadastro({ user }: { user: UseMeType }) {
         convenio: data.convenio,
         userId: data.userId,
       });
-      toast.success("Paciente cadastrado com sucesso!", {
-        position: toast.POSITION.TOP_RIGHT,
-      });
+      toast.success("Paciente cadastrado com sucesso!");
       setPatients(
         [...patients, newPatient.data].sort((a, b) =>
           a.name.localeCompare(b.name)
@@ -63,13 +59,9 @@ export default function HeaderCadastro({ user }: { user: UseMeType }) {
       closeModal();
     } catch (error) {
       if (error instanceof AxiosError && error.response?.status === 404) {
-        toast.error(error.response.data.message, {
-          position: toast.POSITION.TOP_RIGHT,
-        });
+        toast.error(error.response.data.message);
       } else {
-        toast.error("Ocorreu um erro ao cadastrar o paciente", {
-          position: toast.POSITION.TOP_RIGHT,
-        });
+        toast.error("Ocorreu um erro ao cadastrar o paciente");
       }
     }
   };
@@ -164,7 +156,6 @@ export default function HeaderCadastro({ user }: { user: UseMeType }) {
           </div>
         </div>
       </Modal>
-      <ToastContainer />
     </>
   );
 }

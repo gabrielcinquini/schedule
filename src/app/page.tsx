@@ -1,14 +1,12 @@
 "use client";
 
-import "react-toastify/dist/ReactToastify.css";
-
 import axios, { AxiosError } from "axios";
 import Link from "next/link";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "sonner";
 
 import { useRouter } from "next/navigation";
 import { formatUsername } from "@/utils/utils";
@@ -46,13 +44,9 @@ export default function Home() {
     } catch (error) {
       // @ts-expect-error
       if (error instanceof AxiosError && error.response.status === 404) {
-        toast.error("Credenciais não encontradas", {
-          position: toast.POSITION.TOP_RIGHT,
-        });
+        toast.error("Credenciais não encontradas");
       } else {
-        toast.error("Não foi possível conectar ao banco de dados", {
-          position: toast.POSITION.TOP_RIGHT,
-        });
+        toast.error("Não foi possível conectar ao banco de dados");
       }
     }
   };
@@ -94,8 +88,6 @@ export default function Home() {
           </Link>
         </div>
       </form>
-
-      <ToastContainer />
     </div>
   );
 }

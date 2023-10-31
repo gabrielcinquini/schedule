@@ -1,10 +1,10 @@
 import { useServices } from "@/hooks/useServices";
-import { ServiceSchemaType, UseMeType } from "@/validations/validations";
+import { UseMeType } from "@/validations/validations";
 import { getDate } from "@/utils/utils";
 import { Trash2 } from "lucide-react";
 import React, { useState } from "react";
 import axios, { AxiosError } from "axios";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { useStore } from "@/store";
 
 export default function DashBoardTotal({ user }: { user: UseMeType }) {
@@ -25,23 +25,15 @@ export default function DashBoardTotal({ user }: { user: UseMeType }) {
 
   const handleDelete = async (id: string) => {
     try {
-      await axios.delete(
-        `/api/services/${id}`
-      );
+      await axios.delete(`/api/services/${id}`);
 
       setServices(services.filter((service) => service.id !== id));
-      toast.success("Removido com sucesso!", {
-        position: toast.POSITION.TOP_RIGHT,
-      });
+      toast.success("Removido com sucesso!");
     } catch (error) {
       if (error instanceof AxiosError && error.response?.status === 400) {
-        toast.error(error.response.data.message, {
-          position: toast.POSITION.TOP_RIGHT,
-        });
+        toast.error(error.response.data.message);
       } else {
-        toast.error("Ocorreu um erro ao deletar o paciente", {
-          position: toast.POSITION.TOP_RIGHT,
-        });
+        toast.error("Ocorreu um erro ao deletar");
       }
     }
   };

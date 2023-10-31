@@ -2,6 +2,8 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
+import { Toaster } from "sonner";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -19,6 +21,9 @@ export default function RootLayout({
         <link rel="icon" href="/" type="image/png" sizes="32x32" />
       </head>
       <body className={inter.className}>{children}</body>
+
+      {/* <ToastContainer /> */}
+      <Toaster position="top-right" richColors closeButton duration={2500} />
     </html>
   );
 }

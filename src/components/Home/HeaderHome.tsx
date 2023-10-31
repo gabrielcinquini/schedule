@@ -1,28 +1,22 @@
 "use client";
 
-import "react-toastify/dist/ReactToastify.css";
-
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import axios, { AxiosError } from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ErrorMessage from "../ErrorMessage";
 import { useSchedules } from "@/hooks/useSchedules";
 import {
-  PatientType,
   RegisterScheduleFormType,
   registerToScheduleFormSchema,
-  ScheduleType,
   UseMeType,
 } from "@/validations/validations";
 import { formatValue } from "@/utils/utils";
 import Header from "../Header";
 import { usePatients } from "@/hooks/usePatients";
-import { revalidatePath } from "next/cache";
 import { useStore } from "@/store";
-import { useServices } from "@/hooks/useServices";
 
 export default function HeaderHome({ user }: { user: UseMeType }) {
   const { schedules } = useSchedules({ user: user });
@@ -97,9 +91,7 @@ export default function HeaderHome({ user }: { user: UseMeType }) {
         }
       );
       if (response.status === 200) {
-        toast.success("Paciente agendado com sucesso!", {
-          position: toast.POSITION.TOP_RIGHT,
-        });
+        toast.success("Paciente agendado com sucesso!");
         const newSchedule = response.data;
         schedules.push(newSchedule);
 
@@ -115,21 +107,15 @@ export default function HeaderHome({ user }: { user: UseMeType }) {
     } catch (error) {
       //@ts-expect-error
       if (error instanceof AxiosError && error.response.status === 500) {
-        toast.error("Não foi possível conectar ao banco de dados", {
-          position: toast.POSITION.TOP_RIGHT,
-        });
+        toast.error("Não foi possível conectar ao banco de dados");
       }
       //@ts-expect-error
       else if (error instanceof AxiosError && error.response.status === 400) {
-        toast.error("Já possui um paciente cadastrado nesse horário", {
-          position: toast.POSITION.TOP_RIGHT,
-        });
+        toast.error("Já possui um paciente cadastrado nesse horário");
       }
       //@ts-expect-error
       else if (error instanceof AxiosError && error.response.status === 404) {
-        toast.error("Não foi possível agendar o paciente", {
-          position: toast.POSITION.TOP_RIGHT,
-        });
+        toast.error("Não foi possível agendar o paciente");
       }
     }
   };
@@ -227,7 +213,6 @@ export default function HeaderHome({ user }: { user: UseMeType }) {
           </div>
         </div>
       </Modal>
-      <ToastContainer />
     </>
   );
 }

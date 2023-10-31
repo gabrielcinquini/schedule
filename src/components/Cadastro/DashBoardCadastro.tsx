@@ -1,8 +1,6 @@
 "use client";
 
-import "react-toastify/dist/ReactToastify.css";
-
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
 import { PatientType } from "@/validations/validations";
 import { useState } from "react";
@@ -33,18 +31,12 @@ export default function DashboardCadastro() {
         patients.filter((schedule: PatientType) => schedule.id !== id)
       );
 
-      toast.success("Paciente removido com sucesso!", {
-        position: toast.POSITION.TOP_RIGHT,
-      });
+      toast.success("Paciente removido com sucesso!");
     } catch (error) {
       if (error instanceof AxiosError && error.response?.status === 400) {
-        toast.error(error.response.data.message, {
-          position: toast.POSITION.TOP_RIGHT,
-        });
+        toast.error(error.response.data.message);
       } else {
-        toast.error("Ocorreu um erro ao deletar o paciente", {
-          position: toast.POSITION.TOP_RIGHT,
-        });
+        toast.error("Ocorreu um erro ao deletar o paciente");
       }
     }
   };
