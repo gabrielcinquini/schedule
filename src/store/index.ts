@@ -11,6 +11,7 @@ type State = {
   schedules: ScheduleType[];
   patients: PatientType[];
   services: ServiceSchemaType[];
+  pending: boolean;
 };
 
 type Actions = {
@@ -18,6 +19,7 @@ type Actions = {
   setSchedules: (schedules: ScheduleType[]) => void;
   setPatients: (patients: PatientType[]) => void;
   setServices: (patients: ServiceSchemaType[]) => void;
+  setPending: (pending: boolean) => void;
 };
 
 const initialState: State = {
@@ -25,6 +27,7 @@ const initialState: State = {
   schedules: [],
   patients: [],
   services: [],
+  pending: false,
 };
 
 export const useStore = create<State & Actions>((set, get) => {
@@ -34,5 +37,6 @@ export const useStore = create<State & Actions>((set, get) => {
     setSchedules: (schedule) => set({ schedules: schedule }),
     setPatients: (patient) => set({ patients: patient }),
     setServices: (services) => set({ services: services }),
+    setPending: (pending) => set({ pending: pending }),
   };
 });

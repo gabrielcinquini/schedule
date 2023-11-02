@@ -12,8 +12,14 @@ import { useRouter } from "next/navigation";
 import { formatUsername } from "@/utils/utils";
 import { LoginUserType, loginUserFormSchema } from "@/validations/validations";
 import ErrorMessage from "@/components/ErrorMessage";
+import { useStore } from "@/store";
 
 export default function Home() {
+  const { pending, setPending } = useStore((state) => ({
+    pending: state.pending,
+    setPending: state.setPending,
+  }));
+
   const {
     register,
     handleSubmit,
@@ -27,21 +33,21 @@ export default function Home() {
 
   const handleLogin = async (data: LoginUserType) => {
     try {
-      const response = await axios.post(
-        "/api/login",
-        {
-          username: data.username,
-          password: data.password,
-        }
-      );
+      setPending(true);
+      const response = await axios.post("/api/login", {
+        username: data.username,
+        password: data.password,
+      });
 
       if (response.status === 200) {
         router.push("/home");
         const token = response.data.accessToken;
 
         localStorage.setItem("token", token);
+        setPending(false);
       }
     } catch (error) {
+      setPending(false);
       // @ts-expect-error
       if (error instanceof AxiosError && error.response.status === 404) {
         toast.error("Credenciais não encontradas");
@@ -76,10 +82,20 @@ export default function Home() {
         />
         {errors.password && <ErrorMessage message={errors.password.message} />}
         <div className="flex w-full justify-between">
-          <input
-            className="text-white px-6 py-2 rounded-xl bg-lime-600 w-fit hover:cursor-pointer"
-            type="submit"
-          />
+          {pending ? (
+            <input
+              className="text-white px-6 py-2 rounded-xl bg-lime-600 w-fit hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+              type="submit"
+              value="Enviando..."
+              disabled={true}
+            />
+          ) : (
+            <input
+              className="text-white px-6 py-2 rounded-xl bg-lime-600 w-fit hover:cursor-pointer"
+              type="submit"
+              value="Enviar"
+            />
+          )}
           <Link
             href="/register"
             className="text-white bg-teal-950 px-6 py-2 rounded-xl"

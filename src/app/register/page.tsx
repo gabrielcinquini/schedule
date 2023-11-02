@@ -11,8 +11,14 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ErrorMessage from "@/components/ErrorMessage";
+import { useStore } from "@/store";
 
 export default function Home() {
+  const { pending, setPending } = useStore((state) => ({
+    pending: state.pending,
+    setPending: state.setPending,
+  }));
+
   const {
     register,
     handleSubmit,
@@ -28,12 +34,15 @@ export default function Home() {
     user: Omit<RegisterUserType, "confirmPassword">
   ) => {
     try {
+      setPending(true);
       const res = await axios.post("/api/register", user);
 
       const token = res.data.accessToken;
       localStorage.setItem("token", token);
       router.push("/home");
+      setPending(false);
     } catch (err) {
+      setPending(false);
       if (err instanceof AxiosError) {
         console.error(err);
       } else {
@@ -89,10 +98,21 @@ export default function Home() {
         {errors.confirmPassword && (
           <ErrorMessage message={errors.confirmPassword.message} />
         )}
-        <input
-          className="text-white px-6 py-2 rounded-xl bg-lime-600 w-fit hover:cursor-pointer"
-          type="submit"
-        />
+
+        {pending ? (
+          <input
+            className="text-white px-6 py-2 rounded-xl bg-lime-600 w-fit hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+            type="submit"
+            value="Enviando..."
+            disabled={true}
+          />
+        ) : (
+          <input
+            className="text-white px-6 py-2 rounded-xl bg-lime-600 w-fit hover:cursor-pointer"
+            type="submit"
+            value="Cadastrar"
+          />
+        )}
       </form>
     </div>
   );

@@ -21,9 +21,12 @@ import { useStore } from "@/store";
 export default function HeaderHome({ user }: { user: UseMeType }) {
   const { schedules } = useSchedules({ user: user });
   const { patients } = usePatients({ user: user });
-  const { setSchedules } = useStore((state) => ({
+  const { setSchedules, pending, setPending } = useStore((state) => ({
     setSchedules: state.setSchedules,
+    pending: state.pending,
+    setPending: state.setPending,
   }));
+
   const {
     register,
     handleSubmit,
@@ -66,12 +69,13 @@ export default function HeaderHome({ user }: { user: UseMeType }) {
 
   const handleRegisterSchedule = async (data: RegisterScheduleFormType) => {
     try {
+      setPending(true);
       const selectedPatient = patients.find((p) => p.id === data.patientId);
       const date = new Date(`${data.date} ${data.time}:00`);
       if (!selectedPatient) throw new Error();
 
-      if(selectedPatient.convenio === "Isento") {
-        data.value = '0'
+      if (selectedPatient.convenio === "Isento") {
+        data.value = "0";
       }
 
       const transformedValue = data.value
@@ -79,17 +83,14 @@ export default function HeaderHome({ user }: { user: UseMeType }) {
         .replace("R$", "")
         .replace(",", ".");
 
-      const response = await axios.post(
-        "/api/schedules",
-        {
-          name: selectedPatient.name,
-          lastName: selectedPatient.lastName,
-          date: date,
-          value: transformedValue,
-          userId: data.userId,
-          patientId: data.patientId,
-        }
-      );
+      const response = await axios.post("/api/schedules", {
+        name: selectedPatient.name,
+        lastName: selectedPatient.lastName,
+        date: date,
+        value: transformedValue,
+        userId: data.userId,
+        patientId: data.patientId,
+      });
       if (response.status === 200) {
         toast.success("Paciente agendado com sucesso!");
         const newSchedule = response.data;
@@ -103,8 +104,10 @@ export default function HeaderHome({ user }: { user: UseMeType }) {
           })
         );
         closeModal();
+        setPending(false);
       }
     } catch (error) {
+      setPending(false);
       //@ts-expect-error
       if (error instanceof AxiosError && error.response.status === 500) {
         toast.error("Não foi possível conectar ao banco de dados");
@@ -200,10 +203,19 @@ export default function HeaderHome({ user }: { user: UseMeType }) {
                     })}
                   />
                 )}
-                <input
-                  type="submit"
-                  className="text-white bg-green-400 py-6 rounded-md hover:cursor-pointer text-lg max-sm:p-5 max-sm:text-base"
-                />
+                {pending ? (
+                  <input
+                    type="submit"
+                    className="text-white bg-green-400 py-6 rounded-md hover:cursor-pointer text-lg max-sm:p-5 max-sm:text-base disabled:cursor-not-allowed disabled:opacity-50"
+                    value="Enviando..."
+                    disabled={true}
+                  />
+                ) : (
+                  <input
+                    type="submit"
+                    className="text-white bg-green-400 py-6 rounded-md hover:cursor-pointer text-lg max-sm:p-5 max-sm:text-base"
+                  />
+                )}
               </form>
             ) : (
               <p className="text-center text-2xl text-red-800 font-bold max-sm:text-xl">

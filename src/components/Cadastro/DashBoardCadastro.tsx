@@ -10,9 +10,11 @@ import { useStore } from "@/store";
 
 export default function DashboardCadastro() {
   const [currentPage, setCurrentPage] = useState(1);
-  const { patients, setPatients } = useStore((state) => ({
+  const { patients, setPatients, pending, setPending } = useStore((state) => ({
     patients: state.patients,
     setPatients: state.setPatients,
+    pending: state.pending,
+    setPending: state.setPending,
   }));
   if (!patients) return <p>Loading...</p>;
   const itemsPerPage = 8;
@@ -25,14 +27,16 @@ export default function DashboardCadastro() {
 
   const handleDelete = async (id: string) => {
     try {
+      setPending(true);
       await axios.delete(`/api/patient/${id}`);
 
       setPatients(
         patients.filter((schedule: PatientType) => schedule.id !== id)
       );
 
-      toast.success("Paciente removido com sucesso!");
+      setPending(false);
     } catch (error) {
+      setPending(false);
       if (error instanceof AxiosError && error.response?.status === 400) {
         toast.error(error.response.data.message);
       } else {
@@ -70,14 +74,29 @@ export default function DashboardCadastro() {
                   : "Ainda não consultou"}
               </td>
               <td align="right">
-                <button
-                  className="bg-red-800 p-2 rounded-md max-sm:p-1"
-                  onClick={() => {
-                    handleDelete(patient.id);
-                  }}
-                >
-                  <Trash2 />
-                </button>
+                {pending ? (
+                  <button
+                    className="bg-red-800 p-2 rounded-md max-sm:p-1 disabled:cursor-not-allowed disabled:opacity-50"
+                    disabled={true}
+                  >
+                    <Trash2 />
+                  </button>
+                ) : (
+                  <button
+                    className="bg-red-800 p-2 rounded-md hover:bg-red-900 transition-all duration-200 max-sm:p-1"
+                    onClick={() => {
+                      toast.promise(handleDelete(patient.id), {
+                        error: "Erro ao deletar o paciente",
+                        success: () => {
+                          return `Paciente deletado com sucesso!`;
+                        },
+                        loading: "Deletando...",
+                      });
+                    }}
+                  >
+                    <Trash2 />
+                  </button>
+                )}
               </td>
             </tr>
           ))}

@@ -9,8 +9,10 @@ import { useStore } from "@/store";
 
 export default function DashBoardTotal({ user }: { user: UseMeType }) {
   const { services } = useServices({ user });
-  const { setServices } = useStore((state) => ({
+  const { setServices, pending, setPending } = useStore((state) => ({
     setServices: state.setServices,
+    pending: state.pending,
+    setPending: state.setPending,
   }));
   const [currentPage, setCurrentPage] = useState(1);
   if (!services) return <p>Loading...</p>;
@@ -25,11 +27,13 @@ export default function DashBoardTotal({ user }: { user: UseMeType }) {
 
   const handleDelete = async (id: string) => {
     try {
+      setPending(true)
       await axios.delete(`/api/services/${id}`);
 
       setServices(services.filter((service) => service.id !== id));
-      toast.success("Removido com sucesso!");
+      setPending(false)
     } catch (error) {
+      setPending(false)
       if (error instanceof AxiosError && error.response?.status === 400) {
         toast.error(error.response.data.message);
       } else {
@@ -70,14 +74,29 @@ export default function DashBoardTotal({ user }: { user: UseMeType }) {
                     }).format(service.value)}
               </td>
               <td align="right">
-                <button
-                  className="bg-red-700 p-2 rounded-md hover:bg-red-900 transition-all duration-200"
-                  onClick={() => {
-                    handleDelete(service.id);
-                  }}
-                >
-                  <Trash2 />
-                </button>
+                {pending ? (
+                  <button
+                    className="bg-red-800 p-2 rounded-md hover:bg-red-900 transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50"
+                    disabled={true}
+                  >
+                    <Trash2 />
+                  </button>
+                ) : (
+                  <button
+                    className="bg-red-800 p-2 rounded-md hover:bg-red-900 transition-all duration-200"
+                    onClick={() => {
+                      toast.promise(handleDelete(service.id), {
+                        error: "Erro ao deletar o registro de consulta",
+                        success: () => {
+                          return `Registro de consulta deletado com sucesso!`;
+                        },
+                        loading: "Deletando...",
+                      });
+                    }}
+                  >
+                    <Trash2 />
+                  </button>
+                )}
               </td>
             </tr>
           ))}

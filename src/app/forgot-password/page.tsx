@@ -12,8 +12,14 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useStore } from "@/store";
 
 export default function page() {
+  const { pending, setPending } = useStore((state) => ({
+    pending: state.pending,
+    setPending: state.setPending,
+  }));
+
   const {
     register,
     handleSubmit,
@@ -33,11 +39,14 @@ export default function page() {
     data: Omit<ForgotPasswordFormSchemaType, "confirmPassword">
   ) => {
     try {
+      setPending(true);
       data.id = user.id;
       const res = await axios.post("/api/forgotPassword/", data);
       toast.success("Senha alterada com sucesso!");
       reset();
+      setPending(false);
     } catch (err) {
+      setPending(false);
       if (err instanceof AxiosError) {
         toast.error(err.response?.data.message);
       } else {
@@ -74,10 +83,15 @@ export default function page() {
           <ErrorMessage message={errors.confirmPassword.message} />
         )}
         <div className="flex flex-col w-full gap-12">
-          <input
-            className="text-white px-6 py-2 w-full rounded-xl bg-lime-600 hover:cursor-pointer"
+          {pending ? <input
+            className="text-white px-6 py-2 w-full rounded-xl bg-lime-600 hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
             type="submit"
-          />
+            value="Enviando..."
+            disabled={true}
+          /> : <input
+          className="text-white px-6 py-2 w-full rounded-xl bg-lime-600 hover:cursor-pointer"
+          type="submit"
+        />}
           <button
             className="text-white px-6 py-2 w-full rounded-xl bg-slate-700 hover:cursor-pointer"
             onClick={() => router.push("/home")}

@@ -16,8 +16,13 @@ import {
 import { formatCPF, formatName } from "@/utils/utils";
 import Header from "../Header";
 import { usePatients } from "@/hooks/usePatients";
+import { useStore } from "@/store";
 
 export default function HeaderCadastro({ user }: { user: UseMeType }) {
+  const { pending, setPending } = useStore((state) => ({
+    pending: state.pending,
+    setPending: state.setPending,
+  }));
   const { patients, setPatients } = usePatients({ user });
   const {
     register,
@@ -43,6 +48,7 @@ export default function HeaderCadastro({ user }: { user: UseMeType }) {
 
   const handleRegisterPatient = async (data: RegisterPatientFormType) => {
     try {
+      setPending(true);
       const newPatient = await axios.post("/api/patient", {
         name: data.name,
         lastName: data.lastName,
@@ -57,7 +63,9 @@ export default function HeaderCadastro({ user }: { user: UseMeType }) {
         )
       );
       closeModal();
+      setPending(false);
     } catch (error) {
+      setPending(false);
       if (error instanceof AxiosError && error.response?.status === 404) {
         toast.error(error.response.data.message);
       } else {
@@ -148,10 +156,19 @@ export default function HeaderCadastro({ user }: { user: UseMeType }) {
               {errors.convenio && (
                 <ErrorMessage message={errors.convenio.message} />
               )}
-              <input
-                type="submit"
-                className="text-white bg-green-400 p-6 rounded-md hover:cursor-pointer text-lg max-sm:p-5 max-sm:text-base"
-              />
+              {pending ? (
+                <input
+                  type="submit"
+                  className="text-white bg-green-400 p-6 rounded-md hover:cursor-pointer text-lg max-sm:p-5 max-sm:text-base disabled:cursor-not-allowed disabled:opacity-50"
+                  value="Enviando..."
+                  disabled={true}
+                />
+              ) : (
+                <input
+                  type="submit"
+                  className="text-white bg-green-400 p-6 rounded-md hover:cursor-pointer text-lg max-sm:p-5 max-sm:text-base"
+                />
+              )}
             </form>
           </div>
         </div>

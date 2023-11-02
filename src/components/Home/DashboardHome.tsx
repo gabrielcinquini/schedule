@@ -6,11 +6,14 @@ import { useState } from "react";
 import { getDate } from "@/utils/utils";
 import axios from "axios";
 import { useStore } from "@/store";
+import { toast } from "sonner";
 
 export default function DashboardHome({ user }: { user: UseMeType }) {
-  const { schedules, setSchedules } = useStore((state) => ({
+  const { schedules, setSchedules, pending, setPending } = useStore((state) => ({
     schedules: state.schedules,
     setSchedules: state.setSchedules,
+    pending: state.pending,
+    setPending: state.setPending,
   }));
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -24,18 +27,20 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
 
   const handleDelete = async (id: string) => {
     try {
-      await axios.delete(
-        `/api/schedules/${id}`
-      );
+      setPending(true);
+      await axios.delete(`/api/schedules/${id}`);
 
       setSchedules(schedules.filter((schedule) => schedule.id !== id));
+      setPending(false);
     } catch (error) {
+      setPending(false);
       console.error("Error deleting item:", error);
     }
   };
 
   const handleComplete = async (schedule: ScheduleType) => {
     try {
+      setPending(true);
       await axios.post("/api/services", {
         name: schedule.name,
         lastName: schedule.lastName,
@@ -45,14 +50,17 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
         patientId: schedule.patientId,
         userId: user.id,
       });
-      handleDelete(schedule.id);
+      await handleDelete(schedule.id);
+      setPending(false);
     } catch (error) {
+      setPending(false);
       console.error("Error on complete:", error);
     }
   };
 
   const handleNotComplete = async (schedule: ScheduleType) => {
     try {
+      setPending(true);
       await axios.post("/api/services", {
         name: schedule.name,
         lastName: schedule.lastName,
@@ -62,8 +70,10 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
         patientId: schedule.patientId,
         userId: user.id,
       });
-      handleDelete(schedule.id);
+      await handleDelete(schedule.id);
+      setPending(false);
     } catch (error) {
+      setPending(false);
       console.error("Error on complete:", error);
     }
   };
@@ -100,30 +110,73 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
                     }).format(schedule.value)}
               </td>
               <td align="right">
-                <button
-                  className="bg-green-600 p-2 rounded-md mr-2 hover:bg-green-800 transition-all duration-200 max-sm:p-1"
-                  onClick={() => {
-                    handleComplete(schedule);
-                  }}
-                >
-                  <CheckSquare />
-                </button>
-                <button
-                  className="bg-orange-400 p-2 rounded-md mr-2 hover:bg-orange-500 transition-all duration-200 max-sm:p-1"
-                  onClick={() => {
-                    handleNotComplete(schedule);
-                  }}
-                >
-                  <XSquare />
-                </button>
-                <button
-                  className="bg-red-700 p-2 rounded-md hover:bg-red-900 transition-all duration-200 max-sm:p-1"
-                  onClick={() => {
-                    handleDelete(schedule.id);
-                  }}
-                >
-                  <Trash2 />
-                </button>
+                {pending ? (
+                  <>
+                    <button
+                      className="bg-green-600 p-2 rounded-md mr-2 hover:bg-green-800 transition-all duration-200 max-sm:p-1 disabled:cursor-not-allowed disabled:opacity-50"
+                      disabled={true}
+                    >
+                      <CheckSquare />
+                    </button>
+                    <button
+                      className="bg-orange-400 p-2 rounded-md mr-2 hover:bg-orange-500 transition-all duration-200 max-sm:p-1 disabled:cursor-not-allowed disabled:opacity-50"
+                      disabled={true}
+                    >
+                      <XSquare />
+                    </button>
+                    <button
+                      className="bg-red-700 p-2 rounded-md hover:bg-red-900 transition-all duration-200 max-sm:p-1 disabled:cursor-not-allowed disabled:opacity-50"
+                      disabled={true}
+                    >
+                      <Trash2 />
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      className="bg-green-600 p-2 rounded-md mr-2 hover:bg-green-800 transition-all duration-200 max-sm:p-1"
+                      onClick={() => {
+                        toast.promise(handleComplete(schedule), {
+                          error: "Erro ao mover",
+                          success: () => {
+                            return `Movido com sucesso!`;
+                          },
+                          loading: "Movendo para as consultas realizadas...",
+                        });
+                      }}
+                    >
+                      <CheckSquare />
+                    </button>
+                    <button
+                      className="bg-orange-400 p-2 rounded-md mr-2 hover:bg-orange-500 transition-all duration-200 max-sm:p-1"
+                      onClick={() => {
+                        toast.promise(handleNotComplete(schedule), {
+                          error: "Erro ao mover",
+                          success: () => {
+                            return `Movido com sucesso!`;
+                          },
+                          loading: "Movendo para as consultas não realizadas...",
+                        });
+                      }}
+                    >
+                      <XSquare />
+                    </button>
+                    <button
+                      className="bg-red-700 p-2 rounded-md hover:bg-red-900 transition-all duration-200 max-sm:p-1"
+                      onClick={() => {
+                        toast.promise(handleDelete(schedule.id), {
+                          error: "Erro ao deletar",
+                          success: () => {
+                            return `Deletado com sucesso!`;
+                          },
+                          loading: "Deletando...",
+                        });
+                      }}
+                    >
+                      <Trash2 />
+                    </button>
+                  </>
+                )}
               </td>
             </tr>
           ))}
