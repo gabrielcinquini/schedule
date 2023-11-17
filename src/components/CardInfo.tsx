@@ -8,12 +8,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import CountUp from 'react-countup';
 
 type CardProps = {
   currentPage: string;
-  totalHome?: string;
-  totalReceived?: string;
-  totalNotReceived?: string;
+  totalHome: number;
+  totalReceived: number;
+  totalNotReceived: number;
 };
 
 export default function CardInfo({
@@ -30,7 +31,7 @@ export default function CardInfo({
             <CardTitle>Total a Receber</CardTitle>
           </CardHeader>
           <CardContent className="flex items-center justify-center">
-            <h1 className="text-2xl max-sm:text-lg">{totalHome}</h1>
+            <h1 className="text-2xl max-sm:text-lg"><CountUp end={totalHome} duration={2} prefix="R$ " decimal="," decimals={2}/></h1>
           </CardContent>
         </Card>
       ) : currentPage === "total" ? (
@@ -40,7 +41,7 @@ export default function CardInfo({
               <CardTitle>Total Recebido</CardTitle>
             </CardHeader>
             <CardContent className="flex items-center justify-center">
-              <h1 className="text-2xl max-sm:text-lg">{totalReceived}</h1>
+              <h1 className="text-2xl max-sm:text-lg"><CountUp end={totalReceived} duration={2} prefix="R$ " decimal="," decimals={2}/></h1>
             </CardContent>
           </Card>
           <Card className="bg-red-600">
@@ -48,7 +49,7 @@ export default function CardInfo({
               <CardTitle>Total Perdido</CardTitle>
             </CardHeader>
             <CardContent className="flex items-center justify-center">
-              <h1 className="text-2xl max-sm:text-lg">{totalNotReceived}</h1>
+              <h1 className="text-2xl max-sm:text-lg"><CountUp end={totalNotReceived} duration={2} prefix="R$ " decimal="," decimals={2}/></h1>
             </CardContent>
           </Card>
         </>
