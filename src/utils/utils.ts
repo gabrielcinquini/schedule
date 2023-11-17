@@ -44,7 +44,7 @@ export function formatName(event: React.ChangeEvent<HTMLInputElement>) {
 export function getDate(date: Date): { data: string; horario: string } {
   const data = new Date(date);
   const dia = data.getDate().toString().padStart(2, "0");
-  const mes = (data.getMonth() + 1).toString().padStart(2, "0"); // Janeiro é 0!
+  const mes = (data.getMonth() + 1).toString().padStart(2, "0"); // Janeiro é 0
   const ano = data.getFullYear().toString().slice(-2);
   const hora = data.getHours().toString().padStart(2, "0");
   const minuto = data.getMinutes().toString().padStart(2, "0");
@@ -56,13 +56,13 @@ export function getDate(date: Date): { data: string; horario: string } {
 }
 
 export function formatValue(event: React.ChangeEvent<HTMLInputElement>) {
-  const currentValue = event.target.value.replace(/[^\d]/g, ''); // Remove todos os caracteres não numéricos
+  const currentValue = event.target.value.replace(/[^\d]/g, '');
   const currentPos = event.target.selectionStart || 0;
 
   const formattedVal = new Intl.NumberFormat('pt-br', {
     style: 'currency',
     currency: 'BRL'
-  }).format(parseInt(currentValue) / 100); // Divide por 100 para tratar como valor decimal
+  }).format(parseInt(currentValue) / 100);
 
   event.target.value = formattedVal;
 
@@ -72,10 +72,9 @@ export function formatValue(event: React.ChangeEvent<HTMLInputElement>) {
 }
 
 export function formatCPF(event: React.ChangeEvent<HTMLInputElement>) {
-  const currentValue = event.target.value.replace(/[^\d]/g, ''); // Remove todos os caracteres não numéricos
+  const currentValue = event.target.value.replace(/[^\d]/g, '');
   const currentPos = event.target.selectionStart || 0;
 
-  // Adiciona separadores ao CPF
   const formattedCPF = currentValue
     .replace(/^(\d{3})(\d{1,3})?(\d{1,3})?(\d{1,2})?$/, (_, p1, p2, p3, p4) => {
       let result = p1;

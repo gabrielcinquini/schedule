@@ -103,7 +103,7 @@ export const registerToScheduleFormSchema = z
     //   .string()
     //   .min(4, "O nome deve conter ao menos 4 caracteres")
     //   .regex(/^[A-Z][a-z]+ [A-z][a-z]+$/, "Nome inválido(Joe)"),
-    date: z.string().regex(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/, "Formato inválido"),
+    date: z.date(),
     time: z.string().regex(/^[0-9]{2}:[0-9]{2}$/, "Formato inválido"),
     value: z.string().refine(
       (value) => {
@@ -123,9 +123,16 @@ export const registerToScheduleFormSchema = z
   })
   .refine(
     (data) => {
-      const selectedDate = new Date(`${data.date} ${data.time}:00`);
+      let date = new Date(data.date);
+      let hora = data.time;
+      let [novaHora, novosMinutos] = hora.split(":");
+      date.setHours(parseInt(novaHora, 10));
+      date.setMinutes(parseInt(novosMinutos, 10));
+      // const selectedDate = new Date(`${data.date} ${data.time}:00`);
+      // console.log(new Date(data.date))
+      // console.log(selectedDate)
       const currentDate = new Date();
-      return selectedDate >= currentDate;
+      return date >= currentDate;
     },
     {
       message: "Só é possível realizar o agendamento para uma data futura",
@@ -149,7 +156,47 @@ export const patientSchema = z.object({
     ),
   cpf: z
     .string()
-    .regex(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, "Formato inválido(123.456.789-00)"),
+    .regex(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, "Formato inválido(123.456.789-00)")
+    .refine(
+      (value) => {
+        const cleanDigits = value.replace(/[^\d]/g, "");
+
+        if (cleanDigits.length !== 11) {
+          return false;
+        }
+
+        const calculateDigit = (digits: number[], weights: number[]) => {
+          const sum = digits.reduce(
+            (acc, digit, index) => acc + digit * weights[index],
+            0
+          );
+          const result = sum % 11;
+          return result < 2 ? 0 : 11 - result;
+        };
+
+        const cpfDigits = cleanDigits.slice(0, 9).split("").map(Number);
+        const firstDigit = calculateDigit(
+          cpfDigits,
+          [10, 9, 8, 7, 6, 5, 4, 3, 2]
+        );
+
+        const cpfWithFirstDigit = cleanDigits
+          .slice(0, 10)
+          .split("")
+          .map(Number);
+        const lastDigit = calculateDigit(
+          cpfWithFirstDigit,
+          [11, 10, 9, 8, 7, 6, 5, 4, 3, 2]
+        );
+
+        return (
+          Number(cleanDigits[9]) === firstDigit &&
+          Number(cleanDigits[10]) === lastDigit
+        );
+      },
+      { message: "CPF inválido" }
+    ),
+
   convenio: z.string().min(3, "Deve conter ao menos 3 caracteres"),
   lastConsult: z.coerce.date().nullable(),
   createdAt: z.coerce.date(),
@@ -214,4 +261,6 @@ export const forgotPasswordFormSchema = z
     }
   );
 
-export type ForgotPasswordFormSchemaType = z.infer<typeof forgotPasswordFormSchema>
+export type ForgotPasswordFormSchemaType = z.infer<
+  typeof forgotPasswordFormSchema
+>;

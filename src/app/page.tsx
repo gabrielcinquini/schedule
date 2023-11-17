@@ -14,17 +14,24 @@ import { LoginUserType, loginUserFormSchema } from "@/validations/validations";
 import ErrorMessage from "@/components/ErrorMessage";
 import { useStore } from "@/store";
 
-export default function Home() {
-  const { pending, setPending } = useStore((state) => ({
-    pending: state.pending,
-    setPending: state.setPending,
-  }));
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import ModeToggle from "@/components/ui/mode-toggle";
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginUserType>({
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import Loader from "@/components/Loader";
+
+export default function Home() {
+  const form = useForm<LoginUserType>({
     mode: "onChange",
     resolver: zodResolver(loginUserFormSchema),
   });
@@ -33,7 +40,6 @@ export default function Home() {
 
   const handleLogin = async (data: LoginUserType) => {
     try {
-      setPending(true);
       const response = await axios.post("/api/login", {
         username: data.username,
         password: data.password,
@@ -44,10 +50,8 @@ export default function Home() {
         const token = response.data.accessToken;
 
         localStorage.setItem("token", token);
-        setPending(false);
       }
     } catch (error) {
-      setPending(false);
       // @ts-expect-error
       if (error instanceof AxiosError && error.response.status === 404) {
         toast.error("Credenciais não encontradas");
@@ -59,51 +63,77 @@ export default function Home() {
 
   return (
     <div className="flex h-screen justify-center items-center">
-      <form
-        className="flex flex-col gap-2 items-center text-gray-800"
-        onSubmit={handleSubmit(handleLogin)}
-      >
-        <input
-          className="p-2 rounded-xl"
-          type="text"
-          placeholder="Usuário"
-          {...register("username", {
-            onChange: formatUsername,
-          })}
-          autoComplete="off"
-        />
-        {errors.username && <ErrorMessage message={errors.username.message} />}
-        <input
-          className="p-2 rounded-xl"
-          type="password"
-          placeholder="Senha"
-          {...register("password")}
-          autoComplete="off"
-        />
-        {errors.password && <ErrorMessage message={errors.password.message} />}
-        <div className="flex w-full justify-between">
-          {pending ? (
-            <input
-              className="text-white px-6 py-2 rounded-xl bg-lime-600 w-fit hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
-              type="submit"
-              value="Enviando..."
-              disabled={true}
+      <div className="absolute top-12">
+        <ModeToggle />
+      </div>
+      <Form {...form}>
+        <form
+          className="flex flex-col gap-2"
+          onSubmit={form.handleSubmit(handleLogin)}
+        >
+          <div>
+            <Label htmlFor="username">Usuário</Label>
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Usuário"
+                      {...field}
+                      onChange={(event) => {
+                        formatUsername(event);
+                        field.onChange(event);
+                      }}
+                      autoComplete="off"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          ) : (
-            <input
-              className="text-white px-6 py-2 rounded-xl bg-lime-600 w-fit hover:cursor-pointer"
-              type="submit"
-              value="Enviar"
+          </div>
+          <div>
+            <Label htmlFor="password">Senha</Label>
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      placeholder="Senha"
+                      {...field}
+                      onChange={(event) => {
+                        formatUsername(event);
+                        field.onChange(event);
+                      }}
+                      autoComplete="off"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          )}
-          <Link
-            href="/register"
-            className="text-white bg-teal-950 px-6 py-2 rounded-xl"
-          >
-            Cadastrar
-          </Link>
-        </div>
-      </form>
+          </div>
+          <div className="flex w-full justify-between flex-col gap-8">
+            <Button
+              className="disabled:cursor-not-allowed disabled:opacity-50"
+              type="submit"
+              disabled={form.formState.isSubmitting}
+            >
+              {form.formState.isSubmitting && <Loader />}
+              Enviar
+            </Button>
+            <Button asChild variant={"outline"}>
+              <Link href="/register">Cadastrar</Link>
+            </Button>
+          </div>
+        </form>
+      </Form>
     </div>
   );
 }

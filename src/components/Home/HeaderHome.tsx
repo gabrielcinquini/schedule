@@ -13,27 +13,52 @@ import {
   registerToScheduleFormSchema,
   UseMeType,
 } from "@/validations/validations";
-import { formatValue } from "@/utils/utils";
+import { formatValue, getDate } from "@/utils/utils";
 import Header from "../Header";
 import { usePatients } from "@/hooks/usePatients";
 import { useStore } from "@/store";
+import { Input } from "../ui/input";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { ptBR } from "date-fns/locale";
+
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import Loader from "../Loader";
 
 export default function HeaderHome({ user }: { user: UseMeType }) {
   const { schedules } = useSchedules({ user: user });
   const { patients } = usePatients({ user: user });
-  const { setSchedules, pending, setPending } = useStore((state) => ({
+  const { setSchedules } = useStore((state) => ({
     setSchedules: state.setSchedules,
-    pending: state.pending,
-    setPending: state.setPending,
   }));
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-    ...rest
-  } = useForm<RegisterScheduleFormType>({
+  const form = useForm<RegisterScheduleFormType>({
     mode: "onChange",
     defaultValues: {
       userId: user?.id,
@@ -60,8 +85,8 @@ export default function HeaderHome({ user }: { user: UseMeType }) {
     setIsModalOpen(false);
   };
 
-  const handleChange = (e: any) => {
-    const selectedPatient = patients.find((p) => p.id === e.target.value);
+  const handleChange = (patientId: any) => {
+    const selectedPatient = patients.find((p) => p.id === patientId);
     if (selectedPatient) {
       setSelectedPatientConvenio(selectedPatient.convenio);
     }
@@ -69,10 +94,14 @@ export default function HeaderHome({ user }: { user: UseMeType }) {
 
   const handleRegisterSchedule = async (data: RegisterScheduleFormType) => {
     try {
-      setPending(true);
       const selectedPatient = patients.find((p) => p.id === data.patientId);
-      const date = new Date(`${data.date} ${data.time}:00`);
       if (!selectedPatient) throw new Error();
+
+      let date = new Date(data.date);
+      let hora = data.time;
+      let [novaHora, novosMinutos] = hora.split(":");
+      date.setHours(parseInt(novaHora, 10));
+      date.setMinutes(parseInt(novosMinutos, 10));
 
       if (selectedPatient.convenio === "Isento") {
         data.value = "0";
@@ -91,35 +120,23 @@ export default function HeaderHome({ user }: { user: UseMeType }) {
         userId: data.userId,
         patientId: data.patientId,
       });
-      if (response.status === 200) {
-        toast.success("Paciente agendado com sucesso!");
-        const newSchedule = response.data;
-        schedules.push(newSchedule);
 
-        setSchedules(
-          schedules.sort((a, b) => {
-            const dateA = new Date(a.date);
-            const dateB = new Date(b.date);
-            return dateA.getTime() - dateB.getTime();
-          })
-        );
-        closeModal();
-        setPending(false);
-      }
+      toast.success("Paciente agendado com sucesso!");
+      const newSchedule = response.data.schedule;
+      schedules.push(newSchedule);
+
+      setSchedules(
+        schedules.sort((a, b) => {
+          const dateA = new Date(a.date);
+          const dateB = new Date(b.date);
+          return dateA.getTime() - dateB.getTime();
+        })
+      );
+      closeModal();
     } catch (error) {
-      setPending(false);
-      //@ts-expect-error
-      if (error instanceof AxiosError && error.response.status === 500) {
-        toast.error("Não foi possível conectar ao banco de dados");
-      }
-      //@ts-expect-error
-      else if (error instanceof AxiosError && error.response.status === 400) {
-        toast.error("Já possui um paciente cadastrado nesse horário");
-      }
-      //@ts-expect-error
-      else if (error instanceof AxiosError && error.response.status === 404) {
-        toast.error("Não foi possível agendar o paciente");
-      }
+      if (error instanceof AxiosError)
+        toast.error(error.response?.data.message);
+      else toast.error("Ocorreu um erro inesperado");
     }
   };
 
@@ -141,82 +158,161 @@ export default function HeaderHome({ user }: { user: UseMeType }) {
             backgroundColor: "rgba(0, 0, 0, 0.5)",
           },
           content: {
-            width: window.innerWidth < 828 ? "70%" : "40%",
+            width: window.innerWidth < 828 ? "80%" : "40%",
             height: "75%",
             margin: "auto",
+            background: "hsl(var(--background))",
+            border: "none",
           },
         }}
       >
-        <button
-          className="absolute right-10 px-2 text-white bg-slate-700 rounded-lg"
+        <Button
+          variant={"ghost"}
+          className="absolute right-10"
           onClick={closeModal}
         >
           X
-        </button>
-        <div className="text-slate-800">
+        </Button>
+        <div>
           <div className="p-16 max-sm:p-1">
-            <h1 className="text-gray-800 bolder text-4xl mb-12 max-sm:text-xl">
+            <h1 className="bolder text-4xl mb-12 max-sm:text-xl">
               Agendar paciente
             </h1>
             {patients.length > 0 ? (
-              <form
-                className="flex flex-col gap-4 max-sm:gap-2 max-sm:text-sm"
-                onSubmit={handleSubmit(handleRegisterSchedule)}
-              >
-                <select
-                  className="bg-slate-200 rounded-md p-4 appearance-none max-sm:p-3"
-                  {...register("patientId", {
-                    value: patients[0].id,
-                    onChange: handleChange,
-                  })}
+              <Form {...form}>
+                <form
+                  className="flex flex-col gap-4 max-sm:gap-2 max-sm:text-sm"
+                  onSubmit={form.handleSubmit(handleRegisterSchedule)}
                 >
-                  {patients.map((patient) => (
-                    <option key={patient.id} value={patient.id}>
-                      {patient.name} {patient.lastName}
-                    </option>
-                  ))}
-                </select>
-                <input
-                  autoComplete="off"
-                  type="date"
-                  className="bg-slate-200 rounded-md p-4 appearance-none max-sm:p-3"
-                  placeholder="Data"
-                  {...register("date")}
-                />
-                {errors.date && <ErrorMessage message={errors.date.message} />}
-                <input
-                  autoComplete="off"
-                  type="time"
-                  className="bg-slate-200 rounded-md p-4 appearance-none max-sm:p-3"
-                  placeholder="Hora"
-                  {...register("time")}
-                />
-                {errors.time && <ErrorMessage message={errors.time.message} />}
-                {selectedPatientConvenio !== "Isento" && (
-                  <input
-                    autoComplete="off"
-                    type="text"
-                    className="bg-slate-200 rounded-md p-4 appearance-none max-sm:p-3"
-                    placeholder="Valor"
-                    {...register("value", {
-                      onChange: formatValue,
-                    })}
+                  <FormField
+                    control={form.control}
+                    name="patientId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Select
+                            onValueChange={(e) => {
+                              field.onChange(e), handleChange(e);
+                            }}
+                            defaultValue={field.value}
+                          >
+                            <SelectTrigger className="p-7">
+                              <SelectValue placeholder="Selecione o paciente" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                {patients.map((patient) => (
+                                  <SelectItem
+                                    key={patient.id}
+                                    value={patient.id}
+                                  >
+                                    {patient.name} {patient.lastName}
+                                  </SelectItem>
+                                ))}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                )}
-                {pending ? (
-                  <input
+                  <FormField
+                    control={form.control}
+                    name="date"
+                    render={({ field }) => (
+                      <FormItem>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant={"outline"}
+                                className={cn(
+                                  "p-7 w-full text-left font-normal",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                {field.value ? (
+                                  format(Number(field.value), "PPP", {
+                                    locale: ptBR,
+                                  })
+                                ) : (
+                                  <span>Selecione a data</span>
+                                )}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onDayClick={field.onChange}
+                              disabled={(date) =>
+                                date < new Date("1900-01-01") ||
+                                date < new Date(new Date().setHours(0, 0, 0, 0))
+                              }
+                              locale={ptBR}
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="time"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            autoComplete="off"
+                            type="time"
+                            className="p-7 appearance-none"
+                            placeholder="Hora"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="value"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          {selectedPatientConvenio !== "Isento" && (
+                            <Input
+                              autoComplete="off"
+                              type="text"
+                              className="p-7 appearance-none"
+                              placeholder="Valor"
+                              {...field}
+                              onChange={(event) => {
+                                formatValue(event);
+                                field.onChange(event);
+                              }}
+                            />
+                          )}
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button
                     type="submit"
-                    className="text-white bg-green-400 py-6 rounded-md hover:cursor-pointer text-lg max-sm:p-5 max-sm:text-base disabled:cursor-not-allowed disabled:opacity-50"
-                    value="Enviando..."
-                    disabled={true}
-                  />
-                ) : (
-                  <input
-                    type="submit"
-                    className="text-white bg-green-400 py-6 rounded-md hover:cursor-pointer text-lg max-sm:p-5 max-sm:text-base"
-                  />
-                )}
-              </form>
+                    className="text-lg p-9"
+                    disabled={form.formState.isSubmitting}
+                  >
+                    {form.formState.isSubmitting && <Loader />}
+                    Enviar
+                  </Button>
+                </form>
+              </Form>
             ) : (
               <p className="text-center text-2xl text-red-800 font-bold max-sm:text-xl">
                 Nenhum paciente cadastrado!

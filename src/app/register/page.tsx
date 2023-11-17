@@ -10,20 +10,27 @@ import {
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import ErrorMessage from "@/components/ErrorMessage";
 import { useStore } from "@/store";
+import ModeToggle from "@/components/ui/mode-toggle";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ArrowLeftIcon } from "@radix-ui/react-icons";
+
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { formatName, formatUsername } from "@/utils/utils";
+import Link from "next/link";
+import Loader from "@/components/Loader";
 
 export default function Home() {
-  const { pending, setPending } = useStore((state) => ({
-    pending: state.pending,
-    setPending: state.setPending,
-  }));
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<RegisterUserType>({
+  const form = useForm<RegisterUserType>({
     mode: "all",
     resolver: zodResolver(registerUserFormSchema),
   });
@@ -34,17 +41,14 @@ export default function Home() {
     user: Omit<RegisterUserType, "confirmPassword">
   ) => {
     try {
-      setPending(true);
       const res = await axios.post("/api/register", user);
 
       const token = res.data.accessToken;
       localStorage.setItem("token", token);
       router.push("/home");
-      setPending(false);
     } catch (err) {
-      setPending(false);
       if (err instanceof AxiosError) {
-        console.error(err);
+        toast.error(err.response?.data.message);
       } else {
         toast.error("Não foi possível conectar com o banco de dados");
       }
@@ -53,67 +57,128 @@ export default function Home() {
 
   return (
     <div className="flex h-screen justify-center items-center">
-      <form
-        className="flex flex-col gap-2 items-center text-gray-800"
-        onSubmit={handleSubmit(handleRegister)}
-      >
-        <input
-          className="p-2 rounded-xl"
-          type="text"
-          placeholder="Usuário"
-          {...register("username")}
-          autoComplete="off"
-        />
-        {errors.username && <ErrorMessage message={errors.username.message} />}
-        <input
-          className="p-2 rounded-xl"
-          type="text"
-          placeholder="Nome"
-          {...register("name")}
-          autoComplete="off"
-        />
-        {errors.name && <ErrorMessage message={errors.name.message} />}
-        <input
-          className="p-2 rounded-xl"
-          type="text"
-          placeholder="Sobrenome"
-          {...register("lastName")}
-          autoComplete="off"
-        />
-        {errors.lastName && <ErrorMessage message={errors.lastName.message} />}
-        <input
-          className="p-2 rounded-xl"
-          type="password"
-          placeholder="Senha"
-          {...register("password")}
-        />
-        {errors.password && <ErrorMessage message={errors.password.message} />}
-        <input
-          className="p-2 rounded-xl"
-          type="password"
-          placeholder="Confirmar Senha"
-          {...register("confirmPassword")}
-          autoComplete="off"
-        />
-        {errors.confirmPassword && (
-          <ErrorMessage message={errors.confirmPassword.message} />
-        )}
-
-        {pending ? (
-          <input
-            className="text-white px-6 py-2 rounded-xl bg-lime-600 w-fit hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
-            type="submit"
-            value="Enviando..."
-            disabled={true}
+      <div className="absolute top-12">
+        <ModeToggle />
+      </div>
+      <Form {...form}>
+        <form
+          className="flex flex-col gap-2 items-center"
+          onSubmit={form.handleSubmit(handleRegister)}
+        >
+          <FormField
+            name="username"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input
+                    type="text"
+                    placeholder="Usuário"
+                    onChange={(e) => {
+                      field.onChange(e);
+                      formatUsername(e);
+                    }}
+                    autoComplete="off"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        ) : (
-          <input
-            className="text-white px-6 py-2 rounded-xl bg-lime-600 w-fit hover:cursor-pointer"
-            type="submit"
-            value="Cadastrar"
+          <FormField
+            name="name"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input
+                    type="text"
+                    placeholder="Nome"
+                    onChange={(e) => {
+                      field.onChange(e);
+                      formatName(e);
+                    }}
+                    autoComplete="off"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        )}
-      </form>
+          <FormField
+            name="lastName"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input
+                    type="text"
+                    placeholder="Sobrenome"
+                    onChange={(e) => {
+                      field.onChange(e);
+                      formatName(e);
+                    }}
+                    autoComplete="off"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            name="password"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder="Senha"
+                    onChange={field.onChange}
+                    autoComplete="off"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            name="confirmPassword"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder="Confirmar Senha"
+                    onChange={field.onChange}
+                    autoComplete="off"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="flex flex-col gap-8 justify-evenly w-full">
+            <Button
+              className="disabled:cursor-not-allowed disabled:opacity-50"
+              type="submit"
+              disabled={form.formState.isSubmitting}
+            >
+              {form.formState.isSubmitting && (
+                <Loader />
+              )}
+              Cadastrar
+            </Button>
+            <Button asChild variant={"secondary"}>
+              <Link href="/" className="flex gap-2 w-full">
+                <ArrowLeftIcon />
+                Voltar
+              </Link>
+            </Button>
+          </div>
+        </form>
+      </Form>
     </div>
   );
 }

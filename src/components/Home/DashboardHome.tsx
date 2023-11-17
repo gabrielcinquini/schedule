@@ -8,13 +8,27 @@ import axios from "axios";
 import { useStore } from "@/store";
 import { toast } from "sonner";
 
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "../ui/button";
+
 export default function DashboardHome({ user }: { user: UseMeType }) {
-  const { schedules, setSchedules, pending, setPending } = useStore((state) => ({
-    schedules: state.schedules,
-    setSchedules: state.setSchedules,
-    pending: state.pending,
-    setPending: state.setPending,
-  }));
+  const { schedules, setSchedules, pending, setPending } = useStore(
+    (state) => ({
+      schedules: state.schedules,
+      setSchedules: state.setSchedules,
+      pending: state.pending,
+      setPending: state.setPending,
+    })
+  );
   const [currentPage, setCurrentPage] = useState(1);
 
   const itemsPerPage = 8;
@@ -80,60 +94,59 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
 
   return (
     <div>
-      <table className="w-full border-separate border-spacing-y-2 p-8 max-sm:py-2 max-sm:px-0">
-        <thead className="text-left">
-          <tr className="text-white">
-            <th className="px-2">Nome</th>
-            <th>Data</th>
-            <th>Hora</th>
-            <th>Valor</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
+      <Table>
+        <TableCaption>Sua agenda.</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[100px]">Nome</TableHead>
+            <TableHead>Data</TableHead>
+            <TableHead>Hora</TableHead>
+            <TableHead>Valor</TableHead>
+            <TableHead className="text-right"></TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {schedules.slice(startIndex, endIndex).map((schedule, index) => (
-            <tr
-              key={schedule.id}
-              className={index % 2 === 0 ? "bg-green-700" : "bg-blue-700"}
-            >
-              <td className="px-2">
+            <TableRow key={schedule.id}>
+              <TableCell>
                 {schedule.name} {schedule.lastName}
-              </td>
-              <td>{getDate(schedule.date).data}</td>
-              <td>{getDate(schedule.date).horario}</td>
-              <td>
+              </TableCell>
+              <TableCell>{getDate(schedule.date).data}</TableCell>
+              <TableCell>{getDate(schedule.date).horario}</TableCell>
+              <TableCell>
                 {schedule.value === 0
                   ? "Isento"
                   : new Intl.NumberFormat("pt-br", {
                       style: "currency",
                       currency: "BRL",
                     }).format(schedule.value)}
-              </td>
-              <td align="right">
+              </TableCell>
+              <TableCell align="right">
                 {pending ? (
-                  <>
-                    <button
+                  <div className="flex">
+                    <Button
                       className="bg-green-600 p-2 rounded-md mr-2 hover:bg-green-800 transition-all duration-200 max-sm:p-1 disabled:cursor-not-allowed disabled:opacity-50"
                       disabled={true}
                     >
                       <CheckSquare />
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       className="bg-orange-400 p-2 rounded-md mr-2 hover:bg-orange-500 transition-all duration-200 max-sm:p-1 disabled:cursor-not-allowed disabled:opacity-50"
                       disabled={true}
                     >
                       <XSquare />
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                      variant={"destructive"}
                       className="bg-red-700 p-2 rounded-md hover:bg-red-900 transition-all duration-200 max-sm:p-1 disabled:cursor-not-allowed disabled:opacity-50"
                       disabled={true}
                     >
                       <Trash2 />
-                    </button>
-                  </>
+                    </Button>
+                  </div>
                 ) : (
-                  <>
-                    <button
+                  <div className="flex">
+                    <Button
                       className="bg-green-600 p-2 rounded-md mr-2 hover:bg-green-800 transition-all duration-200 max-sm:p-1"
                       onClick={() => {
                         toast.promise(handleComplete(schedule), {
@@ -146,8 +159,8 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
                       }}
                     >
                       <CheckSquare />
-                    </button>
-                    <button
+                    </Button>
+                    <Button
                       className="bg-orange-400 p-2 rounded-md mr-2 hover:bg-orange-500 transition-all duration-200 max-sm:p-1"
                       onClick={() => {
                         toast.promise(handleNotComplete(schedule), {
@@ -155,13 +168,15 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
                           success: () => {
                             return `Movido com sucesso!`;
                           },
-                          loading: "Movendo para as consultas não realizadas...",
+                          loading:
+                            "Movendo para as consultas não realizadas...",
                         });
                       }}
                     >
                       <XSquare />
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                      variant={"destructive"}
                       className="bg-red-700 p-2 rounded-md hover:bg-red-900 transition-all duration-200 max-sm:p-1"
                       onClick={() => {
                         toast.promise(handleDelete(schedule.id), {
@@ -174,40 +189,42 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
                       }}
                     >
                       <Trash2 />
-                    </button>
-                  </>
+                    </Button>
+                  </div>
                 )}
-              </td>
-            </tr>
+              </TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
       <div className="flex gap-2 px-8">
-        <button
+        <Button
           onClick={() => {
             setCurrentPage(currentPage - 1);
           }}
+          variant={"harderOutline"}
           disabled={currentPage === 1}
           className={`${
             currentPage === 1 ? "opacity-50 pointer-events-none" : ""
-          } bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded`}
+          }`}
         >
           Anterior
-        </button>
+        </Button>
         <span className="ml-4 mr-4 py-2">
           {currentPage}/{totalPages}
         </span>
-        <button
+        <Button
           onClick={() => {
             setCurrentPage(currentPage + 1);
           }}
+          variant={"harderOutline"}
           disabled={currentPage === totalPages}
           className={`${
             currentPage === totalPages ? "opacity-50 pointer-events-none" : ""
-          } bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded`}
+          }`}
         >
           Próxima
-        </button>
+        </Button>
       </div>
     </div>
   );
