@@ -70,18 +70,9 @@ export default function Header({
         </div>
         <CardInfo
           currentPage={currentPage}
-          totalHome={new Intl.NumberFormat("pt-br", {
-            currency: "BRL",
-            style: "currency",
-          }).format(calcularTotal(schedules))}
-          totalReceived={new Intl.NumberFormat("pt-br", {
-            currency: "BRL",
-            style: "currency",
-          }).format(calcularTotal(completedServices))}
-          totalNotReceived={new Intl.NumberFormat("pt-br", {
-            currency: "BRL",
-            style: "currency",
-          }).format(calcularTotal(incompleteServices))}
+          totalHome={calcularTotal(schedules)}
+          totalReceived={calcularTotal(completedServices)}
+          totalNotReceived={calcularTotal(incompleteServices)}
         />
         <div className="flex gap-4 flex-col items-center">
           {currentPage !== "total" && (
