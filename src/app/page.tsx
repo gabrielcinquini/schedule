@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import ModeToggle from "@/components/ui/mode-toggle";
+import Loader from "@/components/Loader";
 
 import {
   Form,
@@ -28,7 +29,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import Loader from "@/components/Loader";
 
 export default function Home() {
   const form = useForm<LoginUserType>({
@@ -108,7 +108,6 @@ export default function Home() {
                       placeholder="Senha"
                       {...field}
                       onChange={(event) => {
-                        formatUsername(event);
                         field.onChange(event);
                       }}
                       autoComplete="off"
