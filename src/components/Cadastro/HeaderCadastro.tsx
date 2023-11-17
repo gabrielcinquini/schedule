@@ -11,30 +11,45 @@ import {
   RegisterPatientFormType,
   registerPatientFormSchema,
   UseMeType,
-  PatientType,
 } from "@/validations/validations";
 import { formatCPF, formatName } from "@/utils/utils";
 import Header from "../Header";
 import { usePatients } from "@/hooks/usePatients";
 import { useStore } from "@/store";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import Loader from "../Loader";
 
 export default function HeaderCadastro({ user }: { user: UseMeType }) {
-  const { pending, setPending } = useStore((state) => ({
-    pending: state.pending,
-    setPending: state.setPending,
-  }));
   const { patients, setPatients } = usePatients({ user });
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<RegisterPatientFormType>({
+
+  const form = useForm<RegisterPatientFormType>({
     mode: "onChange",
     defaultValues: {
       userId: user.id,
     },
     resolver: zodResolver(registerPatientFormSchema),
   });
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   if (!patients) return <p>Loading...</p>;
 
@@ -48,7 +63,6 @@ export default function HeaderCadastro({ user }: { user: UseMeType }) {
 
   const handleRegisterPatient = async (data: RegisterPatientFormType) => {
     try {
-      setPending(true);
       const newPatient = await axios.post("/api/patient", {
         name: data.name,
         lastName: data.lastName,
@@ -63,14 +77,10 @@ export default function HeaderCadastro({ user }: { user: UseMeType }) {
         )
       );
       closeModal();
-      setPending(false);
     } catch (error) {
-      setPending(false);
-      if (error instanceof AxiosError && error.response?.status === 404) {
+      if (error instanceof AxiosError && error.response?.status === 404)
         toast.error(error.response.data.message);
-      } else {
-        toast.error("Ocorreu um erro ao cadastrar o paciente");
-      }
+      else toast.error("Ocorreu um erro ao cadastrar o paciente");
     }
   };
 
@@ -95,81 +105,131 @@ export default function HeaderCadastro({ user }: { user: UseMeType }) {
             width: window.innerWidth < 828 ? "80%" : "40%",
             height: "75%",
             margin: "auto",
+            background: "hsl(var(--background))",
+            border: "none",
           },
         }}
       >
-        <button
-          className="absolute right-10 px-2 text-white bg-slate-700 rounded-lg"
+        <Button
+          variant={"ghost"}
+          className="absolute right-10"
           onClick={closeModal}
         >
           X
-        </button>
-        <div className="text-slate-800">
+        </Button>
+        <div>
           <div className="p-16 max-sm:p-1">
-            <h1 className="text-gray-800 bolder text-4xl mb-12 max-sm:text-2xl">
+            <h1 className="bolder text-4xl mb-12 max-sm:text-2xl">
               Cadastrar paciente
             </h1>
-            <form
-              className="flex flex-col gap-4 max-sm:gap-2 max-sm:text-sm"
-              onSubmit={handleSubmit(handleRegisterPatient)}
-            >
-              <input
-                autoComplete="off"
-                type="text"
-                className="bg-slate-200 rounded-md p-4 appearance-none max-sm:p-3"
-                placeholder="Nome"
-                {...register("name", {
-                  onChange: formatName,
-                })}
-              />
-              {errors.name && <ErrorMessage message={errors.name.message} />}
-              <input
-                autoComplete="off"
-                type="text"
-                className="bg-slate-200 rounded-md p-4 appearance-none max-sm:p-3"
-                placeholder="Sobrenome"
-                {...register("lastName", {
-                  onChange: formatName,
-                })}
-              />
-              {errors.lastName && (
-                <ErrorMessage message={errors.lastName.message} />
-              )}
-              <input
-                autoComplete="off"
-                type="text"
-                className="bg-slate-200 rounded-md p-4 appearance-none max-sm:p-3"
-                placeholder="CPF"
-                {...register("cpf", {
-                  onChange: formatCPF,
-                })}
-              />
-              {errors.cpf && <ErrorMessage message={errors.cpf.message} />}
-              <select
-                className="p-4 border-none max-sm:p-3"
-                {...register("convenio")}
+
+            <Form {...form}>
+              <form
+                className="flex flex-col gap-4 max-sm:gap-2 max-sm:text-sm"
+                onSubmit={form.handleSubmit(handleRegisterPatient)}
               >
-                <option value="Sessão">Sessão</option>
-                <option value="Convênio">Convênio</option>
-                <option value="Isento">Isento</option>
-              </select>
-              {errors.convenio && (
-                <ErrorMessage message={errors.convenio.message} />
-              )}
-              {pending ? (
-                <input
-                  type="submit"
-                  className="text-white bg-green-400 p-6 rounded-md hover:cursor-pointer text-lg max-sm:p-5 max-sm:text-base disabled:cursor-not-allowed disabled:opacity-50"
-                  value="Enviando..."
-                  disabled={true}
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          autoComplete="off"
+                          type="text"
+                          className="p-7 max-sm:p-3"
+                          placeholder="Nome"
+                          {...field}
+                          onChange={(event) => {
+                            formatName(event);
+                            field.onChange(event);
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              ) : (
-                <input
-                  type="submit"
-                  className="text-white bg-green-400 p-6 rounded-md hover:cursor-pointer text-lg max-sm:p-5 max-sm:text-base"
+                <FormField
+                  control={form.control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          autoComplete="off"
+                          type="text"
+                          className="p-7 appearance-none max-sm:p-3"
+                          placeholder="Sobrenome"
+                          {...field}
+                          onChange={(event) => {
+                            formatName(event);
+                            field.onChange(event);
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              )}
-            </form>
+                <FormField
+                  control={form.control}
+                  name="cpf"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          autoComplete="off"
+                          type="text"
+                          className="p-7 appearance-none max-sm:p-3"
+                          placeholder="CPF"
+                          {...field}
+                          onChange={(event) => {
+                            formatCPF(event);
+                            field.onChange(event);
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="convenio"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <SelectTrigger className="p-7">
+                            <SelectValue placeholder="Selecione o convênio" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectItem value="Sessão">Sessão</SelectItem>
+                              <SelectItem value="Convênio">Convênio</SelectItem>
+                              <SelectItem value="Isento">Isento</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button
+                  type="submit"
+                  className="text-lg p-9"
+                  disabled={form.formState.isSubmitting}
+                >
+                  {form.formState.isSubmitting && <Loader />}
+                  Enviar
+                </Button>
+              </form>
+            </Form>
           </div>
         </div>
       </Modal>

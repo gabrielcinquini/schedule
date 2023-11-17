@@ -7,6 +7,18 @@ import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
 import { useStore } from "@/store";
 
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "../ui/button";
+
 export default function DashBoardTotal({ user }: { user: UseMeType }) {
   const { services } = useServices({ user });
   const { setServices, pending, setPending } = useStore((state) => ({
@@ -27,13 +39,13 @@ export default function DashBoardTotal({ user }: { user: UseMeType }) {
 
   const handleDelete = async (id: string) => {
     try {
-      setPending(true)
+      setPending(true);
       await axios.delete(`/api/services/${id}`);
 
       setServices(services.filter((service) => service.id !== id));
-      setPending(false)
+      setPending(false);
     } catch (error) {
-      setPending(false)
+      setPending(false);
       if (error instanceof AxiosError && error.response?.status === 400) {
         toast.error(error.response.data.message);
       } else {
@@ -44,90 +56,97 @@ export default function DashBoardTotal({ user }: { user: UseMeType }) {
 
   return (
     <div>
-      <table className="w-full border-separate border-spacing-y-2 p-8 max-sm:py-2 max-sm:px-0">
-        <thead className="text-left">
-          <tr className="text-white">
-            <th className="px-2">Nome</th>
-            <th>Data</th>
-            <th>Hora</th>
-            <th>Valor</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
+      <Table>
+        <TableCaption>Sua lista de serviços.</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[100px]">Nome</TableHead>
+            <TableHead>Data</TableHead>
+            <TableHead>Hora</TableHead>
+            <TableHead>Valor</TableHead>
+            <TableHead className="text-right"></TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {services.slice(startIndex, endIndex).map((service, index) => (
-            <tr
+            <TableRow
               key={service.id}
-              className={service.isComplete ? "bg-green-700" : "bg-orange-400"}
+              className={
+                service.isComplete ? "bg-green-700/20" : "bg-orange-400/20"
+              }
             >
-              <td className="px-2">
+              <TableCell>
                 {service.name} {service.lastName}
-              </td>
-              <td>{getDate(service.date).data}</td>
-              <td>{getDate(service.date).horario}</td>
-              <td>
+              </TableCell>
+              <TableCell>{getDate(service.date).data}</TableCell>
+              <TableCell>{getDate(service.date).horario}</TableCell>
+              <TableCell>
                 {service.value === 0
                   ? "Isento"
                   : new Intl.NumberFormat("pt-br", {
                       style: "currency",
                       currency: "BRL",
                     }).format(service.value)}
-              </td>
-              <td align="right">
+              </TableCell>
+              <TableCell align="right">
                 {pending ? (
-                  <button
-                    className="bg-red-800 p-2 rounded-md hover:bg-red-900 transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50"
+                  <Button
+                    variant={"destructive"}
+                    className="bg-red-700 p-2 rounded-md hover:bg-red-900 transition-all duration-200 max-sm:p-1 disabled:cursor-not-allowed disabled:opacity-50"
                     disabled={true}
                   >
                     <Trash2 />
-                  </button>
+                  </Button>
                 ) : (
-                  <button
-                    className="bg-red-800 p-2 rounded-md hover:bg-red-900 transition-all duration-200"
+                  <Button
+                    variant={"destructive"}
+                    className="bg-red-700 p-2 rounded-md hover:bg-red-900 transition-all duration-200 max-sm:p-1"
                     onClick={() => {
                       toast.promise(handleDelete(service.id), {
-                        error: "Erro ao deletar o registro de consulta",
+                        error: "Erro ao deletar",
                         success: () => {
-                          return `Registro de consulta deletado com sucesso!`;
+                          return `Deletado com sucesso!`;
                         },
                         loading: "Deletando...",
                       });
                     }}
                   >
                     <Trash2 />
-                  </button>
+                  </Button>
                 )}
-              </td>
-            </tr>
+              </TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
       <div className="flex gap-2 px-8">
-        <button
+        <Button
           onClick={() => {
             setCurrentPage(currentPage - 1);
           }}
+          variant={"harderOutline"}
           disabled={currentPage === 1}
           className={`${
             currentPage === 1 ? "opacity-50 pointer-events-none" : ""
-          } bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded`}
+          }`}
         >
           Anterior
-        </button>
+        </Button>
         <span className="ml-4 mr-4 py-2">
           {currentPage}/{totalPages}
         </span>
-        <button
+        <Button
           onClick={() => {
             setCurrentPage(currentPage + 1);
           }}
+          variant={"harderOutline"}
           disabled={currentPage === totalPages}
           className={`${
             currentPage === totalPages ? "opacity-50 pointer-events-none" : ""
-          } bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded`}
+          }`}
         >
           Próxima
-        </button>
+        </Button>
       </div>
     </div>
   );

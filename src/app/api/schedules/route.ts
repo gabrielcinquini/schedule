@@ -18,6 +18,15 @@ export async function POST(req: NextRequest) {
 
   const { date, value, userId, patientId, name, lastName } = parsedBody.data;
 
+  // return NextResponse.json({
+  //   date: date,
+  //   start: subMinutes(date, 39),
+  //   end: addMinutes(date, 39),
+  //   data: new Date('2023-11-17'),
+  //   dataHj: new Date()
+  // });
+  
+
   const startDate = subMinutes(date, 39);
   const endDate = addMinutes(date, 39);
 
@@ -48,5 +57,5 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  return NextResponse.json(schedule);
+  return NextResponse.json({schedule, startDate, endDate});
 }

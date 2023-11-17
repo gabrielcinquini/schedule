@@ -13,24 +13,29 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useStore } from "@/store";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { ArrowLeftIcon } from "@radix-ui/react-icons";
+import Link from "next/link";
+import Loader from "@/components/Loader";
 
 export default function page() {
-  const { pending, setPending } = useStore((state) => ({
-    pending: state.pending,
-    setPending: state.setPending,
-  }));
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<ForgotPasswordFormSchemaType>({
+  const form = useForm<ForgotPasswordFormSchemaType>({
     mode: "all",
     resolver: zodResolver(forgotPasswordFormSchema),
   });
 
-  const router = useRouter();
   const { user } = useMe();
 
   if (!user) return <p>Loading...</p>;
@@ -39,14 +44,11 @@ export default function page() {
     data: Omit<ForgotPasswordFormSchemaType, "confirmPassword">
   ) => {
     try {
-      setPending(true);
       data.id = user.id;
       const res = await axios.post("/api/forgotPassword/", data);
       toast.success("Senha alterada com sucesso!");
-      reset();
-      setPending(false);
+      form.reset();
     } catch (err) {
-      setPending(false);
       if (err instanceof AxiosError) {
         toast.error(err.response?.data.message);
       } else {
@@ -58,48 +60,63 @@ export default function page() {
   return (
     <div className="flex flex-col h-screen justify-center items-center">
       <h1>Olá {user.name}</h1>
-      <form
-        className="flex flex-col gap-2 items-center text-gray-800 mt-8"
-        onSubmit={handleSubmit(handleChangePassword)}
-      >
-        <input
-          className="p-2 rounded-xl"
-          type="password"
-          placeholder="Nova Senha"
-          {...register("newPassword")}
-          autoComplete="off"
-        />
-        {errors.newPassword && (
-          <ErrorMessage message={errors.newPassword.message} />
-        )}
-        <input
-          className="p-2 rounded-xl"
-          type="password"
-          placeholder="Confirmar Senha"
-          {...register("confirmPassword")}
-          autoComplete="off"
-        />
-        {errors.confirmPassword && (
-          <ErrorMessage message={errors.confirmPassword.message} />
-        )}
-        <div className="flex flex-col w-full gap-12">
-          {pending ? <input
-            className="text-white px-6 py-2 w-full rounded-xl bg-lime-600 hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
-            type="submit"
-            value="Enviando..."
-            disabled={true}
-          /> : <input
-          className="text-white px-6 py-2 w-full rounded-xl bg-lime-600 hover:cursor-pointer"
-          type="submit"
-        />}
-          <button
-            className="text-white px-6 py-2 w-full rounded-xl bg-slate-700 hover:cursor-pointer"
-            onClick={() => router.push("/home")}
-          >
-            Voltar
-          </button>
-        </div>
-      </form>
+      <Form {...form}>
+        <form
+          className="flex flex-col gap-2 items-center mt-8"
+          onSubmit={form.handleSubmit(handleChangePassword)}
+        >
+          <FormField
+            name="newPassword"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder="Nova Senha"
+                    onChange={field.onChange}
+                    autoComplete="off"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            name="confirmPassword"
+            control={form.control}
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder="Confirmar Senha"
+                    onChange={field.onChange}
+                    autoComplete="off"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="flex flex-col w-full gap-8">
+            <Button
+              type="submit"
+              className="disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={form.formState.isSubmitting}
+            >
+              {form.formState.isSubmitting && <Loader />}
+              Enviar
+            </Button>
+            <Button asChild variant={"secondary"}>
+              <Link href="/home" className="flex gap-2 w-full">
+                <ArrowLeftIcon />
+                Voltar
+              </Link>
+            </Button>
+          </div>
+        </form>
+      </Form>
     </div>
   );
 }
