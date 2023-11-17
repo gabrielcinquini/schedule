@@ -108,7 +108,6 @@ export default function Home() {
                       placeholder="Senha"
                       {...field}
                       onChange={(event) => {
-                        formatUsername(event);
                         field.onChange(event);
                       }}
                       autoComplete="off"
