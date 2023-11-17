@@ -36,7 +36,6 @@ export default function page() {
     resolver: zodResolver(forgotPasswordFormSchema),
   });
 
-  const router = useRouter();
   const { user } = useMe();
 
   if (!user) return <p>Loading...</p>;
