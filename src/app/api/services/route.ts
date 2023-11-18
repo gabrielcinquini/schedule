@@ -11,6 +11,11 @@ export async function POST(req: NextRequest) {
 
   const { name, lastName, date, value, isComplete, userId, patientId } =
     parsedBody.data;
+  if (date > new Date())
+    return NextResponse.json(
+      { message: "Não é possível você já ter realizado essa consulta" },
+      { status: 401 }
+    );
 
   await prismaClient.service.create({
     data: {
