@@ -13,7 +13,7 @@ import {
   registerToScheduleFormSchema,
   UseMeType,
 } from "@/validations/validations";
-import { formatValue, getDate } from "@/utils/utils";
+import { formatValue } from "@/utils/utils";
 import Header from "../Header";
 import { usePatients } from "@/hooks/usePatients";
 import { useStore } from "@/store";

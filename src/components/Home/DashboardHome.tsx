@@ -3,10 +3,11 @@
 import { Trash2, CheckSquare, XSquare } from "lucide-react";
 import { ScheduleType, UseMeType } from "@/validations/validations";
 import { useState } from "react";
-import { getDate } from "@/utils/utils";
-import axios from "axios";
+import { capitalize } from "@/utils/utils";
+import axios, { AxiosError } from "axios";
 import { useStore } from "@/store";
 import { toast } from "sonner";
+import { format } from "date-fns";
 
 import {
   Table,
@@ -18,7 +19,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Button } from "../ui/button";
+import { ptBR } from "date-fns/locale";
 
 export default function DashboardHome({ user }: { user: UseMeType }) {
   const { schedules, setSchedules, pending, setPending } = useStore(
@@ -48,7 +55,7 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
       setPending(false);
     } catch (error) {
       setPending(false);
-      console.error("Error deleting item:", error);
+      throw error;
     }
   };
 
@@ -68,7 +75,7 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
       setPending(false);
     } catch (error) {
       setPending(false);
-      console.error("Error on complete:", error);
+      throw error;
     }
   };
 
@@ -88,7 +95,7 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
       setPending(false);
     } catch (error) {
       setPending(false);
-      console.error("Error on complete:", error);
+      throw error;
     }
   };
 
@@ -98,10 +105,123 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
         <TableCaption>Sua agenda.</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">Nome</TableHead>
-            <TableHead>Data</TableHead>
+            <TableHead>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className="hover:underline">Nome</button>
+                </PopoverTrigger>
+                <PopoverContent className="w-fit">
+                  <div className="grid gap-4">
+                    <Button
+                      onClick={() => {
+                        setSchedules(
+                          [...schedules].sort((a, b) => {
+                            const dateA = new Date(a.date);
+                            const dateB = new Date(b.date);
+                            return dateA.getTime() - dateB.getTime();
+                          })
+                        );
+                      }}
+                    >
+                      Padrão
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setSchedules(
+                          [...schedules].sort((a, b) => {
+                            return a.name.localeCompare(b.name);
+                          })
+                        );
+                      }}
+                    >
+                      Nome Crescente
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setSchedules(
+                          [...schedules].sort((a, b) => {
+                            return b.name.localeCompare(a.name);
+                          })
+                        );
+                      }}
+                    >
+                      Nome Decrescente
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </TableHead>
+            <TableHead>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className="hover:underline">Data</button>
+                </PopoverTrigger>
+                <PopoverContent className="w-fit">
+                  <div className="grid gap-4">
+                    <Button
+                      onClick={() => {
+                        setSchedules(
+                          [...schedules].sort((a, b) => {
+                            const dateA = new Date(a.date);
+                            const dateB = new Date(b.date);
+                            return dateA.getTime() - dateB.getTime();
+                          })
+                        );
+                      }}
+                    >
+                      Data Crescente
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setSchedules(
+                          [...schedules].sort((a, b) => {
+                            const dateA = new Date(a.date);
+                            const dateB = new Date(b.date);
+                            return dateB.getTime() - dateA.getTime();
+                          })
+                        );
+                      }}
+                    >
+                      Data Decrescente
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </TableHead>
             <TableHead>Hora</TableHead>
-            <TableHead>Valor</TableHead>
+            <TableHead>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className="hover:underline">Valor</button>
+                </PopoverTrigger>
+                <PopoverContent className="w-fit">
+                  <div className="grid gap-4">
+                    <Button
+                      onClick={() => {
+                        setSchedules(
+                          [...schedules].sort((a, b) => {
+                            return b.value - a.value;
+                          })
+                        );
+                      }}
+                    >
+                      Valor Crescente
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setSchedules(
+                          [...schedules].sort((a, b) => {
+                            return a.value - b.value;
+                          })
+                        );
+                      }}
+                    >
+                      Valor Decrescente
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </TableHead>
             <TableHead className="text-right"></TableHead>
           </TableRow>
         </TableHeader>
@@ -111,8 +231,15 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
               <TableCell>
                 {schedule.name} {schedule.lastName}
               </TableCell>
-              <TableCell>{getDate(schedule.date).data}</TableCell>
-              <TableCell>{getDate(schedule.date).horario}</TableCell>
+              <TableCell>
+                {format(new Date(schedule.date), "dd/MM/yy")} -{" "}
+                {capitalize(
+                  format(new Date(schedule.date), "EE", { locale: ptBR })
+                )}
+              </TableCell>
+              <TableCell>
+                {format(new Date(schedule.date), "HH:mm", { locale: ptBR })}
+              </TableCell>
               <TableCell>
                 {schedule.value === 0
                   ? "Isento"
@@ -150,11 +277,13 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
                       className="bg-green-600 p-2 rounded-md mr-2 hover:bg-green-800 transition-all duration-200 max-sm:p-1"
                       onClick={() => {
                         toast.promise(handleComplete(schedule), {
-                          error: "Erro ao mover",
+                          loading: "Movendo para as consultas realizadas...",
                           success: () => {
                             return `Movido com sucesso!`;
                           },
-                          loading: "Movendo para as consultas realizadas...",
+                          error: (err) => {
+                            return `${err.response?.data.message}`;
+                          },
                         });
                       }}
                     >
@@ -164,12 +293,14 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
                       className="bg-orange-400 p-2 rounded-md mr-2 hover:bg-orange-500 transition-all duration-200 max-sm:p-1"
                       onClick={() => {
                         toast.promise(handleNotComplete(schedule), {
-                          error: "Erro ao mover",
+                          loading:
+                            "Movendo para as consultas não realizadas...",
                           success: () => {
                             return `Movido com sucesso!`;
                           },
-                          loading:
-                            "Movendo para as consultas não realizadas...",
+                          error: (err) => {
+                            return `${err.response?.data.message}`;
+                          },
                         });
                       }}
                     >
@@ -180,11 +311,11 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
                       className="bg-red-700 p-2 rounded-md hover:bg-red-900 transition-all duration-200 max-sm:p-1"
                       onClick={() => {
                         toast.promise(handleDelete(schedule.id), {
-                          error: "Erro ao deletar",
+                          loading: "Deletando...",
                           success: () => {
                             return `Deletado com sucesso!`;
                           },
-                          loading: "Deletando...",
+                          error: "Erro ao deletar",
                         });
                       }}
                     >

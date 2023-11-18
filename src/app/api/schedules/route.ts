@@ -50,5 +50,5 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  return NextResponse.json({schedule, startDate, endDate});
+  return NextResponse.json({schedule});
 }
