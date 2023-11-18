@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
 import { PatientType } from "@/validations/validations";
 import { useState } from "react";
-import { getDate } from "@/utils/utils";
+import { capitalize } from "@/utils/utils";
 import axios, { AxiosError } from "axios";
 import { useStore } from "@/store";
 
@@ -18,7 +18,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Button } from "../ui/button";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 export default function DashboardCadastro() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -49,11 +56,7 @@ export default function DashboardCadastro() {
       setPending(false);
     } catch (error) {
       setPending(false);
-      if (error instanceof AxiosError && error.response?.status === 400) {
-        toast.error(error.response.data.message);
-      } else {
-        toast.error("Ocorreu um erro ao deletar o paciente");
-      }
+      throw error;
     }
   };
 
@@ -63,7 +66,54 @@ export default function DashboardCadastro() {
         <TableCaption>Seus pacientes.</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">Nome</TableHead>
+            <TableHead>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className="hover:underline">Nome</button>
+                </PopoverTrigger>
+                <PopoverContent className="w-fit">
+                  <div className="grid gap-4">
+                    <Button
+                      onClick={() => {
+                        setPatients(
+                          [...patients].sort((a, b) => {
+                            if (a.lastConsult && b.lastConsult) {
+                              const dateA = new Date(a.lastConsult);
+                              const dateB = new Date(b.lastConsult);
+                              return dateA.getTime() - dateB.getTime();
+                            } else return a.name.localeCompare(b.name);
+                          })
+                        );
+                      }}
+                    >
+                      Padrão
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setPatients(
+                          [...patients].sort((a, b) => {
+                            return a.name.localeCompare(b.name);
+                          })
+                        );
+                      }}
+                    >
+                      Nome Crescente
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setPatients(
+                          [...patients].sort((a, b) => {
+                            return b.name.localeCompare(a.name);
+                          })
+                        );
+                      }}
+                    >
+                      Nome Decrescente
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </TableHead>
             <TableHead>CPF</TableHead>
             <TableHead>Convênio</TableHead>
             <TableHead>Última Consulta</TableHead>
@@ -79,9 +129,22 @@ export default function DashboardCadastro() {
               <TableCell>{patient.cpf}</TableCell>
               <TableCell>{patient.convenio}</TableCell>
               <TableCell>
-                {patient.lastConsult
-                  ? getDate(patient.lastConsult).data
-                  : "Ainda não consultou"}
+                {patient.lastConsult ? (
+                  <>
+                    {format(new Date(patient.lastConsult), "dd/MM/yy")} -{" "}
+                    {capitalize(
+                      format(new Date(patient.lastConsult), "EE", {
+                        locale: ptBR,
+                      })
+                    )}{" "}
+                    às{" "}
+                    {format(new Date(patient.lastConsult), "HH:mm", {
+                      locale: ptBR,
+                    })}
+                  </>
+                ) : (
+                  "Ainda não consultou"
+                )}
               </TableCell>
               <TableCell align="right">
                 {pending ? (

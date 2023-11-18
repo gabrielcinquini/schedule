@@ -41,20 +41,6 @@ export function formatName(event: React.ChangeEvent<HTMLInputElement>) {
   }
 }
 
-export function getDate(date: Date): { data: string; horario: string } {
-  const data = new Date(date);
-  const dia = data.getDate().toString().padStart(2, "0");
-  const mes = (data.getMonth() + 1).toString().padStart(2, "0"); // Janeiro é 0
-  const ano = data.getFullYear().toString().slice(-2);
-  const hora = data.getHours().toString().padStart(2, "0");
-  const minuto = data.getMinutes().toString().padStart(2, "0");
-
-  return {
-    data: `${dia}/${mes}/${ano}`,
-    horario: `${hora}:${minuto}`,
-  };
-}
-
 export function formatValue(event: React.ChangeEvent<HTMLInputElement>) {
   const currentValue = event.target.value.replace(/[^\d]/g, '');
   const currentPos = event.target.selectionStart || 0;
@@ -89,4 +75,8 @@ export function formatCPF(event: React.ChangeEvent<HTMLInputElement>) {
   // Define a nova posição do cursor após a formatação
   const newPos = currentPos + formattedCPF.length - currentValue.length;
   event.target.setSelectionRange(newPos, newPos);
+}
+
+export function capitalize(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
