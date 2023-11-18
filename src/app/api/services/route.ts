@@ -12,18 +12,13 @@ export async function POST(req: NextRequest) {
   const { name, lastName, date, value, isComplete, userId, patientId } =
     parsedBody.data;
 
-  if (isComplete) {
-    await prismaClient.patient.update({
-      where: {
-        id: patientId,
-      },
-      data: {
-        lastConsult: new Date(),
-      },
-    });
-  }
+  // if (date > new Date())
+  //   return NextResponse.json(
+  //     { message: "Não é possível você já ter realizado essa consulta" },
+  //     { status: 401 }
+  //   );
 
-  const service = await prismaClient.service.create({
+  await prismaClient.service.create({
     data: {
       name: name,
       lastName: lastName,
@@ -35,5 +30,28 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  return NextResponse.json({ message: parsedBody.data });
+  if (isComplete) {
+    //atualizar o paciente para a última data de consulta realizada
+    const services = await prismaClient.service.findMany({
+      where: {
+        patientId: patientId,
+      },
+    });
+    const maxDateService = services.reduce((maxService, currentService) => {
+      return currentService.date > maxService.date
+        ? currentService
+        : maxService;
+    }, services[0]);
+
+    await prismaClient.patient.update({
+      where: {
+        id: patientId,
+      },
+      data: {
+        lastConsult: maxDateService.date,
+      },
+    });
+  }
+
+  return NextResponse.json({ message: "Movido para serviços com sucesso" });
 }

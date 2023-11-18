@@ -21,9 +21,8 @@ export default function Header({
   title,
   currentPage,
 }: HeaderType) {
-  const { schedules, setSchedules, services } = useStore((state) => ({
+  const { schedules, services } = useStore((state) => ({
     schedules: state.schedules,
-    setSchedules: state.setSchedules,
     services: state.services,
   }));
   if (!schedules || !services) return <p>Loading...</p>;
@@ -59,11 +58,12 @@ export default function Header({
                 </Button>
               </div>
               <Button
-                className="max-sm:p-1"
+                className="max-sm:p-2 max-sm:h-10 flex gap-1 max-sm:flex-col max-sm:gap-0"
                 variant={"outline"}
                 onClick={() => router.push("/forgot-password")}
               >
-                Alterar Senha
+                <span>Alterar</span>
+                <span>Senha</span>
               </Button>
             </>
           )}
@@ -75,12 +75,15 @@ export default function Header({
           totalNotReceived={calcularTotal(incompleteServices)}
         />
         <div className="flex gap-4 flex-col items-center">
-          {currentPage !== "total" && (
-            <Button className="max-sm:p-1" onClick={openModal}>
-              {title}
-            </Button>
+          {currentPage !== "total" && title && (
+            <>
+              <Button className="flex gap-1 max-sm:flex-col max-sm:gap-0 max-sm:p-2" onClick={openModal}>
+                <span>{title.split(" ")[0]}</span>
+                <span>{title.split(" ")[1]}</span>
+              </Button>
+            </>
           )}
-          <ModeToggle />
+          {currentPage !== "total" && <ModeToggle />}
         </div>
       </div>
     </header>
