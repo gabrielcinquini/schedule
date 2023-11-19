@@ -12,6 +12,12 @@ export async function POST(req: NextRequest) {
   const { name, lastName, date, value, isComplete, userId, patientId } =
     parsedBody.data;
 
+  if (date > new Date() && isComplete)
+    return NextResponse.json(
+      { message: "Não é possível você já ter realizado essa consulta" },
+      { status: 401 }
+    );
+
   await prismaClient.service.create({
     data: {
       name: name,
@@ -25,16 +31,10 @@ export async function POST(req: NextRequest) {
   });
 
   if (isComplete) {
-    if (date > new Date())
-      return NextResponse.json(
-        { message: "Não é possível você já ter realizado essa consulta" },
-        { status: 401 }
-      );
-
-    //atualizar o paciente para a última data de consulta realizada
     const services = await prismaClient.service.findMany({
       where: {
         patientId: patientId,
+        isComplete: isComplete
       },
     });
     const maxDateService = services.reduce((maxService, currentService) => {
@@ -42,7 +42,6 @@ export async function POST(req: NextRequest) {
         ? currentService
         : maxService;
     }, services[0]);
-
     await prismaClient.patient.update({
       where: {
         id: patientId,
