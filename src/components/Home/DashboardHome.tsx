@@ -4,7 +4,7 @@ import { Trash2, CheckSquare, XSquare } from "lucide-react";
 import { ScheduleType, UseMeType } from "@/validations/validations";
 import { useState } from "react";
 import { capitalize } from "@/utils/utils";
-import axios, { AxiosError } from "axios";
+import axios, { Axios, AxiosError } from "axios";
 import { useStore } from "@/store";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -95,6 +95,7 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
       setPending(false);
     } catch (error) {
       setPending(false);
+      console.error(error);
       throw error;
     }
   };
@@ -282,7 +283,9 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
                             return `Movido com sucesso!`;
                           },
                           error: (err) => {
-                            return `${err.response?.data.message}`;
+                            if (err instanceof AxiosError)
+                              return `${err.response?.data.message}`;
+                            else return `Ocorreu um erro inesperado`;
                           },
                         });
                       }}
@@ -299,7 +302,9 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
                             return `Movido com sucesso!`;
                           },
                           error: (err) => {
-                            return `${err.response?.data.message}`;
+                            if (err instanceof AxiosError)
+                              return `${err.response?.data.message}`;
+                            else return `Ocorreu um erro inesperado`;
                           },
                         });
                       }}
@@ -315,7 +320,11 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
                           success: () => {
                             return `Deletado com sucesso!`;
                           },
-                          error: "Erro ao deletar",
+                          error: (err) => {
+                            if (err instanceof AxiosError)
+                              return `${err.response?.data.message}`;
+                            else return `Ocorreu um erro inesperado`;
+                          },
                         });
                       }}
                     >

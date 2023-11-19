@@ -161,11 +161,15 @@ export default function DashboardCadastro() {
                     className="bg-red-700 p-2 rounded-md hover:bg-red-900 transition-all duration-200 max-sm:p-1"
                     onClick={() => {
                       toast.promise(handleDelete(patient.id), {
-                        error: "Erro ao deletar o paciente",
+                        loading: "Deletando...",
                         success: () => {
                           return `Paciente deletado com sucesso!`;
                         },
-                        loading: "Deletando...",
+                        error: (err) => {
+                          if (err instanceof AxiosError)
+                            return `${err.response?.data.message}`;
+                          else return `Ocorreu um erro inesperado`;
+                        },
                       });
                     }}
                   >
