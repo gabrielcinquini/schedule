@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { sign } from "jsonwebtoken";
-import { compareSync, hashSync } from "bcryptjs";
+import { compareSync } from "bcryptjs";
 
 import { prismaClient } from "@/database/client";
 import { loginUserFormSchema } from "@/validations/validations";

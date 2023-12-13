@@ -99,10 +99,6 @@ export type SchedulePostSchema = z.infer<typeof schedulePostSchema>;
 
 export const registerToScheduleFormSchema = z
   .object({
-    // fullName: z
-    //   .string()
-    //   .min(4, "O nome deve conter ao menos 4 caracteres")
-    //   .regex(/^[A-Z][a-z]+ [A-z][a-z]+$/, "Nome inválido(Joe)"),
     date: z.date(),
     time: z.string().regex(/^[0-9]{2}:[0-9]{2}$/, "Formato inválido"),
     value: z.string().refine(
@@ -128,9 +124,6 @@ export const registerToScheduleFormSchema = z
       let [novaHora, novosMinutos] = hora.split(":");
       date.setHours(parseInt(novaHora, 10));
       date.setMinutes(parseInt(novosMinutos, 10));
-      // const selectedDate = new Date(`${data.date} ${data.time}:00`);
-      // console.log(new Date(data.date))
-      // console.log(selectedDate)
       const currentDate = new Date();
       return date >= currentDate;
     },
@@ -203,6 +196,11 @@ export const patientSchema = z.object({
   userId: z.string().uuid(),
 });
 export type PatientType = z.infer<typeof patientSchema>;
+
+export const loginPatientFormSchema = patientSchema.pick({
+  cpf: true,
+})
+export type LoginPatientType = z.infer<typeof loginPatientFormSchema>;
 
 export const registerPatientFormSchema = patientSchema.pick({
   name: true,
