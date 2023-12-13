@@ -6,7 +6,6 @@ import axios, { AxiosError } from "axios";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import ErrorMessage from "../ErrorMessage";
 import { useSchedules } from "@/hooks/useSchedules";
 import {
   RegisterScheduleFormType,

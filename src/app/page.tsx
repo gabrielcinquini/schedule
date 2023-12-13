@@ -11,8 +11,6 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { formatUsername } from "@/utils/utils";
 import { LoginUserType, loginUserFormSchema } from "@/validations/validations";
-import ErrorMessage from "@/components/ErrorMessage";
-import { useStore } from "@/store";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
