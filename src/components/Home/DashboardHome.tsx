@@ -287,11 +287,6 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
                          format(new Date(schedule.date), "EE", { locale: ptBR })
                        )} foi realizada?`}
                       description={`Essa consulta será movida para o seu TOTAL como: 'Consulta Realizada'`}
-                      children={
-                        <Button className="bg-green-600 p-2 rounded-md mr-2 hover:bg-green-800 transition-all duration-200 max-sm:p-1">
-                          <CheckSquare />
-                        </Button>
-                      }
                       fn={() => {
                         toast.promise(handleComplete(schedule), {
                           loading: "Movendo para as consultas realizadas...",
@@ -305,7 +300,11 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
                           },
                         });
                       }}
-                    />
+                    >
+                      <Button className="bg-green-600 p-2 rounded-md mr-2 hover:bg-green-800 transition-all duration-200 max-sm:p-1">
+                        <CheckSquare />
+                      </Button>
+                    </Confirmation>
 
                     <Confirmation
                       text={`A consulta com ${schedule.name} ${
@@ -319,11 +318,6 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
                          format(new Date(schedule.date), "EE", { locale: ptBR })
                        )} foi desmarcada?`}
                       description={`Essa consulta será movida para o seu TOTAL como: 'Consulta Desmarcada'`}
-                      children={
-                        <Button className="bg-orange-400 p-2 rounded-md mr-2 hover:bg-orange-500 transition-all duration-200 max-sm:p-1">
-                          <XSquare />
-                        </Button>
-                      }
                       fn={() => {
                         toast.promise(handleNotComplete(schedule), {
                           loading:
@@ -338,7 +332,11 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
                           },
                         });
                       }}
-                    />
+                    >
+                      <Button className="bg-orange-400 p-2 rounded-md mr-2 hover:bg-orange-500 transition-all duration-200 max-sm:p-1">
+                        <XSquare />
+                      </Button>
+                    </Confirmation>
 
                     <Confirmation
                       text={`Deseja deletar a consulta com ${schedule.name} ${
@@ -353,11 +351,6 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
                        )}?`}
                       description={`Essa ação não pode ser desfeita. Isso deleterá permanentemente esse
                       agendamento dos nossos servidores.`}
-                      children={
-                        <Button className="bg-red-700 p-2 rounded-md hover:bg-red-900 transition-all duration-200 max-sm:p-1">
-                          <Trash2 />
-                        </Button>
-                      }
                       fn={() => {
                         toast.promise(handleDelete(schedule.id), {
                           loading: "Deletando...",
@@ -371,7 +364,13 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
                           },
                         });
                       }}
-                    />
+                    >
+                      <Button
+                        className="bg-red-700 p-2 rounded-md hover:bg-red-900 transition-all duration-200 max-sm:p-1"
+                      >
+                        <Trash2 />
+                      </Button>
+                    </Confirmation>
                   </div>
                 )}
               </TableCell>

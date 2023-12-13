@@ -161,15 +161,6 @@ export default function DashboardCadastro() {
                     text={`Deseja deletar o paciente ${patient.name} ${patient.lastName}?`}
                     description="Essa ação não pode ser desfeita. Isso deleterá permanentemente esse
                     paciente dos nossos servidores."
-                    children={
-                      <Button
-                        variant={"destructive"}
-                        className="bg-red-700 p-2 rounded-md hover:bg-red-900 transition-all duration-200 max-sm:p-1 disabled:cursor-not-allowed disabled:opacity-50"
-                        disabled={false}
-                      >
-                        <Trash2 />
-                      </Button>
-                    }
                     fn={() => {
                       toast.promise(handleDelete(patient.id), {
                         loading: "Deletando...",
@@ -183,7 +174,15 @@ export default function DashboardCadastro() {
                         },
                       });
                     }}
-                  />
+                  >
+                    <Button
+                      variant={"destructive"}
+                      className="bg-red-700 p-2 rounded-md hover:bg-red-900 transition-all duration-200 max-sm:p-1 disabled:cursor-not-allowed disabled:opacity-50"
+                      disabled={false}
+                    >
+                      <Trash2 />
+                    </Button>
+                  </Confirmation>
                 )}
               </TableCell>
             </TableRow>

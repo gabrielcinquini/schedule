@@ -228,9 +228,9 @@ export default function DashBoardTotal({ user }: { user: UseMeType }) {
                   </Button>
                 ) : (
                   <Confirmation
-                    text={`Deseja deletar o registro da consulta com ${service.name} ${
-                      service.lastName
-                    } marcada para às ${format(
+                    text={`Deseja deletar o registro da consulta com ${
+                      service.name
+                    } ${service.lastName} marcada para às ${format(
                       new Date(service.date),
                       "HH:mm",
                       { locale: ptBR }
@@ -240,15 +240,6 @@ export default function DashBoardTotal({ user }: { user: UseMeType }) {
                    )}?`}
                     description="Essa ação não pode ser desfeita. Isso deleterá permanentemente esse
                     registro de consulta dos nossos servidores."
-                    children={
-                      <Button
-                        variant={"destructive"}
-                        className="bg-red-700 p-2 rounded-md hover:bg-red-900 transition-all duration-200 max-sm:p-1"
-                        disabled={false}
-                      >
-                        <Trash2 />
-                      </Button>
-                    }
                     fn={() => {
                       toast.promise(handleDelete(service.id), {
                         error: "Erro ao deletar",
@@ -258,7 +249,15 @@ export default function DashBoardTotal({ user }: { user: UseMeType }) {
                         loading: "Deletando...",
                       });
                     }}
-                  />
+                  >
+                    <Button
+                      variant={"destructive"}
+                      className="bg-red-700 p-2 rounded-md hover:bg-red-900 transition-all duration-200 max-sm:p-1"
+                      disabled={false}
+                    >
+                      <Trash2 />
+                    </Button>
+                  </Confirmation>
                 )}
               </TableCell>
             </TableRow>
