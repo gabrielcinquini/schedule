@@ -47,5 +47,7 @@ export async function POST(req: NextRequest) {
     },
   });
 
+  newPatient.cpf = cpf;
+
   return NextResponse.json(newPatient);
 }

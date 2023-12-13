@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "../ui/button";
 import { ptBR } from "date-fns/locale";
+import Confirmation from "../Confirmation";
 
 export default function DashboardHome({ user }: { user: UseMeType }) {
   const { schedules, setSchedules, pending, setPending } = useStore(
@@ -274,13 +275,23 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
                   </div>
                 ) : (
                   <div className="flex">
-                    <Button
-                      className="bg-green-600 p-2 rounded-md mr-2 hover:bg-green-800 transition-all duration-200 max-sm:p-1"
-                      onClick={() => {
+                    <Confirmation
+                      text={`A consulta com ${schedule.name} ${
+                        schedule.lastName
+                      } marcada para às ${format(
+                        new Date(schedule.date),
+                        "HH:mm",
+                        { locale: ptBR }
+                      )} do dia ${format(new Date(schedule.date), "dd/MM/yy")} -
+                       ${capitalize(
+                         format(new Date(schedule.date), "EE", { locale: ptBR })
+                       )} foi realizada?`}
+                      description={`Essa consulta será movida para o seu TOTAL como: 'Consulta Realizada'`}
+                      fn={() => {
                         toast.promise(handleComplete(schedule), {
                           loading: "Movendo para as consultas realizadas...",
                           success: () => {
-                            return `Movido com sucesso!`;
+                            return `Movido para as consultas realizadas com sucesso!`;
                           },
                           error: (err) => {
                             if (err instanceof AxiosError)
@@ -290,11 +301,24 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
                         });
                       }}
                     >
-                      <CheckSquare />
-                    </Button>
-                    <Button
-                      className="bg-orange-400 p-2 rounded-md mr-2 hover:bg-orange-500 transition-all duration-200 max-sm:p-1"
-                      onClick={() => {
+                      <Button className="bg-green-600 p-2 rounded-md mr-2 hover:bg-green-800 transition-all duration-200 max-sm:p-1">
+                        <CheckSquare />
+                      </Button>
+                    </Confirmation>
+
+                    <Confirmation
+                      text={`A consulta com ${schedule.name} ${
+                        schedule.lastName
+                      } marcada para às ${format(
+                        new Date(schedule.date),
+                        "HH:mm",
+                        { locale: ptBR }
+                      )} do dia ${format(new Date(schedule.date), "dd/MM/yy")} -
+                       ${capitalize(
+                         format(new Date(schedule.date), "EE", { locale: ptBR })
+                       )} foi desmarcada?`}
+                      description={`Essa consulta será movida para o seu TOTAL como: 'Consulta Desmarcada'`}
+                      fn={() => {
                         toast.promise(handleNotComplete(schedule), {
                           loading:
                             "Movendo para as consultas não realizadas...",
@@ -309,12 +333,25 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
                         });
                       }}
                     >
-                      <XSquare />
-                    </Button>
-                    <Button
-                      variant={"destructive"}
-                      className="bg-red-700 p-2 rounded-md hover:bg-red-900 transition-all duration-200 max-sm:p-1"
-                      onClick={() => {
+                      <Button className="bg-orange-400 p-2 rounded-md mr-2 hover:bg-orange-500 transition-all duration-200 max-sm:p-1">
+                        <XSquare />
+                      </Button>
+                    </Confirmation>
+
+                    <Confirmation
+                      text={`Deseja deletar a consulta com ${schedule.name} ${
+                        schedule.lastName
+                      } marcada para às ${format(
+                        new Date(schedule.date),
+                        "HH:mm",
+                        { locale: ptBR }
+                      )} do dia ${format(new Date(schedule.date), "dd/MM/yy")} -
+                       ${capitalize(
+                         format(new Date(schedule.date), "EE", { locale: ptBR })
+                       )}?`}
+                      description={`Essa ação não pode ser desfeita. Isso deleterá permanentemente esse
+                      agendamento dos nossos servidores.`}
+                      fn={() => {
                         toast.promise(handleDelete(schedule.id), {
                           loading: "Deletando...",
                           success: () => {
@@ -328,8 +365,12 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
                         });
                       }}
                     >
-                      <Trash2 />
-                    </Button>
+                      <Button
+                        className="bg-red-700 p-2 rounded-md hover:bg-red-900 transition-all duration-200 max-sm:p-1"
+                      >
+                        <Trash2 />
+                      </Button>
+                    </Confirmation>
                   </div>
                 )}
               </TableCell>

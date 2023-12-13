@@ -2,7 +2,7 @@
 
 import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
-import { PatientType } from "@/validations/validations";
+import { PatientType, schedulePostSchema } from "@/validations/validations";
 import { useState } from "react";
 import { capitalize } from "@/utils/utils";
 import axios, { AxiosError } from "axios";
@@ -26,6 +26,7 @@ import {
 import { Button } from "../ui/button";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import Confirmation from "../Confirmation";
 
 export default function DashboardCadastro() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -156,10 +157,11 @@ export default function DashboardCadastro() {
                     <Trash2 />
                   </Button>
                 ) : (
-                  <Button
-                    variant={"destructive"}
-                    className="bg-red-700 p-2 rounded-md hover:bg-red-900 transition-all duration-200 max-sm:p-1"
-                    onClick={() => {
+                  <Confirmation
+                    text={`Deseja deletar o paciente ${patient.name} ${patient.lastName}?`}
+                    description="Essa ação não pode ser desfeita. Isso deleterá permanentemente esse
+                    paciente dos nossos servidores."
+                    fn={() => {
                       toast.promise(handleDelete(patient.id), {
                         loading: "Deletando...",
                         success: () => {
@@ -173,8 +175,14 @@ export default function DashboardCadastro() {
                       });
                     }}
                   >
-                    <Trash2 />
-                  </Button>
+                    <Button
+                      variant={"destructive"}
+                      className="bg-red-700 p-2 rounded-md hover:bg-red-900 transition-all duration-200 max-sm:p-1 disabled:cursor-not-allowed disabled:opacity-50"
+                      disabled={false}
+                    >
+                      <Trash2 />
+                    </Button>
+                  </Confirmation>
                 )}
               </TableCell>
             </TableRow>
