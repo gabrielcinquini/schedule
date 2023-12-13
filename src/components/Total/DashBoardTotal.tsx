@@ -25,6 +25,7 @@ import {
 import { Button } from "../ui/button";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import Confirmation from "../Confirmation";
 
 export default function DashBoardTotal({ user }: { user: UseMeType }) {
   const { services } = useServices({ user });
@@ -226,10 +227,29 @@ export default function DashBoardTotal({ user }: { user: UseMeType }) {
                     <Trash2 />
                   </Button>
                 ) : (
-                  <Button
-                    variant={"destructive"}
-                    className="bg-red-700 p-2 rounded-md hover:bg-red-900 transition-all duration-200 max-sm:p-1"
-                    onClick={() => {
+                  <Confirmation
+                    text={`Deseja deletar o registro da consulta com ${service.name} ${
+                      service.lastName
+                    } marcada para às ${format(
+                      new Date(service.date),
+                      "HH:mm",
+                      { locale: ptBR }
+                    )} do dia ${format(new Date(service.date), "dd/MM/yy")} -
+                   ${capitalize(
+                     format(new Date(service.date), "EE", { locale: ptBR })
+                   )}?`}
+                    description="Essa ação não pode ser desfeita. Isso deleterá permanentemente esse
+                    registro de consulta dos nossos servidores."
+                    children={
+                      <Button
+                        variant={"destructive"}
+                        className="bg-red-700 p-2 rounded-md hover:bg-red-900 transition-all duration-200 max-sm:p-1"
+                        disabled={false}
+                      >
+                        <Trash2 />
+                      </Button>
+                    }
+                    fn={() => {
                       toast.promise(handleDelete(service.id), {
                         error: "Erro ao deletar",
                         success: () => {
@@ -238,9 +258,7 @@ export default function DashBoardTotal({ user }: { user: UseMeType }) {
                         loading: "Deletando...",
                       });
                     }}
-                  >
-                    <Trash2 />
-                  </Button>
+                  />
                 )}
               </TableCell>
             </TableRow>
