@@ -3,7 +3,7 @@
 import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
 import { PatientType, schedulePostSchema } from "@/validations/validations";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { capitalize } from "@/utils/utils";
 import axios, { AxiosError } from "axios";
 import { useStore } from "@/store";
@@ -27,9 +27,11 @@ import { Button } from "../ui/button";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import Confirmation from "../Confirmation";
+import { Input } from "../ui/input";
 
 export default function DashboardCadastro() {
   const [currentPage, setCurrentPage] = useState(1);
+  const [filter, setFilter] = useState("");
   const { patients, setPatients, pending, setPending } = useStore((state) => ({
     patients: state.patients,
     setPatients: state.setPatients,
@@ -42,8 +44,17 @@ export default function DashboardCadastro() {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
 
+  const filteredPatients = patients.filter((patient) => {
+    const fullName = `${patient.name} ${patient.lastName}`.toLowerCase();
+    return (
+      fullName.includes(filter.toLowerCase()) || patient.cpf.includes(filter)
+    );
+  });
+
   const totalPages =
-    patients.length > 0 ? Math.ceil(patients.length / itemsPerPage) : 1;
+    filteredPatients.length > 0
+      ? Math.ceil(filteredPatients.length / itemsPerPage)
+      : 1;
 
   const handleDelete = async (id: string) => {
     try {
@@ -63,6 +74,16 @@ export default function DashboardCadastro() {
 
   return (
     <div>
+      <Input
+        type="text"
+        placeholder="Filtrar por nome ou CPF"
+        value={filter}
+        onChange={(e) => {
+          setCurrentPage(1);
+          setFilter(e.target.value);
+        }}
+        className="mt-2 w-1/2 max-sm:w-full"
+      />
       <Table>
         <TableCaption>Seus pacientes.</TableCaption>
         <TableHeader>
@@ -122,71 +143,72 @@ export default function DashboardCadastro() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {patients.slice(startIndex, endIndex).map((patient, index) => (
-            <TableRow key={patient.id}>
-              <TableCell>
-                {patient.name} {patient.lastName}
-              </TableCell>
-              <TableCell>{patient.cpf}</TableCell>
-              <TableCell>{patient.convenio}</TableCell>
-              <TableCell>
-                {patient.lastConsult ? (
-                  <>
-                    {format(new Date(patient.lastConsult), "dd/MM/yy")} -{" "}
-                    {capitalize(
-                      format(new Date(patient.lastConsult), "EE", {
+          {filteredPatients
+            .slice(startIndex, endIndex)
+            .map((patient, index) => (
+              <TableRow key={patient.id}>
+                <TableCell>
+                  {patient.name} {patient.lastName}
+                </TableCell>
+                <TableCell>{patient.cpf}</TableCell>
+                <TableCell>{patient.convenio}</TableCell>
+                <TableCell>
+                  {patient.lastConsult ? (
+                    <>
+                      {format(new Date(patient.lastConsult), "dd/MM/yy")} -{" "}
+                      {capitalize(
+                        format(new Date(patient.lastConsult), "EE", {
+                          locale: ptBR,
+                        })
+                      )}{" "}
+                      às{" "}
+                      {format(new Date(patient.lastConsult), "HH:mm", {
                         locale: ptBR,
-                      })
-                    )}{" "}
-                    às{" "}
-                    {format(new Date(patient.lastConsult), "HH:mm", {
-                      locale: ptBR,
-                    })}
-                  </>
-                ) : (
-                  "Ainda não consultou"
-                )}
-              </TableCell>
-              <TableCell align="right">
-                {pending ? (
-                  <Button
-                    variant={"destructive"}
-                    className="bg-red-700 p-2 rounded-md hover:bg-red-900 transition-all duration-200 max-sm:p-1 disabled:cursor-not-allowed disabled:opacity-50"
-                    disabled={true}
-                  >
-                    <Trash2 />
-                  </Button>
-                ) : (
-                  <Confirmation
-                    text={`Deseja deletar o paciente ${patient.name} ${patient.lastName}?`}
-                    description="Essa ação não pode ser desfeita. Isso deleterá permanentemente esse
-                    paciente dos nossos servidores."
-                    fn={() => {
-                      toast.promise(handleDelete(patient.id), {
-                        loading: "Deletando...",
-                        success: () => {
-                          return `Paciente deletado com sucesso!`;
-                        },
-                        error: (err) => {
-                          if (err instanceof AxiosError)
-                            return `${err.response?.data.message}`;
-                          else return `Ocorreu um erro inesperado`;
-                        },
-                      });
-                    }}
-                  >
+                      })}
+                    </>
+                  ) : (
+                    "Ainda não consultou"
+                  )}
+                </TableCell>
+                <TableCell align="right">
+                  {pending ? (
                     <Button
                       variant={"destructive"}
                       className="bg-red-700 p-2 rounded-md hover:bg-red-900 transition-all duration-200 max-sm:p-1 disabled:cursor-not-allowed disabled:opacity-50"
-                      disabled={false}
+                      disabled={true}
                     >
                       <Trash2 />
                     </Button>
-                  </Confirmation>
-                )}
-              </TableCell>
-            </TableRow>
-          ))}
+                  ) : (
+                    <Confirmation
+                      text={`Deseja deletar o paciente ${patient.name} ${patient.lastName}?`}
+                      description="Essa ação não pode ser desfeita. Isso deleterá permanentemente esse paciente dos nossos servidores."
+                      fn={() => {
+                        toast.promise(handleDelete(patient.id), {
+                          loading: "Deletando...",
+                          success: () => {
+                            return `Paciente deletado com sucesso!`;
+                          },
+                          error: (err) => {
+                            if (err instanceof AxiosError)
+                              return `${err.response?.data.message}`;
+                            else return `Ocorreu um erro inesperado`;
+                          },
+                        });
+                      }}
+                    >
+                      <Button
+                        variant={"destructive"}
+                        className="bg-red-700 p-2 rounded-md hover:bg-red-900 transition-all duration-200 max-sm:p-1 disabled:cursor-not-allowed disabled:opacity-50"
+                        disabled={false}
+                      >
+                        <Trash2 />
+                      </Button>
+                    </Confirmation>
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
       <div className="flex gap-2 px-8">
@@ -195,7 +217,7 @@ export default function DashboardCadastro() {
             setCurrentPage(currentPage - 1);
           }}
           variant={"harderOutline"}
-          disabled={currentPage === 1}
+          disabled={currentPage <= 1}
           className={`${
             currentPage === 1 ? "opacity-50 pointer-events-none" : ""
           }`}
@@ -210,7 +232,7 @@ export default function DashboardCadastro() {
             setCurrentPage(currentPage + 1);
           }}
           variant={"harderOutline"}
-          disabled={currentPage === totalPages}
+          disabled={currentPage >= totalPages}
           className={`${
             currentPage === totalPages ? "opacity-50 pointer-events-none" : ""
           }`}

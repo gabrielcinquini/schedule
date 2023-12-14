@@ -27,8 +27,10 @@ import {
 import { Button } from "../ui/button";
 import { ptBR } from "date-fns/locale";
 import Confirmation from "../Confirmation";
+import { Input } from "../ui/input";
 
 export default function DashboardHome({ user }: { user: UseMeType }) {
+  const [filter, setFilter] = useState("");
   const { schedules, setSchedules, pending, setPending } = useStore(
     (state) => ({
       schedules: state.schedules,
@@ -44,8 +46,26 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
 
+  const filteredSchedules = schedules.filter((schedule) => {
+    const fullName = `${schedule.name} ${schedule.lastName}`.toLowerCase();
+    const value = new Intl.NumberFormat("pt-br", {
+      style: "currency",
+      currency: "BRL",
+    }).format(schedule.value);
+    const formattedDate = format(new Date(schedule.date), "dd/MM/yy").toLowerCase();
+    const formattedDay = capitalize(format(new Date(schedule.date), "EEEE", { locale: ptBR })).toLowerCase();
+    return (
+      fullName.includes(filter.toLowerCase()) ||
+      value.toString().includes(filter) ||
+      formattedDate.includes(filter.toLocaleLowerCase()) ||
+      formattedDay.includes(filter.toLocaleLowerCase())
+    );
+  });
+
   const totalPages =
-    schedules.length > 0 ? Math.ceil(schedules.length / itemsPerPage) : 1;
+    filteredSchedules.length > 0
+      ? Math.ceil(filteredSchedules.length / itemsPerPage)
+      : 1;
 
   const handleDelete = async (id: string) => {
     try {
@@ -103,6 +123,16 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
 
   return (
     <div>
+      <Input
+        type="text"
+        placeholder="Filtrar por nome/valor/data/dia"
+        value={filter}
+        onChange={(e) => {
+          setCurrentPage(1);
+          setFilter(e.target.value);
+        }}
+        className="mt-2 w-1/2 max-sm:w-full"
+      />
       <Table>
         <TableCaption>Sua agenda.</TableCaption>
         <TableHeader>
@@ -228,154 +258,163 @@ export default function DashboardHome({ user }: { user: UseMeType }) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {schedules.slice(startIndex, endIndex).map((schedule, index) => (
-            <TableRow key={schedule.id}>
-              <TableCell>
-                {schedule.name} {schedule.lastName}
-              </TableCell>
-              <TableCell>
-                {format(new Date(schedule.date), "dd/MM/yy")} -{" "}
-                {capitalize(
-                  format(new Date(schedule.date), "EE", { locale: ptBR })
-                )}
-              </TableCell>
-              <TableCell>
-                {format(new Date(schedule.date), "HH:mm", { locale: ptBR })}
-              </TableCell>
-              <TableCell>
-                {schedule.value === 0
-                  ? "Isento"
-                  : new Intl.NumberFormat("pt-br", {
-                      style: "currency",
-                      currency: "BRL",
-                    }).format(schedule.value)}
-              </TableCell>
-              <TableCell align="right">
-                {pending ? (
-                  <div className="flex">
-                    <Button
-                      className="bg-green-600 p-2 rounded-md mr-2 hover:bg-green-800 transition-all duration-200 max-sm:p-1 disabled:cursor-not-allowed disabled:opacity-50"
-                      disabled={true}
-                    >
-                      <CheckSquare />
-                    </Button>
-                    <Button
-                      className="bg-orange-400 p-2 rounded-md mr-2 hover:bg-orange-500 transition-all duration-200 max-sm:p-1 disabled:cursor-not-allowed disabled:opacity-50"
-                      disabled={true}
-                    >
-                      <XSquare />
-                    </Button>
-                    <Button
-                      variant={"destructive"}
-                      className="bg-red-700 p-2 rounded-md hover:bg-red-900 transition-all duration-200 max-sm:p-1 disabled:cursor-not-allowed disabled:opacity-50"
-                      disabled={true}
-                    >
-                      <Trash2 />
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="flex">
-                    <Confirmation
-                      text={`A consulta com ${schedule.name} ${
-                        schedule.lastName
-                      } marcada para às ${format(
-                        new Date(schedule.date),
-                        "HH:mm",
-                        { locale: ptBR }
-                      )} do dia ${format(new Date(schedule.date), "dd/MM/yy")} -
-                       ${capitalize(
-                         format(new Date(schedule.date), "EE", { locale: ptBR })
-                       )} foi realizada?`}
-                      description={`Essa consulta será movida para o seu TOTAL como: 'Consulta Realizada'`}
-                      fn={() => {
-                        toast.promise(handleComplete(schedule), {
-                          loading: "Movendo para as consultas realizadas...",
-                          success: () => {
-                            return `Movido para as consultas realizadas com sucesso!`;
-                          },
-                          error: (err) => {
-                            if (err instanceof AxiosError)
-                              return `${err.response?.data.message}`;
-                            else return `Ocorreu um erro inesperado`;
-                          },
-                        });
-                      }}
-                    >
-                      <Button className="bg-green-600 p-2 rounded-md mr-2 hover:bg-green-800 transition-all duration-200 max-sm:p-1">
+          {filteredSchedules
+            .slice(startIndex, endIndex)
+            .map((schedule, index) => (
+              <TableRow key={schedule.id}>
+                <TableCell>
+                  {schedule.name} {schedule.lastName}
+                </TableCell>
+                <TableCell>
+                  {format(new Date(schedule.date), "dd/MM/yy")} -{" "}
+                  {capitalize(
+                    format(new Date(schedule.date), "EE", { locale: ptBR })
+                  )}
+                </TableCell>
+                <TableCell>
+                  {format(new Date(schedule.date), "HH:mm", { locale: ptBR })}
+                </TableCell>
+                <TableCell>
+                  {schedule.value === 0
+                    ? "Isento"
+                    : new Intl.NumberFormat("pt-br", {
+                        style: "currency",
+                        currency: "BRL",
+                      }).format(schedule.value)}
+                </TableCell>
+                <TableCell align="right">
+                  {pending ? (
+                    <div className="flex">
+                      <Button
+                        className="bg-green-600 p-2 rounded-md mr-2 hover:bg-green-800 transition-all duration-200 max-sm:p-1 disabled:cursor-not-allowed disabled:opacity-50"
+                        disabled={true}
+                      >
                         <CheckSquare />
                       </Button>
-                    </Confirmation>
-
-                    <Confirmation
-                      text={`A consulta com ${schedule.name} ${
-                        schedule.lastName
-                      } marcada para às ${format(
-                        new Date(schedule.date),
-                        "HH:mm",
-                        { locale: ptBR }
-                      )} do dia ${format(new Date(schedule.date), "dd/MM/yy")} -
-                       ${capitalize(
-                         format(new Date(schedule.date), "EE", { locale: ptBR })
-                       )} foi desmarcada?`}
-                      description={`Essa consulta será movida para o seu TOTAL como: 'Consulta Desmarcada'`}
-                      fn={() => {
-                        toast.promise(handleNotComplete(schedule), {
-                          loading:
-                            "Movendo para as consultas não realizadas...",
-                          success: () => {
-                            return `Movido com sucesso!`;
-                          },
-                          error: (err) => {
-                            if (err instanceof AxiosError)
-                              return `${err.response?.data.message}`;
-                            else return `Ocorreu um erro inesperado`;
-                          },
-                        });
-                      }}
-                    >
-                      <Button className="bg-orange-400 p-2 rounded-md mr-2 hover:bg-orange-500 transition-all duration-200 max-sm:p-1">
+                      <Button
+                        className="bg-orange-400 p-2 rounded-md mr-2 hover:bg-orange-500 transition-all duration-200 max-sm:p-1 disabled:cursor-not-allowed disabled:opacity-50"
+                        disabled={true}
+                      >
                         <XSquare />
                       </Button>
-                    </Confirmation>
-
-                    <Confirmation
-                      text={`Deseja deletar a consulta com ${schedule.name} ${
-                        schedule.lastName
-                      } marcada para às ${format(
-                        new Date(schedule.date),
-                        "HH:mm",
-                        { locale: ptBR }
-                      )} do dia ${format(new Date(schedule.date), "dd/MM/yy")} -
-                       ${capitalize(
-                         format(new Date(schedule.date), "EE", { locale: ptBR })
-                       )}?`}
-                      description={`Essa ação não pode ser desfeita. Isso deleterá permanentemente esse
-                      agendamento dos nossos servidores.`}
-                      fn={() => {
-                        toast.promise(handleDelete(schedule.id), {
-                          loading: "Deletando...",
-                          success: () => {
-                            return `Deletado com sucesso!`;
-                          },
-                          error: (err) => {
-                            if (err instanceof AxiosError)
-                              return `${err.response?.data.message}`;
-                            else return `Ocorreu um erro inesperado`;
-                          },
-                        });
-                      }}
-                    >
                       <Button
-                        className="bg-red-700 p-2 rounded-md hover:bg-red-900 transition-all duration-200 max-sm:p-1"
+                        variant={"destructive"}
+                        className="bg-red-700 p-2 rounded-md hover:bg-red-900 transition-all duration-200 max-sm:p-1 disabled:cursor-not-allowed disabled:opacity-50"
+                        disabled={true}
                       >
                         <Trash2 />
                       </Button>
-                    </Confirmation>
-                  </div>
-                )}
-              </TableCell>
-            </TableRow>
-          ))}
+                    </div>
+                  ) : (
+                    <div className="flex">
+                      <Confirmation
+                        text={`A consulta com ${schedule.name} ${
+                          schedule.lastName
+                        } marcada para às ${format(
+                          new Date(schedule.date),
+                          "HH:mm",
+                          { locale: ptBR }
+                        )} do dia ${format(
+                          new Date(schedule.date),
+                          "dd/MM/yy"
+                        )} -
+                       ${capitalize(
+                         format(new Date(schedule.date), "EE", { locale: ptBR })
+                       )} foi realizada?`}
+                        description={`Essa consulta será movida para o seu TOTAL como: 'Consulta Realizada'`}
+                        fn={() => {
+                          toast.promise(handleComplete(schedule), {
+                            loading: "Movendo para as consultas realizadas...",
+                            success: () => {
+                              return `Movido para as consultas realizadas com sucesso!`;
+                            },
+                            error: (err) => {
+                              if (err instanceof AxiosError)
+                                return `${err.response?.data.message}`;
+                              else return `Ocorreu um erro inesperado`;
+                            },
+                          });
+                        }}
+                      >
+                        <Button className="bg-green-600 p-2 rounded-md mr-2 hover:bg-green-800 transition-all duration-200 max-sm:p-1">
+                          <CheckSquare />
+                        </Button>
+                      </Confirmation>
+
+                      <Confirmation
+                        text={`A consulta com ${schedule.name} ${
+                          schedule.lastName
+                        } marcada para às ${format(
+                          new Date(schedule.date),
+                          "HH:mm",
+                          { locale: ptBR }
+                        )} do dia ${format(
+                          new Date(schedule.date),
+                          "dd/MM/yy"
+                        )} -
+                       ${capitalize(
+                         format(new Date(schedule.date), "EE", { locale: ptBR })
+                       )} foi desmarcada?`}
+                        description={`Essa consulta será movida para o seu TOTAL como: 'Consulta Desmarcada'`}
+                        fn={() => {
+                          toast.promise(handleNotComplete(schedule), {
+                            loading:
+                              "Movendo para as consultas não realizadas...",
+                            success: () => {
+                              return `Movido com sucesso!`;
+                            },
+                            error: (err) => {
+                              if (err instanceof AxiosError)
+                                return `${err.response?.data.message}`;
+                              else return `Ocorreu um erro inesperado`;
+                            },
+                          });
+                        }}
+                      >
+                        <Button className="bg-orange-400 p-2 rounded-md mr-2 hover:bg-orange-500 transition-all duration-200 max-sm:p-1">
+                          <XSquare />
+                        </Button>
+                      </Confirmation>
+
+                      <Confirmation
+                        text={`Deseja deletar a consulta com ${schedule.name} ${
+                          schedule.lastName
+                        } marcada para às ${format(
+                          new Date(schedule.date),
+                          "HH:mm",
+                          { locale: ptBR }
+                        )} do dia ${format(
+                          new Date(schedule.date),
+                          "dd/MM/yy"
+                        )} -
+                       ${capitalize(
+                         format(new Date(schedule.date), "EE", { locale: ptBR })
+                       )}?`}
+                        description={`Essa ação não pode ser desfeita. Isso deleterá permanentemente esse
+                      agendamento dos nossos servidores.`}
+                        fn={() => {
+                          toast.promise(handleDelete(schedule.id), {
+                            loading: "Deletando...",
+                            success: () => {
+                              return `Deletado com sucesso!`;
+                            },
+                            error: (err) => {
+                              if (err instanceof AxiosError)
+                                return `${err.response?.data.message}`;
+                              else return `Ocorreu um erro inesperado`;
+                            },
+                          });
+                        }}
+                      >
+                        <Button className="bg-red-700 p-2 rounded-md hover:bg-red-900 transition-all duration-200 max-sm:p-1">
+                          <Trash2 />
+                        </Button>
+                      </Confirmation>
+                    </div>
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
       <div className="flex gap-2 px-8">
