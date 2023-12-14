@@ -26,9 +26,11 @@ import { Button } from "../ui/button";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import Confirmation from "../Confirmation";
+import { Input } from "../ui/input";
 
 export default function DashBoardTotal({ user }: { user: UseMeType }) {
   const { services } = useServices({ user });
+  const [filter, setFilter] = useState("");
   const { setServices, pending, setPending } = useStore((state) => ({
     services: state.services,
     setServices: state.setServices,
@@ -43,8 +45,26 @@ export default function DashBoardTotal({ user }: { user: UseMeType }) {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
 
+  const filteredSchedules = services.filter((service) => {
+    const fullName = `${service.name} ${service.lastName}`.toLowerCase();
+    const value = new Intl.NumberFormat("pt-br", {
+      style: "currency",
+      currency: "BRL",
+    }).format(service.value);
+    const formattedDate = format(new Date(service.date), "dd/MM/yy").toLowerCase();
+    const formattedDay = capitalize(format(new Date(service.date), "EEEE", { locale: ptBR })).toLowerCase();
+    return (
+      fullName.includes(filter.toLowerCase()) ||
+      value.toString().includes(filter) ||
+      formattedDate.includes(filter.toLocaleLowerCase()) ||
+      formattedDay.includes(filter.toLocaleLowerCase())
+    );
+  });
+
   const totalPages =
-    services.length > 0 ? Math.ceil(services.length / itemsPerPage) : 1;
+    filteredSchedules.length > 0
+      ? Math.ceil(filteredSchedules.length / itemsPerPage)
+      : 1;
 
   const handleDelete = async (id: string) => {
     try {
@@ -61,6 +81,16 @@ export default function DashBoardTotal({ user }: { user: UseMeType }) {
 
   return (
     <div>
+      <Input
+        type="text"
+        placeholder="Filtrar por nome/valor/data/dia"
+        value={filter}
+        onChange={(e) => {
+          setCurrentPage(1);
+          setFilter(e.target.value);
+        }}
+        className="mt-2 w-1/2 max-sm:w-full"
+      />
       <Table>
         <TableCaption>Sua lista de serviços.</TableCaption>
         <TableHeader>
@@ -186,7 +216,7 @@ export default function DashBoardTotal({ user }: { user: UseMeType }) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {services.slice(startIndex, endIndex).map((service, index) => (
+          {filteredSchedules.slice(startIndex, endIndex).map((service, index) => (
             <TableRow
               key={service.id}
               className={
