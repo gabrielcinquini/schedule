@@ -10,7 +10,6 @@ import {
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useStore } from "@/store";
 import ModeToggle from "@/components/ui/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,15 +18,15 @@ import { ArrowLeftIcon } from "@radix-ui/react-icons";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { formatName, formatUsername } from "@/utils/utils";
 import Link from "next/link";
 import Loader from "@/components/Loader";
+import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
 
 export default function Home() {
   const form = useForm<RegisterUserType>({
@@ -35,7 +34,13 @@ export default function Home() {
     resolver: zodResolver(registerUserFormSchema),
   });
 
+  const [visibility, setVisibility] = useState(false)
+  
   const router = useRouter();
+  
+  const handleChangeVisibility = () => {
+    setVisibility((currentState) => !currentState)
+  }
 
   const handleRegister = async (
     user: Omit<RegisterUserType, "confirmPassword">
@@ -125,23 +130,26 @@ export default function Home() {
               </FormItem>
             )}
           />
-          <FormField
-            name="password"
-            control={form.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    type="password"
-                    placeholder="Senha"
-                    onChange={field.onChange}
-                    autoComplete="off"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <div className="relative">
+              <FormField
+                name="password"
+                control={form.control}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                        <Input 
+                          type={visibility ? 'text' : 'password'}
+                          placeholder="Senha"
+                          onChange={field.onChange}
+                          autoComplete="off"
+                        />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <button type="button" onClick={handleChangeVisibility} className="absolute top-2 right-2">{visibility ? <Eye /> : <EyeOff />}</button>
+            </div>
           <FormField
             name="confirmPassword"
             control={form.control}

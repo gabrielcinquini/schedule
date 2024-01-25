@@ -21,18 +21,20 @@ import Loader from "@/components/Loader";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
 
 export default function Home() {
   const form = useForm<LoginUserType>({
     mode: "onChange",
     resolver: zodResolver(loginUserFormSchema),
   });
+
+  const [visibility, setVisibility] = useState(false)
 
   const router = useRouter();
 
@@ -58,6 +60,10 @@ export default function Home() {
       }
     }
   };
+
+  const handleChangeVisibility = () => {
+    setVisibility((currentState) => !currentState)
+  }
 
   return (
     <div className="flex h-screen justify-center items-center">
@@ -93,29 +99,30 @@ export default function Home() {
               )}
             />
           </div>
-          <div>
             <Label htmlFor="password">Senha</Label>
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Senha"
-                      {...field}
-                      onChange={(event) => {
-                        field.onChange(event);
-                      }}
-                      autoComplete="off"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+            <div className="relative">
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                        <Input
+                          type={visibility ? 'text' : 'password'}
+                          placeholder="Senha"
+                          {...field}
+                          onChange={(event) => {
+                            field.onChange(event);
+                          }}
+                          autoComplete="off"
+                        />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <button type="button" onClick={handleChangeVisibility} className="absolute top-2 right-2">{visibility ? <Eye /> : <EyeOff />}</button>
+            </div>
           <div className="flex w-full justify-between flex-col gap-8">
             <Button
               className="disabled:cursor-not-allowed disabled:opacity-50"
