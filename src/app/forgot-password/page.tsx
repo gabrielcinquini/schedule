@@ -7,26 +7,23 @@ import {
 } from "@/validations/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios, { AxiosError } from "axios";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { useStore } from "@/store";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import Loader from "@/components/Loader";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function page() {
 
@@ -35,9 +32,15 @@ export default function page() {
     resolver: zodResolver(forgotPasswordFormSchema),
   });
 
-  const { user } = useMe();
+  const [visibility, setVisibility] = useState(false)
 
+  const { user } = useMe();
+  
   if (!user) return <p>Loading...</p>;
+  
+  const handleChangeVisibility = () => {
+    setVisibility((currentState) => !currentState)
+  }
 
   const handleChangePassword = async (
     data: Omit<ForgotPasswordFormSchemaType, "confirmPassword">
@@ -64,23 +67,26 @@ export default function page() {
           className="flex flex-col gap-2 items-center mt-8"
           onSubmit={form.handleSubmit(handleChangePassword)}
         >
-          <FormField
-            name="newPassword"
-            control={form.control}
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    type="password"
-                    placeholder="Nova Senha"
-                    onChange={field.onChange}
-                    autoComplete="off"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="relative">
+            <FormField
+              name="newPassword"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                      <Input
+                        type={visibility ? 'text' : 'password'}
+                        placeholder="Nova Senha"
+                        onChange={field.onChange}
+                        autoComplete="off"
+                      />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <button type="button" onClick={handleChangeVisibility} className="absolute top-2 right-2">{visibility ? <Eye /> : <EyeOff />}</button>
+          </div>
           <FormField
             name="confirmPassword"
             control={form.control}

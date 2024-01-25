@@ -1,6 +1,5 @@
 declare namespace NodeJS {
-  export interface ProcessEnv {
+  interface ProcessEnv {
     C_KEY: string;
-    IV_KEY: string;
   }
 }
