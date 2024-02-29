@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ message: "Invalid User" }, { status: 401 });
   }
   try {
-    const { sub: userId } = verify(token, "SUPER_SECRET") as unknown as {
+    const { sub: userId } = verify(token, process.env.JWT_SECRET) as unknown as {
       sub: string;
     };
     if (!userId) {
