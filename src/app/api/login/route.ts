@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const accessToken = sign({ sub: user.id }, "SUPER_SECRET", {
+  const accessToken = sign({ sub: user.id }, process.env.JWT_SECRET, {
     expiresIn: "1d",
   });
 
