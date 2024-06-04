@@ -1,7 +1,8 @@
 import { ScheduleType, ServiceSchemaType } from "@/validations/validations";
+import { QueryClient } from "@tanstack/react-query";
 
-export function calcularTotal(items: ScheduleType[] | ServiceSchemaType[]) {
-  const totalQuantidades = items.reduce((total, item) => {
+export function calcularTotal(items?: ScheduleType[] | ServiceSchemaType[]) {
+  const totalQuantidades = items?.reduce((total, item) => {
     const quantidade = parseFloat(item.value.toString());
 
     if (!isNaN(quantidade)) {
@@ -57,26 +58,19 @@ export function formatValue(event: React.ChangeEvent<HTMLInputElement>) {
   event.target.setSelectionRange(newPos, newPos);
 }
 
-export function formatCPF(event: React.ChangeEvent<HTMLInputElement>) {
-  const currentValue = event.target.value.replace(/[^\d]/g, '');
-  const currentPos = event.target.selectionStart || 0;
+export const getInitials = (name?: string | null) => {
+  const initials = name && name
+    .split(' ')
+    .map((word) => word.charAt(0))
+    .join('');
 
-  const formattedCPF = currentValue
-    .replace(/^(\d{3})(\d{1,3})?(\d{1,3})?(\d{1,2})?$/, (_, p1, p2, p3, p4) => {
-      let result = p1;
-      if (p2) result += `.${p2}`;
-      if (p3) result += `.${p3}`;
-      if (p4) result += `-${p4}`;
-      return result;
-    });
-
-  event.target.value = formattedCPF;
-
-  // Define a nova posição do cursor após a formatação
-  const newPos = currentPos + formattedCPF.length - currentValue.length;
-  event.target.setSelectionRange(newPos, newPos);
+  return initials;
 }
 
 export function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+export const revalidateQueryKey = (paths: string[], queryClient: QueryClient) => {
+  paths.map((p) => queryClient.invalidateQueries({ queryKey: [p] }))
 }

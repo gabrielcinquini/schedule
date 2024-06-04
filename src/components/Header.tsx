@@ -10,14 +10,12 @@ import ModeToggle from "./ui/mode-toggle";
 
 type HeaderType = {
   user: UseMeType;
-  openModal?: () => void;
   title?: string;
   currentPage: string;
 };
 
 export default function Header({
   user,
-  openModal,
   title,
   currentPage,
 }: HeaderType) {
@@ -44,7 +42,6 @@ export default function Header({
           {currentPage !== "total" && title && (
             <Button
               className="max-sm:gap-0 w-fit max-sm:p-2"
-              onClick={openModal}
             >
               {title}
             </Button>

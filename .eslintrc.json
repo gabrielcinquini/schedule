@@ -1,7 +1,7 @@
 {
-  "extends": "next/core-web-vitals",
-  "rules": {
-    "react-hooks/rules-of-hooks": "off",
-    "react-hooks/exhaustive-deps": "off"
-  }
+  "extends": [
+    "@rocketseat/eslint-config/next", 
+    "next/core-web-vitals"
+  ],
+  "plugins": ["simple-import-sort"]
 }
