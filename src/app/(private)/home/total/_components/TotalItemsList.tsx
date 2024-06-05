@@ -14,15 +14,9 @@ import { ScheduleType } from '@/validations/validations'
 
 interface TotalItemsListProps {
   totalItems?: ScheduleType[]
-  startIndex: number
-  endIndex: number
 }
 
-export function TotalItemsList({
-  totalItems,
-  startIndex,
-  endIndex,
-}: TotalItemsListProps) {
+export function TotalItemsList({ totalItems }: TotalItemsListProps) {
   const { mutateAsync: onDeleteSchedule, isPending } = useDeleteSchedule()
 
   const handleDelete = async (id: string) => {
@@ -31,7 +25,7 @@ export function TotalItemsList({
 
   return (
     <>
-      {totalItems?.slice(startIndex, endIndex).map((service) => (
+      {totalItems?.map((service) => (
         <TableRow
           key={service.id}
           className={clsx(

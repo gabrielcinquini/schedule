@@ -5,6 +5,7 @@ import { getServerSessionApp } from '@/lib'
 import { getInitials } from '@/utils/utils'
 
 import { DropdownMenu, DropdownMenuTrigger } from '../dropdown-menu'
+import ModeToggle from '../mode-toggle'
 import { HeaderDropdownContent } from './HeaderDropdownContent'
 import { NavList } from './NavList'
 
@@ -15,7 +16,7 @@ export async function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 p-2 backdrop-blur">
       <div className="container flex items-center justify-between">
         <NavList />
-        <div>
+        <div className="flex gap-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button>
@@ -29,6 +30,7 @@ export async function Header() {
             </DropdownMenuTrigger>
             <HeaderDropdownContent />
           </DropdownMenu>
+          <ModeToggle />
         </div>
       </div>
     </header>

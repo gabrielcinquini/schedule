@@ -14,15 +14,9 @@ import { ScheduleType } from '@/validations/validations'
 
 interface PatientsListProps {
   schedules?: ScheduleType[]
-  startIndex: number
-  endIndex: number
 }
 
-export function SchedulesList({
-  schedules,
-  startIndex,
-  endIndex,
-}: PatientsListProps) {
+export function SchedulesList({ schedules }: PatientsListProps) {
   const { mutateAsync: onDeleteSchedule, isPending } = useDeleteSchedule()
   const { mutateAsync: onChangeScheduleStatus } = useChangeScheduleStatus()
 
@@ -48,7 +42,7 @@ export function SchedulesList({
 
   return (
     <>
-      {schedules?.slice(startIndex, endIndex).map((schedule) => (
+      {schedules?.map((schedule) => (
         <TableRow key={schedule.id}>
           <TableCell>
             {schedule.name} {schedule.lastName}

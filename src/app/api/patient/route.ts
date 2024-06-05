@@ -67,7 +67,8 @@ export async function POST(req: NextRequest) {
 
   const patients = await prismaClient.patient.findMany({
     where: {
-      userId: userFromEmail?.id,
+      name,
+      lastName,
     },
   })
 
@@ -78,7 +79,7 @@ export async function POST(req: NextRequest) {
   if (patientRegistered) {
     return NextResponse.json(
       { message: 'Paciente já cadastrado' },
-      { status: 404 },
+      { status: 400 },
     )
   }
 

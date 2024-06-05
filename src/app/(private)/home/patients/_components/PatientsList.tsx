@@ -13,15 +13,9 @@ import { PatientType } from '@/validations/validations'
 
 interface PatientsListProps {
   patients?: PatientType[]
-  startIndex: number
-  endIndex: number
 }
 
-export function PatientsList({
-  patients,
-  startIndex,
-  endIndex,
-}: PatientsListProps) {
+export function PatientsList({ patients }: PatientsListProps) {
   const { mutateAsync: onDeletePatient, isPending } = useDeletePatient()
 
   const handleDelete = async (id: string) => {
@@ -30,7 +24,7 @@ export function PatientsList({
 
   return (
     <>
-      {patients?.slice(startIndex, endIndex).map((patient) => (
+      {patients?.map((patient) => (
         <TableRow key={patient.id}>
           <TableCell>
             {patient.name} {patient.lastName}
