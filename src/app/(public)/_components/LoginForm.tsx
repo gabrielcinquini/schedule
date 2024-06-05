@@ -18,7 +18,7 @@ import { Input } from '@/components/ui/input'
 import { APP_ROUTES } from '@/routes/paths'
 import { loginUserFormSchema, LoginUserType } from '@/validations/validations'
 
-import Loader from '../Loader'
+import Loader from '../../../components/Loader'
 
 export const LoginForm = () => {
   const form = useForm<LoginUserType>({

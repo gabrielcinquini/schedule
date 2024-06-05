@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import { signIn } from 'next-auth/react'
 
-import { LoginForm } from '@/components/auth/LoginForm'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -16,6 +15,8 @@ import {
 import ModeToggle from '@/components/ui/mode-toggle'
 import { Typography } from '@/components/ui/typography'
 import { APP_ROUTES } from '@/routes/paths'
+
+import { LoginForm } from './_components/LoginForm'
 
 export default function LoginPage() {
   return (

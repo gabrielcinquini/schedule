@@ -2,9 +2,8 @@
 
 import React from 'react'
 
-import { CustomDialog } from '@/components/CustomDialog'
-import { Widget } from '@/components/Widget'
-
+import { CustomDialog } from '../../_components/custom-dialog'
+import { Widget } from '../../_components/widget'
 import { RegisterPatientForm } from './RegisterPatientForm'
 
 export function HeaderPatients() {

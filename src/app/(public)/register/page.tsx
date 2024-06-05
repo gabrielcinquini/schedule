@@ -2,7 +2,6 @@
 
 import Link from 'next/link'
 
-import { RegisterForm } from '@/components/auth/RegisterForm'
 import {
   Card,
   CardContent,
@@ -14,6 +13,8 @@ import {
 import ModeToggle from '@/components/ui/mode-toggle'
 import { Typography } from '@/components/ui/typography'
 import { APP_ROUTES } from '@/routes/paths'
+
+import { RegisterForm } from '../_components/RegisterForm'
 
 export default function Home() {
   return (

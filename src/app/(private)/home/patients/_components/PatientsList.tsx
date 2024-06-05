@@ -4,12 +4,13 @@ import { Trash2 } from 'lucide-react'
 import React from 'react'
 import { toast } from 'sonner'
 
-import Confirmation from '@/components/Confirmation'
 import { Button } from '@/components/ui/button'
 import { TableCell, TableRow } from '@/components/ui/table'
 import { useDeletePatient } from '@/hooks/Patients/deletePatient'
 import { capitalize } from '@/utils/utils'
 import { PatientType } from '@/validations/validations'
+
+import { Confirmation } from '../../_components/confirmation'
 
 interface PatientsListProps {
   patients?: PatientType[]

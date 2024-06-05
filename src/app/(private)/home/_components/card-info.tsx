@@ -13,7 +13,7 @@ type CardProps = {
   totalNotReceived?: number
 }
 
-export default function CardInfo({
+export function CardInfo({
   currentPage,
   totalHome,
   totalReceived,

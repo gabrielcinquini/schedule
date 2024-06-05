@@ -4,13 +4,14 @@ import { CheckSquare, Trash2, XSquare } from 'lucide-react'
 import React from 'react'
 import { toast } from 'sonner'
 
-import Confirmation from '@/components/Confirmation'
 import { Button } from '@/components/ui/button'
 import { TableCell, TableRow } from '@/components/ui/table'
 import { useChangeScheduleStatus } from '@/hooks/Schedule/changeScheduleStatus'
 import { useDeleteSchedule } from '@/hooks/Schedule/deleteSchedule'
 import { capitalize } from '@/utils/utils'
 import { ScheduleType } from '@/validations/validations'
+
+import { Confirmation } from '../../_components/confirmation'
 
 interface PatientsListProps {
   schedules?: ScheduleType[]

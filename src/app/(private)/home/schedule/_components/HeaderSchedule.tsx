@@ -2,14 +2,14 @@
 
 import React from 'react'
 
-import CardInfo from '@/components/CardInfo'
-import { CustomDialog } from '@/components/CustomDialog'
+import { CustomDialog } from '@/app/(private)/home/_components/custom-dialog'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Widget } from '@/components/Widget'
 import { useSchedules } from '@/hooks/Schedule/useSchedules'
 import { APP_ROUTES } from '@/routes/paths'
 import { calcularTotal } from '@/utils/utils'
 
+import { CardInfo } from '../../_components/card-info'
+import { Widget } from '../../_components/widget'
 import { CreateScheduleForm } from './CreateScheduleForm'
 
 export function HeaderSchedule() {

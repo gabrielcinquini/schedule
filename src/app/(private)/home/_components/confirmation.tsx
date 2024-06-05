@@ -19,7 +19,7 @@ type ConfirmationType = {
   fn?: () => void
 }
 
-export default function Confirmation({
+export function Confirmation({
   text,
   description,
   children,

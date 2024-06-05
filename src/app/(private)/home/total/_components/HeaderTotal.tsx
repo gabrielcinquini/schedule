@@ -2,12 +2,13 @@
 
 import React from 'react'
 
-import CardInfo from '@/components/CardInfo'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Widget } from '@/components/Widget'
 import { useSchedules } from '@/hooks/Schedule/useSchedules'
 import { APP_ROUTES } from '@/routes/paths'
 import { calcularTotal } from '@/utils/utils'
+
+import { CardInfo } from '../../_components/card-info'
+import { Widget } from '../../_components/widget'
 
 export function HeaderTotal() {
   const { data: completedSchedules, isLoading: isLoadingCompletedSchedules } =
