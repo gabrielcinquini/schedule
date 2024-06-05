@@ -1,33 +1,30 @@
-import { NextRequest, NextResponse } from "next/server";
-import { hashSync } from "bcryptjs";
+import { hashSync } from 'bcryptjs'
+import { NextRequest, NextResponse } from 'next/server'
 
-import { prismaClient } from "@/database/client";
-import { registerUserFormSchema } from "@/validations/validations";
+import { prismaClient } from '@/database/client'
+import { registerUserFormSchema } from '@/validations/validations'
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
+  const body = await req.json()
 
-  const parsedBody = registerUserFormSchema.safeParse(body);
+  const parsedBody = registerUserFormSchema.safeParse(body)
   if (!parsedBody.success) {
-    return NextResponse.json(parsedBody.error);
+    return NextResponse.json(parsedBody.error)
   }
 
-  const { username, password, fullname, email } = parsedBody.data;
+  const { username, password, fullname, email } = parsedBody.data
 
   const userExists = await prismaClient.user.findFirst({
     where: {
-      OR: [
-        { username },
-        { email }
-      ]
+      OR: [{ username }, { email }],
     },
-  });
+  })
 
   if (userExists) {
     return NextResponse.json(
-      { message: "Usuário já cadastrado" },
-      { status: 401 }
-    );
+      { message: 'Usuário já cadastrado' },
+      { status: 401 },
+    )
   }
 
   await prismaClient.user.create({
@@ -37,7 +34,7 @@ export async function POST(req: NextRequest) {
       password: hashSync(password, 10),
       name: fullname,
     },
-  });
+  })
 
-  return NextResponse.json({ message: 'Usuário registrado com sucesso!' });
+  return NextResponse.json({ message: 'Usuário registrado com sucesso!' })
 }

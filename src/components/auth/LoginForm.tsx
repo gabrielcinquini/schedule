@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -17,7 +16,8 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { APP_ROUTES } from '@/routes/paths'
-import { LoginUserType, loginUserFormSchema } from '@/validations/validations'
+import { loginUserFormSchema, LoginUserType } from '@/validations/validations'
+
 import Loader from '../Loader'
 
 export const LoginForm = () => {
@@ -40,7 +40,7 @@ export const LoginForm = () => {
 
   return (
     <FormProvider {...form}>
-      <form className="flex gap-4 flex-col w-full" onSubmit={handleLogin}>
+      <form className="flex w-full flex-col gap-4" onSubmit={handleLogin}>
         <FormField
           control={form.control}
           name="username"
@@ -62,14 +62,22 @@ export const LoginForm = () => {
             <FormItem>
               <FormLabel>Senha</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="Insira a senha" {...field} />
+                <Input
+                  type="password"
+                  placeholder="Insira a senha"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <Button className="w-full" type="submit" disabled={form.formState.isSubmitting}>
+        <Button
+          className="w-full"
+          type="submit"
+          disabled={form.formState.isSubmitting}
+        >
           {form.formState.isSubmitting && <Loader />}
           Entrar
         </Button>

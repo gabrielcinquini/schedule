@@ -19,7 +19,7 @@ import { APP_ROUTES } from '@/routes/paths'
 
 export default function LoginPage() {
   return (
-    <div className="flex h-screen justify-center items-center">
+    <div className="flex h-screen items-center justify-center">
       <div className="absolute top-12">
         <ModeToggle />
       </div>
@@ -31,7 +31,7 @@ export default function LoginPage() {
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="flex items-center flex-col gap-2">
+        <CardContent className="flex flex-col items-center gap-2">
           <LoginForm />
           <Typography variant="small">OU</Typography>
           <Button

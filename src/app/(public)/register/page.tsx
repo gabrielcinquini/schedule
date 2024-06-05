@@ -17,7 +17,7 @@ import { APP_ROUTES } from '@/routes/paths'
 
 export default function Home() {
   return (
-    <div className="flex h-screen justify-center items-center">
+    <div className="flex h-screen items-center justify-center">
       <div className="absolute top-12">
         <ModeToggle />
       </div>

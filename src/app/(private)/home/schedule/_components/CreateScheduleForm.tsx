@@ -1,109 +1,113 @@
+import { zodResolver } from '@hookform/resolvers/zod'
+import { format } from 'date-fns'
+import ptBR from 'date-fns/locale/pt-BR'
+import { CalendarIcon } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
 
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select'
+import { Skeleton } from '@/components/ui/skeleton'
+import { usePatients } from '@/hooks/Patients/usePatients'
+import { useCreateSchedule } from '@/hooks/Schedule/createSchedule'
+import { cn } from '@/lib'
+import { formatValue } from '@/utils/utils'
 import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import Loader from "../../../../../components/Loader";
-import { useForm } from 'react-hook-form';
-import { RegisterScheduleFormType, registerToScheduleFormSchema } from '@/validations/validations';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { usePatients } from '@/hooks/Patients/usePatients';
-import axios, { AxiosError } from 'axios';
-import { toast } from 'sonner';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Button } from '@/components/ui/button';
-import { CalendarIcon } from 'lucide-react';
-import { format } from 'date-fns';
-import { Calendar } from '@/components/ui/calendar';
-import ptBR from 'date-fns/locale/pt-BR';
-import { Input } from '@/components/ui/input';
-import { formatValue } from '@/utils/utils';
-import { cn } from '@/lib';
-import { useCreateSchedule } from '@/hooks/Schedule/createSchedule';
-import { Skeleton } from '@/components/ui/skeleton';
+  RegisterScheduleFormType,
+  registerToScheduleFormSchema,
+} from '@/validations/validations'
+
+import Loader from '../../../../../components/Loader'
 
 export function CreateScheduleForm() {
-  const [selectedPatientConvenio, setSelectedPatientConvenio] = useState("");
+  const [selectedPatientConvenio, setSelectedPatientConvenio] = useState('')
   const { data: patients, isLoading } = usePatients()
   const { mutateAsync: onCreateSchedule } = useCreateSchedule()
 
   useEffect(() => {
     if (patients && patients.length > 0) {
-      setSelectedPatientConvenio(patients[0].convenio);
+      setSelectedPatientConvenio(patients[0].convenio)
     }
-  }, [patients]);
+  }, [patients])
 
   const form = useForm<RegisterScheduleFormType>({
-    mode: "onChange",
+    mode: 'onChange',
     defaultValues: {
-      value: "R$ 0,00",
+      value: 'R$ 0,00',
     },
     resolver: zodResolver(registerToScheduleFormSchema),
-  });
+  })
 
   const handleRegisterSchedule = async (data: RegisterScheduleFormType) => {
-    const selectedPatient = patients?.find((p) => p.id === data.patientId);
-    if (!selectedPatient) throw new Error();
+    const selectedPatient = patients?.find((p) => p.id === data.patientId)
+    if (!selectedPatient) throw new Error()
 
-    let date = new Date(data.date);
-    let hora = data.time;
-    let [novaHora, novosMinutos] = hora.split(":");
-    date.setHours(parseInt(novaHora, 10));
-    date.setMinutes(parseInt(novosMinutos, 10));
+    const date = new Date(data.date)
+    const hora = data.time
+    const [novaHora, novosMinutos] = hora.split(':')
+    date.setHours(parseInt(novaHora, 10))
+    date.setMinutes(parseInt(novosMinutos, 10))
 
-    if (selectedPatient.convenio === "Isento") {
-      data.value = "0";
+    if (selectedPatient.convenio === 'Isento') {
+      data.value = '0'
     }
 
     const transformedValue = data.value
-      .replace(/\s/g, "")
-      .replace("R$", "")
-      .replace(",", ".");
+      .replace(/\s/g, '')
+      .replace('R$', '')
+      .replace(',', '.')
 
     await onCreateSchedule({
       name: selectedPatient.name,
       lastName: selectedPatient.lastName,
-      date: date,
+      date,
       value: Number(transformedValue),
       patientId: data.patientId,
     })
-  };
+  }
 
-  const handleChange = (patientId: any) => {
-    const selectedPatient = patients?.find((p) => p.id === patientId);
+  const handleChange = (patientId: string) => {
+    const selectedPatient = patients?.find((p) => p.id === patientId)
     if (selectedPatient) {
-      setSelectedPatientConvenio(selectedPatient.convenio);
+      setSelectedPatientConvenio(selectedPatient.convenio)
     }
-  };
+  }
 
-  if(isLoading) return (
-    <div className='flex flex-col gap-4'>
-      <Skeleton className="w-full h-10" />
-      <Skeleton className="w-full h-10" />
-      <Skeleton className="w-full h-10" />
-      <Skeleton className="w-full h-10" />
-      <Skeleton className="w-full h-16" />
-    </div>
-  )
+  if (isLoading)
+    return (
+      <div className="flex flex-col gap-4">
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-16 w-full" />
+      </div>
+    )
 
   return (
     <>
-      {!!patients?.length ? (
+      {patients?.length ? (
         <Form {...form}>
           <form
             className="flex flex-col gap-4 max-sm:gap-2 max-sm:text-sm"
@@ -117,7 +121,8 @@ export function CreateScheduleForm() {
                   <FormControl>
                     <Select
                       onValueChange={(e) => {
-                        field.onChange(e), handleChange(e);
+                        field.onChange(e)
+                        handleChange(e)
                       }}
                       defaultValue={field.value}
                     >
@@ -127,10 +132,7 @@ export function CreateScheduleForm() {
                       <SelectContent>
                         <SelectGroup>
                           {patients?.map((patient) => (
-                            <SelectItem
-                              key={patient.id}
-                              value={patient.id}
-                            >
+                            <SelectItem key={patient.id} value={patient.id}>
                               {patient.name} {patient.lastName}
                             </SelectItem>
                           ))}
@@ -151,14 +153,14 @@ export function CreateScheduleForm() {
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
-                          variant={"outline"}
+                          variant={'outline'}
                           className={cn(
-                            "px-2 py-5 w-full text-left font-normal",
-                            !field.value && "text-muted-foreground"
+                            'w-full px-2 py-5 text-left font-normal',
+                            !field.value && 'text-muted-foreground',
                           )}
                         >
                           {field.value ? (
-                            format(Number(field.value), "PPP", {
+                            format(Number(field.value), 'PPP', {
                               locale: ptBR,
                             })
                           ) : (
@@ -174,7 +176,7 @@ export function CreateScheduleForm() {
                         selected={field.value}
                         onDayClick={field.onChange}
                         disabled={(date) =>
-                          date < new Date("1900-01-01") ||
+                          date < new Date('1900-01-01') ||
                           date < new Date(new Date().setHours(0, 0, 0, 0))
                         }
                         locale={ptBR}
@@ -195,7 +197,7 @@ export function CreateScheduleForm() {
                     <Input
                       autoComplete="off"
                       type="time"
-                      className="px-2 py-5 appearance-none"
+                      className="appearance-none px-2 py-5"
                       placeholder="Hora"
                       {...field}
                     />
@@ -210,16 +212,16 @@ export function CreateScheduleForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    {selectedPatientConvenio !== "Isento" && (
+                    {selectedPatientConvenio !== 'Isento' && (
                       <Input
                         autoComplete="off"
                         type="text"
-                        className="px-2 py-5 appearance-none"
+                        className="appearance-none px-2 py-5"
                         placeholder="Valor"
                         {...field}
                         onChange={(event) => {
-                          formatValue(event);
-                          field.onChange(event);
+                          formatValue(event)
+                          field.onChange(event)
                         }}
                       />
                     )}
@@ -230,7 +232,7 @@ export function CreateScheduleForm() {
             />
             <Button
               type="submit"
-              className="text-lg p-9"
+              className="p-9 text-lg"
               disabled={form.formState.isSubmitting}
             >
               {form.formState.isSubmitting && <Loader />}
@@ -239,7 +241,7 @@ export function CreateScheduleForm() {
           </form>
         </Form>
       ) : (
-        <p className="text-center text-2xl text-red-800 font-bold max-sm:text-xl">
+        <p className="text-center text-2xl font-bold text-red-800 max-sm:text-xl">
           Nenhum paciente cadastrado!
         </p>
       )}

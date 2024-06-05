@@ -1,16 +1,16 @@
-import { QUERY_KEYS } from '@/constants/query-keys'
-import { revalidateQueryKey } from '@/utils/utils'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import { toast } from 'sonner'
 
+import { QUERY_KEYS } from '@/constants/query-keys'
+import { revalidateQueryKey } from '@/utils/utils'
 
 export const useDeleteSchedule = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async (id: string) => {
-      return await axios.delete(`/api/schedules/${id}`);
+      return await axios.delete(`/api/schedules/${id}`)
     },
     onSuccess: (response: AxiosResponse) => {
       toast.success(response.data.message)

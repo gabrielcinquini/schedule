@@ -1,4 +1,4 @@
-import { ScheduleStatus } from "@prisma/client";
+import { ScheduleStatus } from '@prisma/client'
 
 export const QUERY_KEYS = {
   GET: {
@@ -10,4 +10,4 @@ export const QUERY_KEYS = {
     PATIENTS_FROM_USER: () => ['patients'],
     SCHEDULES_FROM_USER: () => ['schedules'],
   },
-};
+}

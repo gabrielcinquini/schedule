@@ -1,17 +1,18 @@
-import React from "react";
+import React from 'react'
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getServerSessionApp } from "@/lib";
-import { HeaderDropdownContent } from "./HeaderDropdownContent";
-import { DropdownMenu, DropdownMenuTrigger } from "../dropdown-menu";
-import { getInitials } from "@/utils/utils";
-import { NavList } from "./NavList";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { getServerSessionApp } from '@/lib'
+import { getInitials } from '@/utils/utils'
+
+import { DropdownMenu, DropdownMenuTrigger } from '../dropdown-menu'
+import { HeaderDropdownContent } from './HeaderDropdownContent'
+import { NavList } from './NavList'
 
 export async function Header() {
-  const session = await getServerSessionApp();
+  const session = await getServerSessionApp()
 
   return (
-    <header className='sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur p-2'>
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 p-2 backdrop-blur">
       <div className="container flex items-center justify-between">
         <NavList />
         <div>
@@ -31,5 +32,5 @@ export async function Header() {
         </div>
       </div>
     </header>
-  );
+  )
 }

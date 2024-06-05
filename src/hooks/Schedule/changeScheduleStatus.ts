@@ -1,14 +1,15 @@
-import { QUERY_KEYS } from '@/constants/query-keys'
-import { revalidateQueryKey } from '@/utils/utils'
 import { ScheduleStatus } from '@prisma/client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import { toast } from 'sonner'
 
+import { QUERY_KEYS } from '@/constants/query-keys'
+import { revalidateQueryKey } from '@/utils/utils'
+
 interface IChangeScheduleStatus {
-  id: string;
-  status: ScheduleStatus;
-  date: Date;
+  id: string
+  status: ScheduleStatus
+  date: Date
 }
 
 export const useChangeScheduleStatus = () => {
@@ -16,7 +17,7 @@ export const useChangeScheduleStatus = () => {
 
   return useMutation({
     mutationFn: async ({ id, ...rest }: IChangeScheduleStatus) => {
-      return await axios.patch(`/api/schedules/${id}`, {...rest});
+      return await axios.patch(`/api/schedules/${id}`, { ...rest })
     },
     onSuccess: (response: AxiosResponse) => {
       toast.success(response.data.message)

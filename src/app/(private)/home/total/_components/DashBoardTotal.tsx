@@ -1,7 +1,8 @@
-"use client"
+'use client'
 
-import React, { useState } from "react";
+import React, { useState } from 'react'
 
+import { Skeleton } from '@/components/ui/skeleton'
 import {
   Table,
   TableBody,
@@ -10,41 +11,44 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Button } from "../../../../../components/ui/button";
-import { Input } from "../../../../../components/ui/input";
-import { useSchedules } from "@/hooks/Schedule/useSchedules";
-import { TotalItemsList } from "./TotalItemsList";
-import { Skeleton } from "@/components/ui/skeleton";
+} from '@/components/ui/table'
+import { useSchedules } from '@/hooks/Schedule/useSchedules'
+
+import { Button } from '../../../../../components/ui/button'
+import { Input } from '../../../../../components/ui/input'
+import { TotalItemsList } from './TotalItemsList'
 
 export function DashBoardTotal() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [filter, setFilter] = useState("");
+  const [currentPage, setCurrentPage] = useState(1)
+  const [filter, setFilter] = useState('')
 
-  const { data: completedSchedules, isLoading: isLoadingCompletedSchedules } = useSchedules('COMPLETED')
-  const { data: canceledSchedules, isLoading: isLoadingCanceledSchedules } = useSchedules('CANCELED')
+  const { data: completedSchedules, isLoading: isLoadingCompletedSchedules } =
+    useSchedules('COMPLETED')
+  const { data: canceledSchedules, isLoading: isLoadingCanceledSchedules } =
+    useSchedules('CANCELED')
 
-  const isLoading = isLoadingCompletedSchedules || isLoadingCanceledSchedules;
+  const isLoading = isLoadingCompletedSchedules || isLoadingCanceledSchedules
 
-  const itemsPerPage = 5;
+  const itemsPerPage = 5
 
-  const totalItems = [...(completedSchedules ?? []), ...(canceledSchedules ?? [])];
+  const totalItems = [
+    ...(completedSchedules ?? []),
+    ...(canceledSchedules ?? []),
+  ]
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
 
   const filteredTotalItems = totalItems?.filter((schedule) => {
-    const fullName = `${schedule.name} ${schedule.lastName}`.toLowerCase();
-    return (
-      fullName.includes(filter.toLowerCase())
-    );
-  });
+    const fullName = `${schedule.name} ${schedule.lastName}`.toLowerCase()
+    return fullName.includes(filter.toLowerCase())
+  })
 
-  const totalPages =
-    filteredTotalItems ?
-    filteredTotalItems.length > 0
+  const totalPages = filteredTotalItems
+    ? filteredTotalItems.length > 0
       ? Math.ceil(filteredTotalItems.length / itemsPerPage)
-      : 1 : 1;
+      : 1
+    : 1
 
   return (
     <div className="container">
@@ -53,8 +57,8 @@ export function DashBoardTotal() {
         placeholder="Filtrar por nome/valor/data/dia"
         value={filter}
         onChange={(e) => {
-          setCurrentPage(1);
-          setFilter(e.target.value);
+          setCurrentPage(1)
+          setFilter(e.target.value)
         }}
         className="mt-2 w-1/2 max-sm:w-full"
       />
@@ -78,18 +82,22 @@ export function DashBoardTotal() {
                 </TableCell>
               </TableRow>
             ))}
-          <TotalItemsList totalItems={filteredTotalItems} startIndex={startIndex} endIndex={endIndex} />
+          <TotalItemsList
+            totalItems={filteredTotalItems}
+            startIndex={startIndex}
+            endIndex={endIndex}
+          />
         </TableBody>
       </Table>
       <div className="flex gap-2 px-8">
         <Button
           onClick={() => {
-            setCurrentPage(currentPage - 1);
+            setCurrentPage(currentPage - 1)
           }}
-          variant={"harderOutline"}
+          variant={'harderOutline'}
           disabled={currentPage === 1}
           className={`${
-            currentPage === 1 ? "opacity-50 pointer-events-none" : ""
+            currentPage === 1 ? 'pointer-events-none opacity-50' : ''
           }`}
         >
           Anterior
@@ -99,17 +107,17 @@ export function DashBoardTotal() {
         </span>
         <Button
           onClick={() => {
-            setCurrentPage(currentPage + 1);
+            setCurrentPage(currentPage + 1)
           }}
-          variant={"harderOutline"}
+          variant={'harderOutline'}
           disabled={currentPage === totalPages}
           className={`${
-            currentPage === totalPages ? "opacity-50 pointer-events-none" : ""
+            currentPage === totalPages ? 'pointer-events-none opacity-50' : ''
           }`}
         >
           Próxima
         </Button>
       </div>
     </div>
-  );
+  )
 }

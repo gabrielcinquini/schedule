@@ -1,11 +1,10 @@
-import { getServerSession, type NextAuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import GoogleProvider from "next-auth/providers/google";
+import { PrismaAdapter } from '@next-auth/prisma-adapter'
+import { compareSync } from 'bcryptjs'
+import { getServerSession, type NextAuthOptions } from 'next-auth'
+import CredentialsProvider from 'next-auth/providers/credentials'
+import GoogleProvider from 'next-auth/providers/google'
 
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-
-import { prismaClient } from "@/database/client";
-import { compareSync } from "bcryptjs";
+import { prismaClient } from '@/database/client'
 
 export const authConfigs: NextAuthOptions = {
   adapter: PrismaAdapter(prismaClient),
@@ -16,28 +15,32 @@ export const authConfigs: NextAuthOptions = {
       authorization: {
         params: {
           scope:
-            "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email",
+            'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
         },
       },
     }),
     CredentialsProvider({
-      type: "credentials",
+      type: 'credentials',
       credentials: {
-        username: { label: "Usuário", type: "text" },
-        password: { label: "Senha", type: "password" },
+        username: { label: 'Usuário', type: 'text' },
+        password: { label: 'Senha', type: 'password' },
       },
       async authorize(credentials) {
         const user = await prismaClient.user.findFirst({
           where: {
             username: credentials?.username,
           },
-        });
-      
-        if (!user || !compareSync(credentials?.password!, user.password!)) {
+        })
+
+        if (!credentials?.password) {
+          throw new Error('Senha não informada')
+        }
+
+        if (!user || !compareSync(credentials.password, user.password!)) {
           throw new Error('Credenciais não encontradas')
         }
 
-        return user;
+        return user
       },
     }),
   ],
@@ -48,19 +51,18 @@ export const authConfigs: NextAuthOptions = {
     },
 
     jwt({ token, user, account }) {
-      if (account && user) token.user = user;
+      if (account && user) token.user = user
 
-      return token;
+      return token
     },
-
   },
   pages: {
-    signIn: "/",
+    signIn: '/',
   },
   session: {
-    strategy: "jwt",
+    strategy: 'jwt',
   },
   secret: process.env.NEXTAUTH_SECRET,
-};
+}
 
-export const getServerSessionApp = () => getServerSession(authConfigs);
+export const getServerSessionApp = () => getServerSession(authConfigs)

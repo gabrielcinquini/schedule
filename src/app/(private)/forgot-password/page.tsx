@@ -1,70 +1,68 @@
-"use client";
+'use client'
 
-import { useMe } from "@/hooks/useMe";
-import {
-  ForgotPasswordFormSchemaType,
-  forgotPasswordFormSchema,
-} from "@/validations/validations";
-import { zodResolver } from "@hookform/resolvers/zod";
-import axios, { AxiosError } from "axios";
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { zodResolver } from '@hookform/resolvers/zod'
+import { ArrowLeftIcon } from '@radix-ui/react-icons'
+import axios, { AxiosError } from 'axios'
+import { Eye, EyeOff } from 'lucide-react'
+import Link from 'next/link'
+import React, { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 
+import Loader from '@/components/Loader'
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from "@/components/ui/form";
-import { ArrowLeftIcon } from "@radix-ui/react-icons";
-import Link from "next/link";
-import Loader from "@/components/Loader";
-import { Eye, EyeOff } from "lucide-react";
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import {
+  forgotPasswordFormSchema,
+  ForgotPasswordFormSchemaType,
+} from '@/validations/validations'
 
 export default function page() {
-
   const form = useForm<ForgotPasswordFormSchemaType>({
-    mode: "all",
+    mode: 'all',
     resolver: zodResolver(forgotPasswordFormSchema),
-  });
+  })
 
   const [visibility, setVisibility] = useState(false)
 
-  const { user } = useMe();
-  
-  if (!user) return <p>Loading...</p>;
-  
+  const { user } = useMe()
+
+  if (!user) return <p>Loading...</p>
+
   const handleChangeVisibility = () => {
     setVisibility((currentState) => !currentState)
   }
 
   const handleChangePassword = async (
-    data: Omit<ForgotPasswordFormSchemaType, "confirmPassword">
+    data: Omit<ForgotPasswordFormSchemaType, 'confirmPassword'>,
   ) => {
     try {
-      data.id = user.id;
-      const res = await axios.post("/api/forgotPassword/", data);
-      toast.success("Senha alterada com sucesso!");
-      form.reset();
+      data.id = user.id
+      const res = await axios.post('/api/forgotPassword/', data)
+      toast.success('Senha alterada com sucesso!')
+      form.reset()
     } catch (err) {
       if (err instanceof AxiosError) {
-        toast.error(err.response?.data.message);
+        toast.error(err.response?.data.message)
       } else {
-        toast.error("Ocorreu algum erro inesperado");
+        toast.error('Ocorreu algum erro inesperado')
       }
     }
-  };
+  }
 
   return (
-    <div className="flex flex-col h-screen justify-center items-center">
+    <div className="flex h-screen flex-col items-center justify-center">
       <h1>Olá {user.name}</h1>
       <Form {...form}>
         <form
-          className="flex flex-col gap-2 items-center mt-8"
+          className="mt-8 flex flex-col items-center gap-2"
           onSubmit={form.handleSubmit(handleChangePassword)}
         >
           <div className="relative">
@@ -74,18 +72,24 @@ export default function page() {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                      <Input
-                        type={visibility ? 'text' : 'password'}
-                        placeholder="Nova Senha"
-                        onChange={field.onChange}
-                        autoComplete="off"
-                      />
+                    <Input
+                      type={visibility ? 'text' : 'password'}
+                      placeholder="Nova Senha"
+                      onChange={field.onChange}
+                      autoComplete="off"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <button type="button" onClick={handleChangeVisibility} className="absolute top-2 right-2">{visibility ? <Eye /> : <EyeOff />}</button>
+            <button
+              type="button"
+              onClick={handleChangeVisibility}
+              className="absolute right-2 top-2"
+            >
+              {visibility ? <Eye /> : <EyeOff />}
+            </button>
           </div>
           <FormField
             name="confirmPassword"
@@ -104,7 +108,7 @@ export default function page() {
               </FormItem>
             )}
           />
-          <div className="flex flex-col w-full gap-8">
+          <div className="flex w-full flex-col gap-8">
             <Button
               type="submit"
               className="disabled:cursor-not-allowed disabled:opacity-50"
@@ -113,8 +117,8 @@ export default function page() {
               {form.formState.isSubmitting && <Loader />}
               Enviar
             </Button>
-            <Button asChild variant={"secondary"}>
-              <Link href="/home" className="flex gap-2 w-full">
+            <Button asChild variant={'secondary'}>
+              <Link href="/home" className="flex w-full gap-2">
                 <ArrowLeftIcon />
                 Voltar
               </Link>
@@ -123,5 +127,5 @@ export default function page() {
         </form>
       </Form>
     </div>
-  );
+  )
 }

@@ -1,7 +1,8 @@
-import { prismaClient } from "@/database/client";
-import { registerPatientFormSchema } from "@/validations/validations";
-import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
+import { NextRequest, NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+
+import { prismaClient } from '@/database/client'
+import { registerPatientFormSchema } from '@/validations/validations'
 
 export async function GET() {
   const session = await getServerSession()
@@ -12,10 +13,14 @@ export async function GET() {
     },
     select: {
       id: true,
-    }
+    },
   })
 
-  if(!userFromEmail) return NextResponse.json({ message: "Usuário não encontrado" }, { status: 404 });
+  if (!userFromEmail)
+    return NextResponse.json(
+      { message: 'Usuário não encontrado' },
+      { status: 404 },
+    )
 
   const patients = await prismaClient.patient.findMany({
     where: {
@@ -23,27 +28,27 @@ export async function GET() {
     },
     orderBy: [
       {
-        name: "asc",
+        name: 'asc',
       },
       {
-        lastName: "asc",
+        lastName: 'asc',
       },
     ],
-  });
+  })
 
-  return NextResponse.json(patients);
+  return NextResponse.json(patients)
 }
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession()
-  const body = await req.json();
-  const parsedBody = registerPatientFormSchema.safeParse(body);
+  const body = await req.json()
+  const parsedBody = registerPatientFormSchema.safeParse(body)
 
   if (!parsedBody.success) {
-    return NextResponse.json({ error: parsedBody.error });
+    return NextResponse.json({ error: parsedBody.error })
   }
 
-  const { name, lastName, convenio } = parsedBody.data;
+  const { name, lastName, convenio } = parsedBody.data
 
   const userFromEmail = await prismaClient.user.findUnique({
     where: {
@@ -51,36 +56,43 @@ export async function POST(req: NextRequest) {
     },
     select: {
       id: true,
-    }
+    },
   })
 
-  if(!userFromEmail) return NextResponse.json({ message: "Usuário não encontrado" }, { status: 404 });
+  if (!userFromEmail)
+    return NextResponse.json(
+      { message: 'Usuário não encontrado' },
+      { status: 404 },
+    )
 
   const patients = await prismaClient.patient.findMany({
     where: {
       userId: userFromEmail?.id,
     },
-  });
+  })
 
-  const patientRegistered = patients.find((patient) => {
-    patient.userId === userFromEmail.id; 
-  });
+  const patientRegistered = patients.find(
+    (patient) => patient.userId === userFromEmail.id,
+  )
 
   if (patientRegistered) {
     return NextResponse.json(
-      { message: "Paciente já cadastrado" },
-      { status: 404 }
-    );
+      { message: 'Paciente já cadastrado' },
+      { status: 404 },
+    )
   }
 
   await prismaClient.patient.create({
     data: {
-      name: name,
-      lastName: lastName,
-      convenio: convenio,
+      name,
+      lastName,
+      convenio,
       userId: userFromEmail.id,
     },
-  });
+  })
 
-  return NextResponse.json({message: 'Paciente cadastrado com sucesso!'}, {status: 201});
+  return NextResponse.json(
+    { message: 'Paciente cadastrado com sucesso!' },
+    { status: 201 },
+  )
 }

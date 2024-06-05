@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -8,15 +10,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { ReactNode } from "react";
+} from '@/components/ui/alert-dialog'
 
 type ConfirmationType = {
-  text: string;
-  description: string;
-  children: ReactNode;
-  fn?: () => void;
-};
+  text: string
+  description: string
+  children: ReactNode
+  fn?: () => void
+}
 
 export default function Confirmation({
   text,
@@ -29,12 +30,8 @@ export default function Confirmation({
       <AlertDialogTrigger>{children}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>
-            {text}
-          </AlertDialogTitle>
-          <AlertDialogDescription>
-            {description}
-          </AlertDialogDescription>
+          <AlertDialogTitle>{text}</AlertDialogTitle>
+          <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancelar</AlertDialogCancel>
@@ -42,5 +39,5 @@ export default function Confirmation({
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  );
+  )
 }

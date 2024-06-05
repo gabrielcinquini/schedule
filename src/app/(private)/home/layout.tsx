@@ -1,11 +1,16 @@
-import { Header } from "@/components/ui/Header/Header";
-import { getServerSessionApp } from "@/lib";
-import { redirect } from "next/navigation";
-import React from "react";
-export default async function PrivateLayoutRoot({ children }: { children: React.ReactNode }) {
-  const session = await getServerSessionApp();
+import { redirect } from 'next/navigation'
+import React from 'react'
 
-  if(!session) {
+import { Header } from '@/components/ui/Header/Header'
+import { getServerSessionApp } from '@/lib'
+export default async function PrivateLayoutRoot({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  const session = await getServerSessionApp()
+
+  if (!session) {
     redirect('/')
   }
 
@@ -14,5 +19,5 @@ export default async function PrivateLayoutRoot({ children }: { children: React.
       <Header />
       {children}
     </>
-  );
+  )
 }

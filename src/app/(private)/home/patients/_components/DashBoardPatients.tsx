@@ -1,7 +1,8 @@
-"use client";
+'use client'
 
-import { useState } from "react";
+import { useState } from 'react'
 
+import { Skeleton } from '@/components/ui/skeleton'
 import {
   Table,
   TableBody,
@@ -10,36 +11,34 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Button } from "../../../../../components/ui/button";
-import { Input } from "../../../../../components/ui/input";
-import { PatientsList } from "./PatientsList";
-import { Skeleton } from "@/components/ui/skeleton";
-import { usePatients } from "@/hooks/Patients/usePatients";
+} from '@/components/ui/table'
+import { usePatients } from '@/hooks/Patients/usePatients'
+
+import { Button } from '../../../../../components/ui/button'
+import { Input } from '../../../../../components/ui/input'
+import { PatientsList } from './PatientsList'
 
 export function DashboardPatients() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [filter, setFilter] = useState("");
+  const [currentPage, setCurrentPage] = useState(1)
+  const [filter, setFilter] = useState('')
 
   const { data: patients, isLoading } = usePatients()
 
-  const itemsPerPage = 5;
+  const itemsPerPage = 5
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
 
   const filteredPatients = patients?.filter((patient) => {
-    const fullName = `${patient.name} ${patient.lastName}`.toLowerCase();
-    return (
-      fullName.includes(filter.toLowerCase())
-    );
-  });
+    const fullName = `${patient.name} ${patient.lastName}`.toLowerCase()
+    return fullName.includes(filter.toLowerCase())
+  })
 
-  const totalPages =
-    filteredPatients ?
-    filteredPatients.length > 0
+  const totalPages = filteredPatients
+    ? filteredPatients.length > 0
       ? Math.ceil(filteredPatients.length / itemsPerPage)
-      : 1 : 1;
+      : 1
+    : 1
 
   return (
     <div className="container">
@@ -48,8 +47,8 @@ export function DashboardPatients() {
         placeholder="Filtrar por nome"
         value={filter}
         onChange={(e) => {
-          setCurrentPage(1);
-          setFilter(e.target.value);
+          setCurrentPage(1)
+          setFilter(e.target.value)
         }}
         className="my-2 w-1/2 max-sm:w-full"
       />
@@ -72,19 +71,22 @@ export function DashboardPatients() {
                 </TableCell>
               </TableRow>
             ))}
-            <PatientsList patients={filteredPatients} startIndex={startIndex} endIndex={endIndex} />
+          <PatientsList
+            patients={filteredPatients}
+            startIndex={startIndex}
+            endIndex={endIndex}
+          />
         </TableBody>
-
       </Table>
       <div className="flex gap-2 px-8">
         <Button
           onClick={() => {
-            setCurrentPage(currentPage - 1);
+            setCurrentPage(currentPage - 1)
           }}
-          variant={"harderOutline"}
+          variant={'harderOutline'}
           disabled={currentPage <= 1}
           className={`${
-            currentPage === 1 ? "opacity-50 pointer-events-none" : ""
+            currentPage === 1 ? 'pointer-events-none opacity-50' : ''
           }`}
         >
           Anterior
@@ -94,17 +96,17 @@ export function DashboardPatients() {
         </span>
         <Button
           onClick={() => {
-            setCurrentPage(currentPage + 1);
+            setCurrentPage(currentPage + 1)
           }}
-          variant={"harderOutline"}
+          variant={'harderOutline'}
           disabled={currentPage >= totalPages}
           className={`${
-            currentPage === totalPages ? "opacity-50 pointer-events-none" : ""
+            currentPage === totalPages ? 'pointer-events-none opacity-50' : ''
           }`}
         >
           Próxima
         </Button>
       </div>
     </div>
-  );
+  )
 }

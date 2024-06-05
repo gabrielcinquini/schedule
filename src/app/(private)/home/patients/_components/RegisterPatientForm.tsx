@@ -1,7 +1,19 @@
 'use client'
 
+import { zodResolver } from '@hookform/resolvers/zod'
 import React from 'react'
+import { useForm } from 'react-hook-form'
 
+import Loader from '@/components/Loader'
+import { Button } from '@/components/ui/button'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
@@ -9,28 +21,19 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select'
+import { useCreatePatient } from '@/hooks/Patients/createPatient'
+import { formatName } from '@/utils/utils'
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { RegisterPatientFormType, registerPatientFormSchema } from '@/validations/validations';
-import { Input } from '@/components/ui/input';
-import { formatName } from '@/utils/utils';
-import { Button } from '@/components/ui/button';
-import { useCreatePatient } from '@/hooks/Patients/createPatient';
-import Loader from '@/components/Loader';
+  registerPatientFormSchema,
+  RegisterPatientFormType,
+} from '@/validations/validations'
 
 export function RegisterPatientForm() {
   const form = useForm<RegisterPatientFormType>({
-    mode: "onChange",
+    mode: 'onChange',
     resolver: zodResolver(registerPatientFormSchema),
-  });
+  })
 
   const { mutateAsync: onCreatePatient } = useCreatePatient()
 
@@ -44,7 +47,7 @@ export function RegisterPatientForm() {
         className="flex flex-col gap-4 max-sm:gap-2 max-sm:text-sm"
         onSubmit={form.handleSubmit(handleCreatePatient)}
       >
-        <div className='flex gap-2'>
+        <div className="flex gap-2">
           <FormField
             control={form.control}
             name="name"
@@ -58,8 +61,8 @@ export function RegisterPatientForm() {
                     placeholder="Nome"
                     {...field}
                     onChange={(event) => {
-                      formatName(event);
-                      field.onChange(event);
+                      formatName(event)
+                      field.onChange(event)
                     }}
                   />
                 </FormControl>
@@ -76,12 +79,12 @@ export function RegisterPatientForm() {
                   <Input
                     autoComplete="off"
                     type="text"
-                    className="px-2 py-5 appearance-none max-sm:p-3"
+                    className="appearance-none px-2 py-5 max-sm:p-3"
                     placeholder="Sobrenome"
                     {...field}
                     onChange={(event) => {
-                      formatName(event);
-                      field.onChange(event);
+                      formatName(event)
+                      field.onChange(event)
                     }}
                   />
                 </FormControl>
@@ -118,7 +121,7 @@ export function RegisterPatientForm() {
         />
         <Button
           type="submit"
-          className="text-lg p-6"
+          className="p-6 text-lg"
           disabled={form.formState.isSubmitting}
         >
           {form.formState.isSubmitting && <Loader />}

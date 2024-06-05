@@ -1,21 +1,23 @@
-import "./globals.css";
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import './globals.css'
 
-import { Toaster } from "sonner";
-import { ThemeProvider } from "@/components/ui/theme-provider";
-import { ClientProviderLayout } from "./layouts/client-provider";
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import { Toaster } from 'sonner'
 
-const inter = Inter({ subsets: ["latin"] });
+import { ThemeProvider } from '@/components/ui/theme-provider'
+
+import { ClientProviderLayout } from './layouts/client-provider'
+
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: "Agenda",
-};
+  title: 'Agenda',
+}
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
     <html lang="en">
@@ -29,13 +31,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <ClientProviderLayout>
-            {children}
-          </ClientProviderLayout>
+          <ClientProviderLayout>{children}</ClientProviderLayout>
         </ThemeProvider>
       </body>
 
       <Toaster position="top-right" richColors closeButton duration={2500} />
     </html>
-  );
+  )
 }
