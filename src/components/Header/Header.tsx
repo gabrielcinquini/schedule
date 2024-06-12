@@ -21,7 +21,10 @@ export async function Header() {
             <DropdownMenuTrigger asChild>
               <button>
                 <Avatar>
-                  <AvatarImage src="" alt="" />
+                  <AvatarImage
+                    src={session?.user?.image ? session?.user?.image : ''}
+                    alt=""
+                  />
                   <AvatarFallback>
                     {getInitials(session?.user?.name)}
                   </AvatarFallback>
