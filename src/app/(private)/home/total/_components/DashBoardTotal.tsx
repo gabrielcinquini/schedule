@@ -25,6 +25,7 @@ export function DashBoardTotal() {
       data={totalItems}
       isLoading={isLoading}
       columns={['Nome', 'Data', 'Hora', 'Valor', '']}
+      // @ts-expect-error - data is an array of schedules COMPLETE | CANCELED
       renderRow={(data) => <TotalItemsList totalItems={data} />}
       filterPlaceholder="Filtrar por nome"
       tableCaption="Total"

@@ -13,6 +13,7 @@ export function DashboardPatients() {
       data={patients}
       isLoading={isLoading}
       columns={['Nome', 'Convênio', 'Última Consulta', '']}
+      // @ts-expect-error - data is an array of patients
       renderRow={(data) => <PatientsList patients={data} />}
       filterPlaceholder="Filtrar por nome"
       tableCaption="Seus pacientes"

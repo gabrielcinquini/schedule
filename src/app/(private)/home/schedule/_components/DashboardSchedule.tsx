@@ -13,6 +13,7 @@ export function DashboardSchedule() {
       data={schedules}
       isLoading={isLoading}
       columns={['Nome', 'Data', 'Hora', 'Valor', '']}
+      // @ts-expect-error - data is an array of schedules PENDING
       renderRow={(data) => <SchedulesList schedules={data} />}
       filterPlaceholder="Filtrar por nome"
       tableCaption="Sua agenda"

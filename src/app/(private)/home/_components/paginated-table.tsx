@@ -15,6 +15,8 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
+// TODO: Refactor to use specific types instead of Generics Type
+
 interface PaginatedTableProps<T> {
   data?: T[]
   isLoading: boolean
@@ -24,7 +26,7 @@ interface PaginatedTableProps<T> {
   tableCaption: string
 }
 
-export function PaginatedTable({
+export function PaginatedTable<T>({
   data,
   isLoading,
   columns,
@@ -41,6 +43,7 @@ export function PaginatedTable({
   const endIndex = startIndex + itemsPerPage
 
   const filteredData = data?.filter((item) => {
+    // @ts-expect-error T type
     return Object.values(item).some((val) =>
       String(val).toLowerCase().includes(filter.toLowerCase()),
     )
@@ -82,6 +85,7 @@ export function PaginatedTable({
                 </TableCell>
               </TableRow>
             ))}
+          {/* @ts-expect-error T type */}
           {!isLoading && renderRow(filteredData?.slice(startIndex, endIndex))}
         </TableBody>
       </Table>

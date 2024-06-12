@@ -3,7 +3,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prismaClient } from '@/database/client'
 import { getUserFromSession } from '@/lib'
 
-export async function DELETE(req: NextRequest, { params }: any) {
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } },
+) {
   const { id } = params
 
   const user = await getUserFromSession()

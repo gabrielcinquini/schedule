@@ -4,7 +4,10 @@ import { prismaClient } from '@/database/client'
 import { getUserFromSession } from '@/lib'
 import { updateScheduleSchema } from '@/validations/validations'
 
-export async function DELETE(req: NextRequest, { params }: any) {
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } },
+) {
   const { id } = params
 
   const user = await getUserFromSession()
@@ -39,8 +42,11 @@ export async function DELETE(req: NextRequest, { params }: any) {
   )
 }
 
-export async function PATCH(req: NextRequest, { params }: any) {
-  const { id: scheduleId } = params
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: { id: string } },
+) {
+  const { id } = params
 
   const body = await req.json()
   const parsedBody = updateScheduleSchema.safeParse(body)
@@ -59,7 +65,7 @@ export async function PATCH(req: NextRequest, { params }: any) {
   if (status === 'COMPLETED' && date < new Date()) {
     const currentPatientSchedule = await prismaClient.schedule.findFirst({
       where: {
-        id: scheduleId,
+        id,
       },
       select: {
         patientId: true,
@@ -78,7 +84,7 @@ export async function PATCH(req: NextRequest, { params }: any) {
 
   await prismaClient.schedule.update({
     where: {
-      id: scheduleId,
+      id,
     },
     data: {
       status,
