@@ -7,6 +7,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
+import Loader from '@/components/Loader'
 import { Button } from '@/components/ui/button'
 import {
   FormControl,
@@ -148,7 +149,12 @@ export const RegisterForm = () => {
         />
 
         <div className="flex flex-col space-y-4">
-          <Button className="w-full" type="submit">
+          <Button
+            className="w-full"
+            type="submit"
+            disabled={methods.formState.isSubmitting}
+          >
+            {methods.formState.isSubmitting && <Loader />}
             Registrar
           </Button>
         </div>
