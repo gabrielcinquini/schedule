@@ -19,6 +19,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { APP_ROUTES } from '@/routes/paths'
 import {
   ForgotPasswordFormSchemaType,
   updateProfileFormSchema,
@@ -111,7 +112,10 @@ export function UpdateProfileForm() {
             Enviar
           </Button>
           <Button asChild variant={'secondary'}>
-            <Link href="/home" className="flex w-full gap-2">
+            <Link
+              href={APP_ROUTES.private.schedule}
+              className="flex w-full gap-2"
+            >
               <ArrowLeftIcon />
               Voltar
             </Link>
