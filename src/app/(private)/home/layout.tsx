@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import React from 'react'
 
-import { Header } from '@/components/ui/Header/Header'
+import { Header } from '@/components/Header/Header'
 import { getServerSessionApp } from '@/lib'
 export default async function PrivateLayoutRoot({
   children,

@@ -4,8 +4,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { getServerSessionApp } from '@/lib'
 import { getInitials } from '@/utils/utils'
 
-import { DropdownMenu, DropdownMenuTrigger } from '../dropdown-menu'
-import ModeToggle from '../mode-toggle'
+import { DropdownMenu, DropdownMenuTrigger } from '../ui/dropdown-menu'
+import ModeToggle from '../ui/mode-toggle'
 import { HeaderDropdownContent } from './HeaderDropdownContent'
 import { NavList } from './NavList'
 

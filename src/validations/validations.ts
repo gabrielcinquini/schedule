@@ -150,10 +150,9 @@ export const registerPatientFormSchema = patientSchema.pick({
 })
 export type RegisterPatientFormType = z.infer<typeof registerPatientFormSchema>
 
-export const forgotPasswordFormSchema = z
+export const updateProfileFormSchema = z
   .object({
-    id: z.string().uuid().optional(),
-    newPassword: z.string().min(5, 'Mínimo de 5 caracteres'),
+    newPassword: z.string().min(6, 'Mínimo de 6 caracteres'),
     confirmPassword: z.string(),
   })
   .refine(
@@ -168,5 +167,5 @@ export const forgotPasswordFormSchema = z
   )
 
 export type ForgotPasswordFormSchemaType = z.infer<
-  typeof forgotPasswordFormSchema
+  typeof updateProfileFormSchema
 >

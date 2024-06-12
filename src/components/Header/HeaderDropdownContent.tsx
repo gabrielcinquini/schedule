@@ -1,6 +1,6 @@
 'use client'
 
-import { LockIcon, LogOutIcon } from 'lucide-react'
+import { LogOutIcon, UserIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { signOut } from 'next-auth/react'
 import React from 'react'
@@ -13,7 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-} from '../dropdown-menu'
+} from '../ui/dropdown-menu'
 
 export function HeaderDropdownContent() {
   const router = useRouter()
@@ -24,18 +24,21 @@ export function HeaderDropdownContent() {
       <DropdownMenuSeparator />
       <DropdownMenuGroup>
         <DropdownMenuItem>
-          <LogOutIcon className="mr-2 h-4 w-4" />
-          <button className="flex w-full" onClick={() => signOut()}>
-            Log out
+          <button
+            className="flex w-full items-center"
+            onClick={() => router.push(APP_ROUTES.private.profile)}
+          >
+            <UserIcon className="mr-2 h-4 w-4" />
+            Meu perfil
           </button>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <LockIcon className="mr-2 h-4 w-4" />
           <button
-            className="flex w-full"
-            onClick={() => router.push(APP_ROUTES.private.forgotPassword)}
+            className="flex w-full items-center"
+            onClick={() => signOut()}
           >
-            Alterar minha senha
+            <LogOutIcon className="mr-2 h-4 w-4" />
+            Log out
           </button>
         </DropdownMenuItem>
       </DropdownMenuGroup>
