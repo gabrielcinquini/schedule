@@ -1,13 +1,13 @@
 import { compareSync, hashSync } from 'bcryptjs'
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
 
 import { prismaClient } from '@/database/client'
+import { getUserFromSession } from '@/lib'
 import { updateProfileFormSchema } from '@/validations/validations'
 
 export async function PATCH(req: NextRequest) {
   const body = await req.json()
-  const session = await getServerSession()
+  const user = await getUserFromSession()
   const parsedBody = updateProfileFormSchema.safeParse(body)
 
   if (!parsedBody.success)
@@ -20,26 +20,16 @@ export async function PATCH(req: NextRequest) {
       { status: 404 },
     )
 
-  const userFromEmail = await prismaClient.user.findUnique({
-    where: {
-      email: session?.user?.email || undefined,
-    },
-    select: {
-      id: true,
-      password: true,
-    },
-  })
-
-  if (!userFromEmail)
+  if (!user.password)
     return NextResponse.json(
-      { message: 'Usuário não encontrado' },
+      {
+        message:
+          'Você não tem permissão para alterar a senha, possivelmente você se cadastrou com o Google',
+      },
       { status: 404 },
     )
 
-  if (
-    userFromEmail.password &&
-    compareSync(newPassword, userFromEmail.password)
-  )
+  if (compareSync(newPassword, user.password))
     return NextResponse.json(
       {
         message: 'A senha não pode ser a mesma já cadastrada',
@@ -49,7 +39,7 @@ export async function PATCH(req: NextRequest) {
 
   await prismaClient.user.update({
     where: {
-      id: userFromEmail.id,
+      id: user.id,
     },
     data: {
       password: hashSync(newPassword, 10),

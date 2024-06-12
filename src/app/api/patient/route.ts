@@ -1,30 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
 
 import { prismaClient } from '@/database/client'
+import { getUserFromSession } from '@/lib'
 import { registerPatientFormSchema } from '@/validations/validations'
 
 export async function GET() {
-  const session = await getServerSession()
-
-  const userFromEmail = await prismaClient.user.findUnique({
-    where: {
-      email: session?.user?.email || undefined,
-    },
-    select: {
-      id: true,
-    },
-  })
-
-  if (!userFromEmail)
-    return NextResponse.json(
-      { message: 'Usuário não encontrado' },
-      { status: 404 },
-    )
+  const user = await getUserFromSession()
 
   const patients = await prismaClient.patient.findMany({
     where: {
-      userId: userFromEmail.id,
+      userId: user.id,
     },
     orderBy: [
       {
@@ -40,7 +25,6 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const session = await getServerSession()
   const body = await req.json()
   const parsedBody = registerPatientFormSchema.safeParse(body)
 
@@ -48,22 +32,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: parsedBody.error })
   }
 
+  const user = await getUserFromSession()
+
   const { name, lastName, convenio } = parsedBody.data
-
-  const userFromEmail = await prismaClient.user.findUnique({
-    where: {
-      email: session?.user?.email || undefined,
-    },
-    select: {
-      id: true,
-    },
-  })
-
-  if (!userFromEmail)
-    return NextResponse.json(
-      { message: 'Usuário não encontrado' },
-      { status: 404 },
-    )
 
   const patients = await prismaClient.patient.findMany({
     where: {
@@ -73,7 +44,7 @@ export async function POST(req: NextRequest) {
   })
 
   const patientRegistered = patients.find(
-    (patient) => patient.userId === userFromEmail.id,
+    (patient) => patient.userId === user.id,
   )
 
   if (patientRegistered) {
@@ -88,7 +59,7 @@ export async function POST(req: NextRequest) {
       name,
       lastName,
       convenio,
-      userId: userFromEmail.id,
+      userId: user.id,
     },
   })
 

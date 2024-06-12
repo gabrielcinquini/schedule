@@ -1,36 +1,21 @@
 import { ScheduleStatus } from '@prisma/client'
 import { addMinutes, subMinutes } from 'date-fns'
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
 
 import { prismaClient } from '@/database/client'
+import { getUserFromSession } from '@/lib'
 import { createScheduleSchema } from '@/validations/validations'
 
 export async function GET(req: NextRequest) {
-  const session = await getServerSession()
+  const user = await getUserFromSession()
   const url = new URL(req.url)
   const status = url.searchParams.get('status') as ScheduleStatus
-
-  const userFromEmail = await prismaClient.user.findUnique({
-    where: {
-      email: session?.user?.email || undefined,
-    },
-    select: {
-      id: true,
-    },
-  })
-
-  if (!userFromEmail)
-    return NextResponse.json(
-      { message: 'Usuário não encontrado' },
-      { status: 404 },
-    )
 
   const schedules = await prismaClient.schedule.findMany({
     where: {
       AND: [
         {
-          userId: userFromEmail.id,
+          userId: user.id,
         },
         {
           status,
@@ -47,7 +32,6 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const session = await getServerSession()
   const body = await req.json()
 
   const parsedBody = createScheduleSchema.safeParse(body)
@@ -56,29 +40,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: parsedBody.error }, { status: 404 })
   }
 
+  const user = await getUserFromSession()
+
   const { date, value, patientId, name, lastName } = parsedBody.data
-
-  const userFromEmail = await prismaClient.user.findUnique({
-    where: {
-      email: session?.user?.email || undefined,
-    },
-    select: {
-      id: true,
-    },
-  })
-
-  if (!userFromEmail)
-    return NextResponse.json(
-      { message: 'Usuário não encontrado' },
-      { status: 404 },
-    )
 
   const startDate = subMinutes(date, 39)
   const endDate = addMinutes(date, 39)
 
   const existingSchedule = await prismaClient.schedule.findFirst({
     where: {
-      userId: userFromEmail.id,
+      userId: user.id,
       date: {
         gte: startDate,
         lte: endDate,
@@ -100,7 +71,7 @@ export async function POST(req: NextRequest) {
       date,
       value,
       status: 'PENDING',
-      userId: userFromEmail.id,
+      userId: user.id,
       patientId,
     },
   })
