@@ -15,7 +15,7 @@ export function DashboardPatients() {
       columns={['Nome', 'Convênio', 'Última Consulta', '']}
       renderRow={(data) => <PatientsList patients={data} />}
       filterPlaceholder="Filtrar por nome"
-      tableCaption="Sua agenda"
+      tableCaption="Seus pacientes"
     />
   )
 }

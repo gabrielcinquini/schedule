@@ -27,7 +27,7 @@ export function DashBoardTotal() {
       columns={['Nome', 'Data', 'Hora', 'Valor', '']}
       renderRow={(data) => <TotalItemsList totalItems={data} />}
       filterPlaceholder="Filtrar por nome"
-      tableCaption="Sua agenda"
+      tableCaption="Total"
     />
   )
 }

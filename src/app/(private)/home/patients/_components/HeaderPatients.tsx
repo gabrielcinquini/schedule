@@ -8,7 +8,7 @@ import { RegisterPatientForm } from './RegisterPatientForm'
 
 export function HeaderPatients() {
   return (
-    <Widget title="Dashboard">
+    <Widget title="Pacientes">
       <CustomDialog
         triggerText="Cadastrar paciente"
         title="Cadastrar paciente"
