@@ -20,13 +20,15 @@ import { LoginForm } from './_components/LoginForm'
 
 export default function LoginPage() {
   return (
-    <div className="flex h-screen items-center justify-center">
+    <div className="flex h-screen items-center justify-center max-sm:container">
       <div className="absolute top-12">
         <ModeToggle />
       </div>
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold">Entrar</CardTitle>
+          <CardTitle className="text-2xl font-bold max-sm:text-xl">
+            Entrar
+          </CardTitle>
           <CardDescription>
             Insira o usuário e a senha abaixo para entrar
           </CardDescription>

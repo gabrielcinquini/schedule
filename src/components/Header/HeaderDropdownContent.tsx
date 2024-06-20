@@ -19,7 +19,7 @@ export function HeaderDropdownContent() {
   const router = useRouter()
 
   return (
-    <DropdownMenuContent className="w-56">
+    <DropdownMenuContent className="w-fit">
       <DropdownMenuLabel>Minha Conta</DropdownMenuLabel>
       <DropdownMenuSeparator />
       <DropdownMenuGroup>

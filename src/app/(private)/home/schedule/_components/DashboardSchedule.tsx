@@ -29,9 +29,9 @@ export function DashboardSchedule() {
   )
 
   return (
-    <div className="container">
+    <div className="flex flex-col gap-2 sm:container">
       <Table>
-        <TableCaption>Sua agenda</TableCaption>
+        <TableCaption className="max-sm:hidden">Sua agenda</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead>Nome</TableHead>

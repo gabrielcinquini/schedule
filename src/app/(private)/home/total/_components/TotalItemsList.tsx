@@ -35,10 +35,10 @@ export function TotalItemsList({ totalItems }: TotalItemsListProps) {
             service.status === 'CANCELED' && 'bg-destructive/70',
           )}
         >
-          <TableCell>
+          <TableCell className="min-w-[150px]">
             {service.name} {service.lastName}
           </TableCell>
-          <TableCell>
+          <TableCell className="min-w-[140px]">
             {format(new Date(service.date), 'dd/MM/yy')} -{' '}
             {capitalize(
               format(new Date(service.date), 'EE', {

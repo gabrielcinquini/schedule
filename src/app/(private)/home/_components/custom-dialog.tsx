@@ -28,7 +28,7 @@ export function CustomDialog({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>{triggerText}</Button>
+        <Button className="max-sm:text-sm">{triggerText}</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

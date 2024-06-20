@@ -29,7 +29,7 @@ export function DashBoardTotal() {
   )
 
   return (
-    <div className="container">
+    <div className="sm:container">
       <Table>
         <TableCaption>Total</TableCaption>
         <TableHeader>

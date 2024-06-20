@@ -27,12 +27,12 @@ export function PatientsList({ patients }: PatientsListProps) {
     <>
       {patients?.map((patient) => (
         <TableRow key={patient.id}>
-          <TableCell>
+          <TableCell className="min-w-[150px]">
             {patient.name} {patient.lastName}
           </TableCell>
-          <TableCell>{patient.cpf}</TableCell>
+          <TableCell className="min-w-[130px]">{patient.cpf}</TableCell>
           <TableCell>{patient.convenio}</TableCell>
-          <TableCell>
+          <TableCell className="min-w-[200px]">
             {patient.lastConsult ? (
               <>
                 {format(new Date(patient.lastConsult), 'dd/MM/yy')} -{' '}

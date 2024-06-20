@@ -22,9 +22,11 @@ export function CardInfo({
   return (
     <>
       {currentPage === APP_ROUTES.private.schedule && (
-        <Card className="min-w-[250px] bg-green-700 max-sm:w-fit">
+        <Card className="bg-green-700 max-sm:min-w-[150px] sm:min-w-[250px]">
           <CardHeader>
-            <CardTitle className="text-white">Total a Receber</CardTitle>
+            <CardTitle className="text-white max-sm:text-lg">
+              Total a Receber
+            </CardTitle>
           </CardHeader>
           <CardContent className="flex items-center justify-center">
             <h1 className="text-2xl text-white max-sm:text-lg">
@@ -41,10 +43,12 @@ export function CardInfo({
       )}{' '}
       {currentPage === APP_ROUTES.private.total && (
         <>
-          <div className="flex gap-2">
-            <Card className="min-w-[250px] bg-green-700">
+          <div className="flex w-full items-center justify-center gap-2">
+            <Card className="bg-green-700 max-sm:min-w-[150px] sm:min-w-[250px]">
               <CardHeader>
-                <CardTitle className="text-white">Total Recebido</CardTitle>
+                <CardTitle className="text-white max-sm:text-lg">
+                  Total Recebido
+                </CardTitle>
               </CardHeader>
               <CardContent className="flex items-center justify-center">
                 <h1 className="text-2xl text-white max-sm:text-lg">
@@ -58,9 +62,11 @@ export function CardInfo({
                 </h1>
               </CardContent>
             </Card>
-            <Card className="min-w-[250px] bg-destructive">
+            <Card className="bg-destructive max-sm:min-w-[150px] sm:min-w-[250px]">
               <CardHeader>
-                <CardTitle className="text-white">Total Perdido</CardTitle>
+                <CardTitle className="text-white max-sm:text-lg">
+                  Total Perdido
+                </CardTitle>
               </CardHeader>
               <CardContent className="flex items-center justify-center">
                 <h1 className="text-2xl text-white max-sm:text-lg">

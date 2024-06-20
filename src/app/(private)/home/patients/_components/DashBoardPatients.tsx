@@ -25,9 +25,9 @@ export function DashboardPatients() {
   const { data, isLoading } = usePatients(currentPage, itemsPerPage)
 
   return (
-    <div className="container">
+    <div className="flex flex-col gap-2 sm:container">
       <Table>
-        <TableCaption>Seus pacientes</TableCaption>
+        <TableCaption className="max-sm:hidden">Seus pacientes</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead>Nome</TableHead>

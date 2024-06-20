@@ -45,10 +45,10 @@ export function SchedulesList({ schedules }: PatientsListProps) {
     <>
       {schedules?.map((schedule) => (
         <TableRow key={schedule.id}>
-          <TableCell>
+          <TableCell className="min-w-[150px]">
             {schedule.name} {schedule.lastName}
           </TableCell>
-          <TableCell>
+          <TableCell className="min-w-[150px]">
             {format(new Date(schedule.date), 'dd/MM/yy')} -{' '}
             {capitalize(
               format(new Date(schedule.date), 'EE', { locale: ptBR }),

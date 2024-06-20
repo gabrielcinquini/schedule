@@ -155,7 +155,7 @@ export function RegisterPatientForm() {
         </span>
         <Button
           type="submit"
-          className="p-6 text-lg"
+          className="p-6 max-sm:text-lg sm:text-lg"
           disabled={form.formState.isSubmitting}
         >
           {form.formState.isSubmitting && <Loader />}

@@ -111,7 +111,7 @@ export function CreateScheduleForm() {
       {data?.patients.length ? (
         <Form {...form}>
           <form
-            className="flex flex-col gap-4 max-sm:gap-2 max-sm:text-sm"
+            className="flex flex-col gap-4"
             onSubmit={handleRegisterSchedule}
           >
             <FormField
@@ -165,7 +165,7 @@ export function CreateScheduleForm() {
                               locale: ptBR,
                             })
                           ) : (
-                            <span>Selecione a data</span>
+                            <span className="text-base">Selecione a data</span>
                           )}
                           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
@@ -233,7 +233,7 @@ export function CreateScheduleForm() {
             />
             <Button
               type="submit"
-              className="p-9 text-lg"
+              className="p-6 max-sm:text-lg sm:text-lg"
               disabled={form.formState.isSubmitting}
             >
               {form.formState.isSubmitting && <Loader />}
