@@ -56,7 +56,7 @@ export const Pagination = ({
     }
   }, [pages, lastPage])
 
-  // if (totalCount === 0) return null;
+  if (totalCount === 0) return null
 
   return (
     <TooltipProvider>
