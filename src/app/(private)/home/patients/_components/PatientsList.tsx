@@ -30,6 +30,7 @@ export function PatientsList({ patients }: PatientsListProps) {
           <TableCell>
             {patient.name} {patient.lastName}
           </TableCell>
+          <TableCell>{patient.cpf}</TableCell>
           <TableCell>{patient.convenio}</TableCell>
           <TableCell>
             {patient.lastConsult ? (

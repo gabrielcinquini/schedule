@@ -31,6 +31,7 @@ export function DashboardPatients() {
         <TableHeader>
           <TableRow>
             <TableHead>Nome</TableHead>
+            <TableHead>CPF</TableHead>
             <TableHead>Convênio</TableHead>
             <TableHead>Última Consulta</TableHead>
             <TableHead></TableHead>
@@ -40,7 +41,7 @@ export function DashboardPatients() {
           {isLoading &&
             Array.from({ length: itemsPerPage }).map((_, index) => (
               <TableRow key={index}>
-                <TableCell colSpan={4}>
+                <TableCell colSpan={5}>
                   <Skeleton className="h-10" />
                 </TableCell>
               </TableRow>
