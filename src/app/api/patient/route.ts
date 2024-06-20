@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
 
   const user = await getUserFromSession()
 
-  const { name, lastName, convenio } = parsedBody.data
+  const { name, lastName, cpf, convenio } = parsedBody.data
 
   const patients = await prismaClient.patient.findMany({
     where: {
@@ -58,9 +58,7 @@ export async function POST(req: NextRequest) {
     },
   })
 
-  const patientRegistered = patients.find(
-    (patient) => patient.userId === user.id,
-  )
+  const patientRegistered = patients.find((patient) => patient.cpf === cpf)
 
   if (patientRegistered) {
     return NextResponse.json(
@@ -73,8 +71,10 @@ export async function POST(req: NextRequest) {
     data: {
       name,
       lastName,
+      cpf,
       convenio,
       userId: user.id,
+      CPF_Consent_version: '1.0',
     },
   })
 

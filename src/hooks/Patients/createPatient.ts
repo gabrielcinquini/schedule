@@ -13,6 +13,7 @@ export const useCreatePatient = () => {
       return await axios.post('/api/patient', {
         name: data.name,
         lastName: data.lastName,
+        cpf: data.cpf,
         convenio: data.convenio,
       })
     },

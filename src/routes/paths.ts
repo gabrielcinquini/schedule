@@ -10,7 +10,8 @@ export const APP_ROUTES = {
     total: '/home/total' as const,
     profile: '/home/profile' as const,
   },
-  external: {
+  therms: {
+    registerPatient: '/therms/register-patient' as const,
     privacyPolicy: 'https://example.com/privacy-policy' as const,
     termsOfService: 'https://example.com/terms-of-service' as const,
   },

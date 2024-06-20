@@ -13,6 +13,7 @@ export const QUERY_KEYS = {
       itemsPerPage?: number,
     ) => ['schedules', status, currentPage, itemsPerPage],
     SUM_SCHEDULES: () => ['sumSchedules'],
+    THERMS_REGISTER_PATIENT: () => ['therms', 'registerPatient'],
   },
 
   MUTATE: {

@@ -47,15 +47,29 @@ model Schedule {
 }
 
 model Patient {
-  id          String     @id @default(uuid())
-  name        String
-  lastName    String
-  convenio    String
-  userId      String
-  lastConsult DateTime?
-  createdAt   DateTime   @default(now())
-  author      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Schedule    Schedule[]
+  id                  String      @id @default(uuid())
+  name                String
+  lastName            String
+  cpf                 String      @unique
+  convenio            String
+  userId              String
+  lastConsult         DateTime?
+  createdAt           DateTime    @default(now())
+  author              User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Schedule            Schedule[]
+  CPF_Consent_version String      @unique
+  CPF_Consent         CpfConsent  @relation(fields: [CPF_Consent_version], references: [version])
+}
+
+model CpfConsent {
+  id              String   @id @default(cuid())
+  version         String   @unique
+  consent_title   String
+  consent_text    String   @db.Text
+  isActive        Boolean
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  patient         Patient[]
 }
 
 model Account {

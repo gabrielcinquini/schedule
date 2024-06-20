@@ -30,14 +30,14 @@ export default function Home() {
               Ao registrar, você concorda com os nossos{' '}
               <Link
                 className="inline-block text-sm underline"
-                href={APP_ROUTES.external.termsOfService}
+                href={APP_ROUTES.therms.termsOfService}
               >
                 Termos de Serviço
               </Link>
               &nbsp;e&nbsp;
               <Link
                 className="inline-block text-sm underline"
-                href={APP_ROUTES.external.privacyPolicy}
+                href={APP_ROUTES.therms.privacyPolicy}
               >
                 Política de Privacidade
               </Link>

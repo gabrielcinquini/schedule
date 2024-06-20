@@ -1,6 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import Link from 'next/link'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -23,7 +24,8 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useCreatePatient } from '@/hooks/Patients/createPatient'
-import { formatName } from '@/utils/utils'
+import { APP_ROUTES } from '@/routes/paths'
+import { formatCPF, formatName } from '@/utils/utils'
 import {
   registerPatientFormSchema,
   RegisterPatientFormType,
@@ -95,6 +97,28 @@ export function RegisterPatientForm() {
         </div>
         <FormField
           control={form.control}
+          name="cpf"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input
+                  autoComplete="off"
+                  type="text"
+                  className="px-2 py-5 max-sm:p-3"
+                  placeholder="CPF"
+                  {...field}
+                  onChange={(event) => {
+                    formatCPF(event)
+                    field.onChange(event)
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
           name="convenio"
           render={({ field }) => (
             <FormItem>
@@ -119,6 +143,16 @@ export function RegisterPatientForm() {
             </FormItem>
           )}
         />
+        <span className="text-sm">
+          Ao continuar com o cadastro deste paciente, você concorda com os
+          nossos{' '}
+          <Link
+            className="inline-block underline"
+            href={APP_ROUTES.therms.registerPatient}
+          >
+            Termos de Responsabilidade
+          </Link>
+        </span>
         <Button
           type="submit"
           className="p-6 text-lg"

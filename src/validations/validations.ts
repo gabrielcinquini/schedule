@@ -136,6 +136,45 @@ export const patientSchema = z.object({
       /^[A-ZÁÉÍÓÚÃÕÂÊÎÔÇ][a-záéíóúãõâêîôç]+$/,
       'Sobrenome inválido(Silva)',
     ),
+  cpf: z
+    .string()
+    .regex(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, 'Formato inválido(123.456.789-00)')
+    .refine(
+      (value) => {
+        const cleanDigits = value.replace(/[^\d]/g, '')
+
+        if (cleanDigits.length !== 11) {
+          return false
+        }
+
+        const calculateDigit = (digits: number[], weights: number[]) => {
+          const sum = digits.reduce(
+            (acc, digit, index) => acc + digit * weights[index],
+            0,
+          )
+          const result = sum % 11
+          return result < 2 ? 0 : 11 - result
+        }
+
+        const cpfDigits = cleanDigits.slice(0, 9).split('').map(Number)
+        const firstDigit = calculateDigit(
+          cpfDigits,
+          [10, 9, 8, 7, 6, 5, 4, 3, 2],
+        )
+
+        const cpfWithFirstDigit = cleanDigits.slice(0, 10).split('').map(Number)
+        const lastDigit = calculateDigit(
+          cpfWithFirstDigit,
+          [11, 10, 9, 8, 7, 6, 5, 4, 3, 2],
+        )
+
+        return (
+          Number(cleanDigits[9]) === firstDigit &&
+          Number(cleanDigits[10]) === lastDigit
+        )
+      },
+      { message: 'CPF inválido' },
+    ),
   convenio: z.string().min(3, 'Deve conter ao menos 3 caracteres'),
   lastConsult: z.coerce.date().nullable(),
   createdAt: z.coerce.date(),
@@ -146,6 +185,7 @@ export type PatientType = z.infer<typeof patientSchema>
 export const registerPatientFormSchema = patientSchema.pick({
   name: true,
   lastName: true,
+  cpf: true,
   convenio: true,
 })
 export type RegisterPatientFormType = z.infer<typeof registerPatientFormSchema>
