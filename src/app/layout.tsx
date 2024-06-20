@@ -35,7 +35,7 @@ export default function RootLayout({
         </ThemeProvider>
       </body>
 
-      <Toaster position="top-right" richColors closeButton duration={2500} />
+      <Toaster position="bottom-right" richColors closeButton duration={2500} />
     </html>
   )
 }
