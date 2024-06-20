@@ -8,27 +8,40 @@ import { createScheduleSchema } from '@/validations/validations'
 
 export async function GET(req: NextRequest) {
   const user = await getUserFromSession()
-  const url = new URL(req.url)
-  const status = url.searchParams.get('status') as ScheduleStatus
+
+  const status = req.nextUrl.searchParams.getAll('status[]') as ScheduleStatus[]
+  const perPage = req.nextUrl.searchParams.get('perPage')
+  const currentPage = req.nextUrl.searchParams.get('currentPage')
 
   const schedules = await prismaClient.schedule.findMany({
     where: {
-      AND: [
-        {
-          userId: user.id,
-        },
-        {
-          status,
-        },
-      ],
+      userId: user.id,
+      status: {
+        in: status,
+      },
     },
     include: {
       patient: true,
     },
-    orderBy: { date: 'asc' },
+    orderBy: { date: status.includes('PENDING') ? 'asc' : 'desc' },
+    take: Number(perPage),
+    skip: (Number(currentPage) - 1) * Number(perPage),
   })
 
-  return NextResponse.json(schedules)
+  const totalSchedules = await prismaClient.schedule.count({
+    where: {
+      userId: user.id,
+      status: {
+        in: status,
+      },
+    },
+  })
+
+  return NextResponse.json({
+    schedules,
+    totalPages: Math.ceil(totalSchedules / Number(perPage)),
+    totalCount: totalSchedules,
+  })
 }
 
 export async function POST(req: NextRequest) {

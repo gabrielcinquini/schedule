@@ -3,20 +3,14 @@
 import React from 'react'
 
 import { Skeleton } from '@/components/ui/skeleton'
-import { useSchedules } from '@/hooks/Schedule/useSchedules'
+import { useSumSchedules } from '@/hooks/Schedule/useSumSchedules'
 import { APP_ROUTES } from '@/routes/paths'
-import { calcularTotal } from '@/utils/utils'
 
 import { CardInfo } from '../../_components/card-info'
 import { Widget } from '../../_components/widget'
 
 export function HeaderTotal() {
-  const { data: completedSchedules, isLoading: isLoadingCompletedSchedules } =
-    useSchedules('COMPLETED')
-  const { data: canceledSchedules, isLoading: isLoadingCanceledSchedules } =
-    useSchedules('CANCELED')
-
-  const isLoading = isLoadingCompletedSchedules || isLoadingCanceledSchedules
+  const { data, isLoading } = useSumSchedules()
 
   return (
     <Widget title="Total">
@@ -29,8 +23,8 @@ export function HeaderTotal() {
         <>
           <CardInfo
             currentPage={APP_ROUTES.private.total}
-            totalReceived={calcularTotal(completedSchedules)}
-            totalNotReceived={calcularTotal(canceledSchedules)}
+            totalReceived={data?.completed}
+            totalNotReceived={data?.canceled}
           />
         </>
       )}

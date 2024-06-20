@@ -4,16 +4,15 @@ import React from 'react'
 
 import { CustomDialog } from '@/app/(private)/home/_components/custom-dialog'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useSchedules } from '@/hooks/Schedule/useSchedules'
+import { useSumSchedules } from '@/hooks/Schedule/useSumSchedules'
 import { APP_ROUTES } from '@/routes/paths'
-import { calcularTotal } from '@/utils/utils'
 
 import { CardInfo } from '../../_components/card-info'
 import { Widget } from '../../_components/widget'
 import { CreateScheduleForm } from './CreateScheduleForm'
 
 export function HeaderSchedule() {
-  const { data: schedules, isLoading } = useSchedules('PENDING')
+  const { data: totalPedingSchedules, isLoading } = useSumSchedules()
 
   return (
     <Widget title="Agenda">
@@ -22,7 +21,7 @@ export function HeaderSchedule() {
       ) : (
         <CardInfo
           currentPage={APP_ROUTES.private.schedule}
-          totalHome={calcularTotal(schedules)}
+          totalHome={totalPedingSchedules?.pending}
         />
       )}
       <CustomDialog

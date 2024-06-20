@@ -1,21 +1,5 @@
 import { QueryClient } from '@tanstack/react-query'
 
-import { ScheduleType } from '@/validations/validations'
-
-export function calcularTotal(items?: ScheduleType[]) {
-  const totalQuantidades = items?.reduce((total, item) => {
-    const quantidade = parseFloat(item.value.toString())
-
-    if (!isNaN(quantidade)) {
-      return total + quantidade
-    }
-
-    return total
-  }, 0)
-
-  return totalQuantidades
-}
-
 export function formatUsername(event: React.ChangeEvent<HTMLInputElement>) {
   const currentValue = event.target.value
   const currentPos = event.target.selectionStart || 0

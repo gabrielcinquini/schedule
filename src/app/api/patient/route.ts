@@ -4,8 +4,11 @@ import { prismaClient } from '@/database/client'
 import { getUserFromSession } from '@/lib'
 import { registerPatientFormSchema } from '@/validations/validations'
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const user = await getUserFromSession()
+
+  const perPage = req.nextUrl.searchParams.get('perPage')
+  const currentPage = req.nextUrl.searchParams.get('currentPage')
 
   const patients = await prismaClient.patient.findMany({
     where: {
@@ -19,9 +22,21 @@ export async function GET() {
         lastName: 'asc',
       },
     ],
+    take: Number(perPage),
+    skip: (Number(currentPage) - 1) * Number(perPage),
   })
 
-  return NextResponse.json(patients)
+  const totalPatients = await prismaClient.patient.count({
+    where: {
+      userId: user.id,
+    },
+  })
+
+  return NextResponse.json({
+    patients,
+    totalPages: Math.ceil(totalPatients / Number(perPage)),
+    totalCount: totalPatients,
+  })
 }
 
 export async function POST(req: NextRequest) {
