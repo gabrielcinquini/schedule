@@ -51,14 +51,12 @@ export async function POST(req: NextRequest) {
 
   const { name, lastName, cpf, convenio } = parsedBody.data
 
-  const patients = await prismaClient.patient.findMany({
+  const patientRegistered = await prismaClient.patient.findFirst({
     where: {
-      name,
-      lastName,
+      userId: user.id,
+      cpf,
     },
   })
-
-  const patientRegistered = patients.find((patient) => patient.cpf === cpf)
 
   if (patientRegistered) {
     return NextResponse.json(
@@ -67,6 +65,12 @@ export async function POST(req: NextRequest) {
     )
   }
 
+  const activeCpfConsent = await prismaClient.cpfConsent.findFirstOrThrow({
+    where: {
+      isActive: true,
+    },
+  })
+
   await prismaClient.patient.create({
     data: {
       name,
@@ -74,7 +78,7 @@ export async function POST(req: NextRequest) {
       cpf,
       convenio,
       userId: user.id,
-      CPF_Consent_version: '1.0',
+      CPF_Consent_version: activeCpfConsent.version,
     },
   })
 

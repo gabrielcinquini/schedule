@@ -25,10 +25,13 @@ export default async function middleware(req: NextRequest) {
 
   if (isPublicPage && isAuth) {
     return NextResponse.redirect(new URL(APP_ROUTES.private.schedule, req.url))
-  } else {
-    // @ts-expect-error unknown type
-    return (authMiddleware as unknwon)(req)
   }
+  if (!isPublicPage) {
+    // @ts-expect-error - The type of authMiddleware is not compatible with the middleware function
+    return (authMiddleware as Any)(req)
+  }
+
+  return NextResponse.next()
 }
 
 export const config = {
