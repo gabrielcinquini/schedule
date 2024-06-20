@@ -149,13 +149,14 @@ export function RegisterPatientForm() {
           <Link
             className="inline-block underline"
             href={APP_ROUTES.therms.registerPatient}
+            target="_blank"
           >
             Termos de Responsabilidade
           </Link>
         </span>
         <Button
           type="submit"
-          className="p-6 max-sm:text-lg sm:text-lg"
+          className="p-6 max-sm:text-base sm:text-base"
           disabled={form.formState.isSubmitting}
         >
           {form.formState.isSubmitting && <Loader />}

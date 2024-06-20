@@ -38,7 +38,7 @@ export default function LoginPage() {
           <LoginForm />
           <Typography variant="small">OU</Typography>
           <Button
-            className="w-full"
+            className="w-full max-sm:text-sm"
             variant="secondary"
             onClick={() =>
               signIn('google', {

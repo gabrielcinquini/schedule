@@ -233,7 +233,7 @@ export function CreateScheduleForm() {
             />
             <Button
               type="submit"
-              className="p-6 max-sm:text-lg sm:text-lg"
+              className="p-6 max-sm:text-base sm:text-base"
               disabled={form.formState.isSubmitting}
             >
               {form.formState.isSubmitting && <Loader />}

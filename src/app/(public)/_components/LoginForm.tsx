@@ -74,7 +74,7 @@ export const LoginForm = () => {
         />
 
         <Button
-          className="w-full"
+          className="w-full max-sm:text-sm"
           type="submit"
           disabled={form.formState.isSubmitting}
         >
