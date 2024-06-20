@@ -38,7 +38,7 @@ export function RegisterPatientForm() {
   const { mutateAsync: onCreatePatient } = useCreatePatient()
 
   const handleCreatePatient = form.handleSubmit(async (formValues) => {
-    await onCreatePatient(formValues)
+    await onCreatePatient(formValues).catch((e) => e)
   })
 
   return (

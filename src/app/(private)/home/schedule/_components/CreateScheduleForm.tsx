@@ -5,6 +5,7 @@ import { CalendarIcon } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
+import Loader from '@/components/Loader'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import {
@@ -37,8 +38,6 @@ import {
   RegisterScheduleFormType,
   registerToScheduleFormSchema,
 } from '@/validations/validations'
-
-import Loader from '../../../../../components/Loader'
 
 export function CreateScheduleForm() {
   const [selectedPatientConvenio, setSelectedPatientConvenio] = useState('')
@@ -86,7 +85,7 @@ export function CreateScheduleForm() {
       date,
       value: Number(transformedValue),
       patientId: formValues.patientId,
-    })
+    }).catch((e) => e)
   })
 
   const handleChange = (patientId: string) => {
