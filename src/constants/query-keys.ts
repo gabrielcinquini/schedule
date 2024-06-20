@@ -2,7 +2,7 @@ import { ScheduleStatus } from '@prisma/client'
 
 export const QUERY_KEYS = {
   GET: {
-    PATIENTS_FROM_USER: (currentPage: number, itemsPerPage: number) => [
+    PATIENTS_FROM_USER: (currentPage?: number, itemsPerPage?: number) => [
       'patients',
       currentPage,
       itemsPerPage,

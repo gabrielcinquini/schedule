@@ -22,8 +22,8 @@ export async function GET(req: NextRequest) {
         lastName: 'asc',
       },
     ],
-    take: Number(perPage),
-    skip: (Number(currentPage) - 1) * Number(perPage),
+    take: perPage ? Number(perPage) : undefined,
+    skip: perPage ? (Number(currentPage) - 1) * Number(perPage) : undefined,
   })
 
   const totalPatients = await prismaClient.patient.count({

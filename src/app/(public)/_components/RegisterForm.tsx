@@ -23,12 +23,12 @@ import { formatName, formatUsername } from '@/utils/utils'
 import { registerUserFormSchema } from '@/validations/validations'
 
 export const RegisterForm = () => {
-  const methods = useForm<z.infer<typeof registerUserFormSchema>>({
+  const form = useForm<z.infer<typeof registerUserFormSchema>>({
     resolver: zodResolver(registerUserFormSchema),
   })
   const router = useRouter()
 
-  const handleRegister = methods.handleSubmit(async (data) => {
+  const handleRegister = form.handleSubmit(async (data) => {
     try {
       await api.post('/auth/register', data)
       toast.success('Registrado com sucesso!')
@@ -42,10 +42,10 @@ export const RegisterForm = () => {
   })
 
   return (
-    <FormProvider {...methods}>
+    <FormProvider {...form}>
       <form onSubmit={handleRegister} className="flex flex-col gap-4">
         <FormField
-          control={methods.control}
+          control={form.control}
           name="username"
           render={({ field }) => (
             <FormItem>
@@ -66,7 +66,7 @@ export const RegisterForm = () => {
         />
         <div className="flex items-center gap-2">
           <FormField
-            control={methods.control}
+            control={form.control}
             name="firstname"
             render={({ field }) => (
               <FormItem>
@@ -87,7 +87,7 @@ export const RegisterForm = () => {
           />
 
           <FormField
-            control={methods.control}
+            control={form.control}
             name="lastname"
             render={({ field }) => (
               <FormItem>
@@ -108,7 +108,7 @@ export const RegisterForm = () => {
           />
         </div>
         <FormField
-          control={methods.control}
+          control={form.control}
           name="email"
           render={({ field }) => (
             <FormItem>
@@ -122,7 +122,7 @@ export const RegisterForm = () => {
         />
 
         <FormField
-          control={methods.control}
+          control={form.control}
           name="password"
           render={({ field }) => (
             <FormItem>
@@ -135,7 +135,7 @@ export const RegisterForm = () => {
           )}
         />
         <FormField
-          control={methods.control}
+          control={form.control}
           name="confirmPassword"
           render={({ field }) => (
             <FormItem>
@@ -152,9 +152,9 @@ export const RegisterForm = () => {
           <Button
             className="w-full"
             type="submit"
-            disabled={methods.formState.isSubmitting}
+            disabled={form.formState.isSubmitting}
           >
-            {methods.formState.isSubmitting && <Loader />}
+            {form.formState.isSubmitting && <Loader />}
             Registrar
           </Button>
         </div>

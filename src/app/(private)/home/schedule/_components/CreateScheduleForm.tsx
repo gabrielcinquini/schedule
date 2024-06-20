@@ -42,14 +42,14 @@ import Loader from '../../../../../components/Loader'
 
 export function CreateScheduleForm() {
   const [selectedPatientConvenio, setSelectedPatientConvenio] = useState('')
-  const { data: patients, isLoading } = usePatients()
+  const { data, isLoading } = usePatients()
   const { mutateAsync: onCreateSchedule } = useCreateSchedule()
 
   useEffect(() => {
-    if (patients && patients.length > 0) {
-      setSelectedPatientConvenio(patients[0].convenio)
+    if (data && data.patients.length > 0) {
+      setSelectedPatientConvenio(data.patients[0].convenio)
     }
-  }, [patients])
+  }, [data])
 
   const form = useForm<RegisterScheduleFormType>({
     mode: 'onChange',
@@ -59,21 +59,23 @@ export function CreateScheduleForm() {
     resolver: zodResolver(registerToScheduleFormSchema),
   })
 
-  const handleRegisterSchedule = async (data: RegisterScheduleFormType) => {
-    const selectedPatient = patients?.find((p) => p.id === data.patientId)
+  const handleRegisterSchedule = form.handleSubmit(async (formValues) => {
+    const selectedPatient = data?.patients.find(
+      (p) => p.id === formValues.patientId,
+    )
     if (!selectedPatient) throw new Error()
 
-    const date = new Date(data.date)
-    const hora = data.time
+    const date = new Date(formValues.date)
+    const hora = formValues.time
     const [novaHora, novosMinutos] = hora.split(':')
     date.setHours(parseInt(novaHora, 10))
     date.setMinutes(parseInt(novosMinutos, 10))
 
     if (selectedPatient.convenio === 'Isento') {
-      data.value = '0'
+      formValues.value = '0'
     }
 
-    const transformedValue = data.value
+    const transformedValue = formValues.value
       .replace(/\s/g, '')
       .replace('R$', '')
       .replace(',', '.')
@@ -83,12 +85,12 @@ export function CreateScheduleForm() {
       lastName: selectedPatient.lastName,
       date,
       value: Number(transformedValue),
-      patientId: data.patientId,
+      patientId: formValues.patientId,
     })
-  }
+  })
 
   const handleChange = (patientId: string) => {
-    const selectedPatient = patients?.find((p) => p.id === patientId)
+    const selectedPatient = data?.patients?.find((p) => p.id === patientId)
     if (selectedPatient) {
       setSelectedPatientConvenio(selectedPatient.convenio)
     }
@@ -107,11 +109,11 @@ export function CreateScheduleForm() {
 
   return (
     <>
-      {patients?.length ? (
+      {data?.patients.length ? (
         <Form {...form}>
           <form
             className="flex flex-col gap-4 max-sm:gap-2 max-sm:text-sm"
-            onSubmit={form.handleSubmit(handleRegisterSchedule)}
+            onSubmit={handleRegisterSchedule}
           >
             <FormField
               control={form.control}
@@ -131,7 +133,7 @@ export function CreateScheduleForm() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          {patients?.map((patient) => (
+                          {data.patients.map((patient) => (
                             <SelectItem key={patient.id} value={patient.id}>
                               {patient.name} {patient.lastName}
                             </SelectItem>

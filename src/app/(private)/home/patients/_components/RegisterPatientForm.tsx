@@ -37,15 +37,15 @@ export function RegisterPatientForm() {
 
   const { mutateAsync: onCreatePatient } = useCreatePatient()
 
-  const handleCreatePatient = async (value: RegisterPatientFormType) => {
-    await onCreatePatient(value)
-  }
+  const handleCreatePatient = form.handleSubmit(async (formValues) => {
+    await onCreatePatient(formValues)
+  })
 
   return (
     <Form {...form}>
       <form
         className="flex flex-col gap-4 max-sm:gap-2 max-sm:text-sm"
-        onSubmit={form.handleSubmit(handleCreatePatient)}
+        onSubmit={handleCreatePatient}
       >
         <div className="flex gap-2">
           <FormField

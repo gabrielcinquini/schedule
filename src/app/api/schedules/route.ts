@@ -67,6 +67,7 @@ export async function POST(req: NextRequest) {
         gte: startDate,
         lte: endDate,
       },
+      status: 'PENDING',
     },
   })
 
