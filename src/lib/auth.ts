@@ -5,6 +5,7 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
 
 import { prismaClient } from '@/database/client'
+import { APP_ROUTES } from '@/routes/paths'
 
 export const authConfigs: NextAuthOptions = {
   adapter: PrismaAdapter(prismaClient),
@@ -40,24 +41,30 @@ export const authConfigs: NextAuthOptions = {
           throw new Error('Credenciais não encontradas')
         }
 
-        return user
+        if (user) {
+          // Any object returned will be saved in `user` property of the JWT
+          return user
+        } else {
+          // If you return null then an error will be displayed advising the user to check their details.
+          return null
+        }
       },
     }),
   ],
 
   callbacks: {
-    session({ session }) {
-      return session
-    },
-
     jwt({ token, user, account }) {
       if (account && user) token.user = user
 
       return token
     },
+
+    session({ session }) {
+      return session
+    },
   },
   pages: {
-    signIn: '/',
+    signIn: APP_ROUTES.public.login,
   },
   session: {
     strategy: 'jwt',
