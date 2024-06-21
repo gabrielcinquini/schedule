@@ -27,9 +27,7 @@ export function PatientsList({ patients }: PatientsListProps) {
     <>
       {patients?.map((patient) => (
         <TableRow key={patient.id}>
-          <TableCell className="min-w-[150px]">
-            {patient.name} {patient.lastName}
-          </TableCell>
+          <TableCell className="min-w-[150px]">{patient.name}</TableCell>
           <TableCell className="min-w-[130px]">{patient.cpf}</TableCell>
           <TableCell>{patient.convenio}</TableCell>
           <TableCell className="min-w-[200px]">
@@ -52,7 +50,7 @@ export function PatientsList({ patients }: PatientsListProps) {
           </TableCell>
           <TableCell align="right" className="flex gap-2">
             <Confirmation
-              text={`Deseja deletar o paciente ${patient.name} ${patient.lastName}?`}
+              text={`Deseja deletar o paciente ${patient.name}?`}
               description="Essa ação não pode ser desfeita. Isso deleterá permanentemente esse paciente dos nossos servidores."
               fn={() => {
                 toast.promise(handleDelete(patient.id), {

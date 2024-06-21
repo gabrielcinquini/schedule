@@ -13,7 +13,6 @@ export const useCreateSchedule = () => {
     mutationFn: async (schedule: CreateScheduleSchema) => {
       return await axios.post('/api/schedules', {
         name: schedule.name,
-        lastName: schedule.lastName,
         date: schedule.date,
         value: schedule.value,
         patientId: schedule.patientId,

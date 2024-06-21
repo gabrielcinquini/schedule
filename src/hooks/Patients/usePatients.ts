@@ -12,18 +12,27 @@ interface UsePatientsProps {
   totalCount: number
 }
 
-export const usePatients = (currentPage?: number, itemsPerPage?: number) => {
+export const usePatients = (
+  currentPage?: number,
+  itemsPerPage?: number,
+  search?: string,
+) => {
   return useQuery({
     queryFn: async () => {
       const res = await axios.get<UsePatientsProps>('/api/patient', {
         params: {
           currentPage,
           perPage: itemsPerPage,
+          search,
         },
       })
 
       return res.data
     },
-    queryKey: QUERY_KEYS.GET.PATIENTS_FROM_USER(currentPage, itemsPerPage),
+    queryKey: QUERY_KEYS.GET.PATIENTS_FROM_USER(
+      currentPage,
+      itemsPerPage,
+      search,
+    ),
   })
 }

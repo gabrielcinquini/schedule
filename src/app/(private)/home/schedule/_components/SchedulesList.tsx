@@ -45,9 +45,7 @@ export function SchedulesList({ schedules }: PatientsListProps) {
     <>
       {schedules?.map((schedule) => (
         <TableRow key={schedule.id}>
-          <TableCell className="min-w-[150px]">
-            {schedule.name} {schedule.lastName}
-          </TableCell>
+          <TableCell className="min-w-[150px]">{schedule.name}</TableCell>
           <TableCell className="min-w-[150px]">
             {format(new Date(schedule.date), 'dd/MM/yy')} -{' '}
             {capitalize(
@@ -68,11 +66,13 @@ export function SchedulesList({ schedules }: PatientsListProps) {
           <TableCell align="right">
             <div className="flex">
               <Confirmation
-                text={`A consulta com ${schedule.name} ${
-                  schedule.lastName
-                } marcada para às ${format(new Date(schedule.date), 'HH:mm', {
-                  locale: ptBR,
-                })} do dia ${format(new Date(schedule.date), 'dd/MM/yy')} -
+                text={`A consulta com ${schedule.name} marcada para às ${format(
+                  new Date(schedule.date),
+                  'HH:mm',
+                  {
+                    locale: ptBR,
+                  },
+                )} do dia ${format(new Date(schedule.date), 'dd/MM/yy')} -
               ${capitalize(
                 format(new Date(schedule.date), 'EE', { locale: ptBR }),
               )} foi realizada?`}
@@ -92,11 +92,13 @@ export function SchedulesList({ schedules }: PatientsListProps) {
               </Confirmation>
 
               <Confirmation
-                text={`A consulta com ${schedule.name} ${
-                  schedule.lastName
-                } marcada para às ${format(new Date(schedule.date), 'HH:mm', {
-                  locale: ptBR,
-                })} do dia ${format(new Date(schedule.date), 'dd/MM/yy')} -
+                text={`A consulta com ${schedule.name} marcada para às ${format(
+                  new Date(schedule.date),
+                  'HH:mm',
+                  {
+                    locale: ptBR,
+                  },
+                )} do dia ${format(new Date(schedule.date), 'dd/MM/yy')} -
               ${capitalize(
                 format(new Date(schedule.date), 'EE', { locale: ptBR }),
               )} foi desmarcada?`}
@@ -116,11 +118,13 @@ export function SchedulesList({ schedules }: PatientsListProps) {
               </Confirmation>
 
               <Confirmation
-                text={`Deseja deletar a consulta com ${schedule.name} ${
-                  schedule.lastName
-                } marcada para às ${format(new Date(schedule.date), 'HH:mm', {
-                  locale: ptBR,
-                })} do dia ${format(new Date(schedule.date), 'dd/MM/yy')} -
+                text={`Deseja deletar a consulta com ${schedule.name} marcada para às ${format(
+                  new Date(schedule.date),
+                  'HH:mm',
+                  {
+                    locale: ptBR,
+                  },
+                )} do dia ${format(new Date(schedule.date), 'dd/MM/yy')} -
               ${capitalize(
                 format(new Date(schedule.date), 'EE', { locale: ptBR }),
               )}?`}

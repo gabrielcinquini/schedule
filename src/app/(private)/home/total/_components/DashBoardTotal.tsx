@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 
+import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
   Table,
@@ -13,6 +14,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { useSchedules } from '@/hooks/Schedule/useSchedules'
+import { useDebounce } from '@/hooks/useDebounce'
 
 import { Pagination } from '../../_components/pagination'
 import { TotalItemsList } from './TotalItemsList'
@@ -20,16 +22,26 @@ import { TotalItemsList } from './TotalItemsList'
 export function DashBoardTotal() {
   const [currentPage, setCurrentPage] = useState(1)
 
+  const [search, setSearch] = useState('')
+  const debouncedSearch = useDebounce(search, 500)
+
   const itemsPerPage = 5
 
   const { data, isLoading } = useSchedules(
     ['COMPLETED', 'CANCELED'],
     currentPage,
     itemsPerPage,
+    debouncedSearch,
   )
 
   return (
     <div className="sm:container">
+      <Input
+        placeholder="Pesquise pelo nome"
+        className="mt-2 w-1/3"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
       <Table>
         <TableCaption>Total</TableCaption>
         <TableHeader>

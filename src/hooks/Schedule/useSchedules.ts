@@ -14,6 +14,7 @@ export const useSchedules = (
   status: ScheduleStatus[],
   currentPage?: number,
   itemsPerPage?: number,
+  search?: string,
 ) => {
   return useQuery({
     queryFn: async () => {
@@ -22,6 +23,7 @@ export const useSchedules = (
           status,
           currentPage,
           perPage: itemsPerPage,
+          search,
         },
       })
       return res.data
@@ -30,6 +32,7 @@ export const useSchedules = (
       status,
       currentPage,
       itemsPerPage,
+      search,
     ),
   })
 }

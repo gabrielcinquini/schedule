@@ -35,7 +35,6 @@ enum ScheduleStatus {
 model Schedule {
   id        String          @id @default(uuid())
   name      String
-  lastName  String
   date      DateTime
   value     Int             @default(0)
   status    ScheduleStatus
@@ -49,7 +48,6 @@ model Schedule {
 model Patient {
   id                  String      @id @default(uuid())
   name                String
-  lastName            String
   cpf                 String
   convenio            String
   userId              String

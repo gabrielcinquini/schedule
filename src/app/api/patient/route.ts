@@ -9,17 +9,29 @@ export async function GET(req: NextRequest) {
 
   const perPage = req.nextUrl.searchParams.get('perPage')
   const currentPage = req.nextUrl.searchParams.get('currentPage')
+  const search = req.nextUrl.searchParams.get('search')
 
   const patients = await prismaClient.patient.findMany({
     where: {
       userId: user.id,
+      ...(search && {
+        OR: [
+          {
+            name: {
+              contains: search,
+            },
+          },
+          {
+            cpf: {
+              contains: search,
+            },
+          },
+        ],
+      }),
     },
     orderBy: [
       {
         name: 'asc',
-      },
-      {
-        lastName: 'asc',
       },
     ],
     take: perPage ? Number(perPage) : undefined,
@@ -29,6 +41,18 @@ export async function GET(req: NextRequest) {
   const totalPatients = await prismaClient.patient.count({
     where: {
       userId: user.id,
+      OR: [
+        {
+          name: {
+            contains: search || undefined,
+          },
+        },
+        {
+          cpf: {
+            contains: search || undefined,
+          },
+        },
+      ],
     },
   })
 
@@ -49,7 +73,7 @@ export async function POST(req: NextRequest) {
 
   const user = await getUserFromSession()
 
-  const { name, lastName, cpf, convenio } = parsedBody.data
+  const { fullName, cpf, convenio } = parsedBody.data
 
   const patientRegistered = await prismaClient.patient.findFirst({
     where: {
@@ -73,8 +97,7 @@ export async function POST(req: NextRequest) {
 
   await prismaClient.patient.create({
     data: {
-      name,
-      lastName,
+      name: fullName,
       cpf,
       convenio,
       userId: user.id,

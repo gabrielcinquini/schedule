@@ -55,12 +55,9 @@ export const scheduleSchema = z.object({
   id: z.string().uuid(),
   name: z
     .string()
-    .regex(/^[A-ZÁÉÍÓÚÃÕÂÊÎÔÇ][a-záéíóúãõâêîôç]+$/, 'Nome inválido(Joe)'),
-  lastName: z
-    .string()
     .regex(
-      /^[A-ZÁÉÍÓÚÃÕÂÊÎÔÇ][a-záéíóúãõâêîôç]+$/,
-      'Sobrenome inválido(Silva)',
+      /^[A-ZÁÉÍÓÚÃÕÂÊÎÔÇ][a-záéíóúãõâêîôç]+( [A-ZÁÉÍÓÚÃÕÂÊÎÔÇ][a-záéíóúãõâêîôç]+)+$/,
+      'Nome inválido(Joe)',
     ),
   date: z.coerce.date(),
   value: z.coerce.number(),
@@ -73,7 +70,6 @@ export type ScheduleType = z.infer<typeof scheduleSchema>
 
 export const createScheduleSchema = scheduleSchema.pick({
   name: true,
-  lastName: true,
   date: true,
   time: true,
   value: true,
@@ -130,12 +126,6 @@ export const patientSchema = z.object({
   name: z
     .string()
     .regex(/^[A-ZÁÉÍÓÚÃÕÂÊÎÔÇ][a-záéíóúãõâêîôç]+$/, 'Nome inválido(Joe)'),
-  lastName: z
-    .string()
-    .regex(
-      /^[A-ZÁÉÍÓÚÃÕÂÊÎÔÇ][a-záéíóúãõâêîôç]+$/,
-      'Sobrenome inválido(Silva)',
-    ),
   cpf: z
     .string()
     .regex(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, 'Formato inválido(123.456.789-00)')
@@ -182,12 +172,24 @@ export const patientSchema = z.object({
 })
 export type PatientType = z.infer<typeof patientSchema>
 
-export const registerPatientFormSchema = patientSchema.pick({
-  name: true,
-  lastName: true,
-  cpf: true,
-  convenio: true,
-})
+export const registerPatientFormSchema = patientSchema
+  .pick({
+    name: true,
+    cpf: true,
+    convenio: true,
+  })
+  .extend({
+    lastName: z
+      .string()
+      .regex(
+        /^[A-ZÁÉÍÓÚÃÕÂÊÎÔÇ][a-záéíóúãõâêîôç]+$/,
+        'Sobrenome inválido(Silva)',
+      ),
+  })
+  .transform(({ ...data }) => ({
+    ...data,
+    fullName: `${data.name} ${data.lastName}`,
+  }))
 export type RegisterPatientFormType = z.infer<typeof registerPatientFormSchema>
 
 export const updateProfileFormSchema = z

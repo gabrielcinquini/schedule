@@ -81,7 +81,6 @@ export function CreateScheduleForm() {
 
     await onCreateSchedule({
       name: selectedPatient.name,
-      lastName: selectedPatient.lastName,
       date,
       value: Number(transformedValue),
       patientId: formValues.patientId,
@@ -134,7 +133,7 @@ export function CreateScheduleForm() {
                         <SelectGroup>
                           {data.patients.map((patient) => (
                             <SelectItem key={patient.id} value={patient.id}>
-                              {patient.name} {patient.lastName}
+                              {patient.name}
                             </SelectItem>
                           ))}
                         </SelectGroup>

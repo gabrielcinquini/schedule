@@ -12,10 +12,14 @@ export async function GET(req: NextRequest) {
   const status = req.nextUrl.searchParams.getAll('status[]') as ScheduleStatus[]
   const perPage = req.nextUrl.searchParams.get('perPage')
   const currentPage = req.nextUrl.searchParams.get('currentPage')
+  const search = req.nextUrl.searchParams.get('search')
 
   const schedules = await prismaClient.schedule.findMany({
     where: {
       userId: user.id,
+      name: {
+        contains: search || undefined,
+      },
       status: {
         in: status,
       },
@@ -31,6 +35,9 @@ export async function GET(req: NextRequest) {
   const totalSchedules = await prismaClient.schedule.count({
     where: {
       userId: user.id,
+      name: {
+        contains: search || undefined,
+      },
       status: {
         in: status,
       },
@@ -47,6 +54,8 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   const body = await req.json()
 
+  console.log(body)
+
   const parsedBody = createScheduleSchema.safeParse(body)
 
   if (!parsedBody.success) {
@@ -55,7 +64,7 @@ export async function POST(req: NextRequest) {
 
   const user = await getUserFromSession()
 
-  const { date, value, patientId, name, lastName } = parsedBody.data
+  const { date, value, patientId, name } = parsedBody.data
 
   const startDate = subMinutes(date, 39)
   const endDate = addMinutes(date, 39)
@@ -81,7 +90,6 @@ export async function POST(req: NextRequest) {
   await prismaClient.schedule.create({
     data: {
       name,
-      lastName,
       date,
       value,
       status: 'PENDING',

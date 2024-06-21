@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 
+import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
   Table,
@@ -13,6 +14,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { usePatients } from '@/hooks/Patients/usePatients'
+import { useDebounce } from '@/hooks/useDebounce'
 
 import { Pagination } from '../../_components/pagination'
 import { PatientsList } from './PatientsList'
@@ -20,12 +22,25 @@ import { PatientsList } from './PatientsList'
 export function DashboardPatients() {
   const [currentPage, setCurrentPage] = useState(1)
 
+  const [search, setSearch] = useState('')
+  const debouncedSearch = useDebounce(search, 500)
+
   const itemsPerPage = 5
 
-  const { data, isLoading } = usePatients(currentPage, itemsPerPage)
+  const { data, isLoading } = usePatients(
+    currentPage,
+    itemsPerPage,
+    debouncedSearch,
+  )
 
   return (
     <div className="flex flex-col gap-2 sm:container">
+      <Input
+        placeholder="Pesquisar por nome ou CPF"
+        className="mt-2 w-1/3"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
       <Table>
         <TableCaption className="max-sm:hidden">Seus pacientes</TableCaption>
         <TableHeader>
