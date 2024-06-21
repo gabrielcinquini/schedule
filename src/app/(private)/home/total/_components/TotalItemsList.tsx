@@ -35,9 +35,7 @@ export function TotalItemsList({ totalItems }: TotalItemsListProps) {
             service.status === 'CANCELED' && 'bg-destructive/70',
           )}
         >
-          <TableCell className="min-w-[150px]">
-            {service.name} {service.lastName}
-          </TableCell>
+          <TableCell className="min-w-[150px]">{service.name}</TableCell>
           <TableCell className="min-w-[140px]">
             {format(new Date(service.date), 'dd/MM/yy')} -{' '}
             {capitalize(
@@ -63,11 +61,9 @@ export function TotalItemsList({ totalItems }: TotalItemsListProps) {
             <Confirmation
               text={`Deseja deletar o registro da consulta com ${
                 service.name
-              } ${service.lastName} marcada para às ${format(
-                new Date(service.date),
-                'HH:mm',
-                { locale: ptBR },
-              )} do dia ${format(new Date(service.date), 'dd/MM/yy')} -
+              } marcada para às ${format(new Date(service.date), 'HH:mm', {
+                locale: ptBR,
+              })} do dia ${format(new Date(service.date), 'dd/MM/yy')} -
               ${capitalize(
                 format(new Date(service.date), 'EE', { locale: ptBR }),
               )}?`}
