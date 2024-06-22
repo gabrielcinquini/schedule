@@ -41,18 +41,20 @@ export async function GET(req: NextRequest) {
   const totalPatients = await prismaClient.patient.count({
     where: {
       userId: user.id,
-      OR: [
-        {
-          name: {
-            contains: search || undefined,
+      ...(search && {
+        OR: [
+          {
+            name: {
+              contains: search,
+            },
           },
-        },
-        {
-          cpf: {
-            contains: search || undefined,
+          {
+            cpf: {
+              contains: search,
+            },
           },
-        },
-      ],
+        ],
+      }),
     },
   })
 
