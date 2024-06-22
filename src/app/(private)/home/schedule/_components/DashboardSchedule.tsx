@@ -36,14 +36,24 @@ export function DashboardSchedule() {
 
   return (
     <div className="flex flex-col gap-2 sm:container">
-      <Input
-        placeholder="Pesquise pelo nome"
-        className="mt-2 w-1/3"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
+      {!!data?.totalCount && (
+        <Input
+          placeholder="Pesquise pelo nome"
+          className="mt-2 w-1/3"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      )}
       <Table>
-        <TableCaption className="max-sm:hidden">Sua agenda</TableCaption>
+        {data?.totalCount ? (
+          <TableCaption className="max-sm:hidden">Sua agenda</TableCaption>
+        ) : (
+          <>
+            <TableCaption>
+              Sua agenda parece estar vazia, agende uma consulta com um paciente
+            </TableCaption>
+          </>
+        )}
         <TableHeader>
           <TableRow>
             <TableHead>Nome</TableHead>

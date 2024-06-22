@@ -36,14 +36,26 @@ export function DashBoardTotal() {
 
   return (
     <div className="sm:container">
-      <Input
-        placeholder="Pesquise pelo nome"
-        className="mt-2 w-1/3"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
+      {!!data?.totalCount && (
+        <Input
+          placeholder="Pesquise pelo nome"
+          className="mt-2 w-1/3"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      )}
       <Table>
-        <TableCaption>Total</TableCaption>
+        {data?.totalCount ? (
+          <TableCaption className="max-sm:hidden">
+            Suas consultas realizadas ou desmarcadas.
+          </TableCaption>
+        ) : (
+          <>
+            <TableCaption>
+              Você não tem consultas que foram realizadas ou desmarcadas.
+            </TableCaption>
+          </>
+        )}
         <TableHeader>
           <TableRow>
             <TableHead>Nome</TableHead>

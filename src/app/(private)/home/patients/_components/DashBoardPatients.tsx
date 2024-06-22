@@ -35,14 +35,24 @@ export function DashboardPatients() {
 
   return (
     <div className="flex flex-col gap-2 sm:container">
-      <Input
-        placeholder="Pesquisar por nome ou CPF"
-        className="mt-2 w-1/3"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
+      {!!data?.totalCount && (
+        <Input
+          placeholder="Pesquisar por nome ou CPF"
+          className="mt-2 w-1/3"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      )}
       <Table>
-        <TableCaption className="max-sm:hidden">Seus pacientes</TableCaption>
+        {data?.totalCount ? (
+          <TableCaption className="max-sm:hidden">Seus pacientes</TableCaption>
+        ) : (
+          <>
+            <TableCaption>
+              Você ainda não tem pacientes, cadastre um paciente
+            </TableCaption>
+          </>
+        )}
         <TableHeader>
           <TableRow>
             <TableHead>Nome</TableHead>
