@@ -57,8 +57,8 @@ export function DashboardPatients() {
           <TableRow>
             <TableHead>Nome</TableHead>
             <TableHead>CPF</TableHead>
-            <TableHead>Convênio</TableHead>
-            <TableHead>Última Consulta</TableHead>
+            <TableHead className="max-sm:hidden">Convênio</TableHead>
+            <TableHead className="max-sm:hidden">Última Consulta</TableHead>
             <TableHead></TableHead>
           </TableRow>
         </TableHeader>

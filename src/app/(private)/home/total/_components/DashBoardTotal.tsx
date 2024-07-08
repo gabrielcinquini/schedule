@@ -60,8 +60,8 @@ export function DashBoardTotal() {
           <TableRow>
             <TableHead>Nome</TableHead>
             <TableHead>Data</TableHead>
-            <TableHead>Hora</TableHead>
-            <TableHead>Valor</TableHead>
+            <TableHead className="max-sm:hidden">Hora</TableHead>
+            <TableHead className="max-sm:hidden">Valor</TableHead>
             <TableHead></TableHead>
           </TableRow>
         </TableHeader>
