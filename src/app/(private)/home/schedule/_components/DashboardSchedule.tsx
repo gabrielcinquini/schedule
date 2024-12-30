@@ -17,6 +17,7 @@ import { useSchedules } from '@/hooks/Schedule/useSchedules'
 import { useDebounce } from '@/hooks/useDebounce'
 
 import { Pagination } from '../../_components/pagination'
+import { SearchCalendarModal } from './calendar/search-calendar-modal'
 import { SchedulesList } from './SchedulesList'
 
 export function DashboardSchedule() {
@@ -46,7 +47,9 @@ export function DashboardSchedule() {
       )}
       <Table>
         {data?.totalCount ? (
-          <TableCaption className="max-sm:hidden">Sua agenda</TableCaption>
+          <TableCaption>
+            <SearchCalendarModal />
+          </TableCaption>
         ) : (
           <>
             <TableCaption>
