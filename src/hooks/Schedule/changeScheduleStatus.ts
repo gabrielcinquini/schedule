@@ -21,7 +21,13 @@ export const useChangeScheduleStatus = () => {
     },
     onSuccess: (response: AxiosResponse) => {
       toast.success(response.data.message)
-      revalidateQueryKey(QUERY_KEYS.MUTATE.SCHEDULES_FROM_USER(), queryClient)
+      revalidateQueryKey(
+        [
+          QUERY_KEYS.MUTATE.SCHEDULES_FROM_USER(),
+          QUERY_KEYS.MUTATE.SUM_SCHEDULES(),
+        ],
+        queryClient,
+      )
     },
     onError: (err) => {
       if (err instanceof AxiosError) {

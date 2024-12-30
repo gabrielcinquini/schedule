@@ -80,8 +80,14 @@ export function capitalize(str: string) {
 }
 
 export const revalidateQueryKey = (
-  paths: string[],
+  paths: string[] | string[][],
   queryClient: QueryClient,
 ) => {
-  paths.map((p) => queryClient.invalidateQueries({ queryKey: [p] }))
+  if (Array.isArray(paths[0])) {
+    ;(paths as string[][]).forEach((p) =>
+      queryClient.invalidateQueries({ queryKey: p }),
+    )
+  } else {
+    queryClient.invalidateQueries({ queryKey: paths as string[] })
+  }
 }

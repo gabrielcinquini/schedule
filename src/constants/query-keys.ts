@@ -21,5 +21,6 @@ export const QUERY_KEYS = {
   MUTATE: {
     PATIENTS_FROM_USER: () => ['patients'],
     SCHEDULES_FROM_USER: () => ['schedules'],
+    SUM_SCHEDULES: () => ['sumSchedules'],
   },
 }
