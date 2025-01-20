@@ -33,13 +33,11 @@ export const DailyList = ({ date }: DailyListProps) => {
 
   if (isError)
     return (
-      <AlertDestructive>
-        Erro ao buscar os pacientes deste diaaa
-      </AlertDestructive>
+      <AlertDestructive>Erro ao buscar os pacientes deste dia</AlertDestructive>
     )
 
   if (data?.schedules.length === 0)
-    return <center>Nenhum paciente agendado para este diaaa</center>
+    return <center>Nenhum paciente agendado para este dia</center>
 
   return (
     <ul className="flex flex-col gap-2">
