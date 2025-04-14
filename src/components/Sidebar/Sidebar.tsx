@@ -43,16 +43,14 @@ export function Sidebar() {
             <XIcon className="h-4 w-4" />
           </button>
         )}
-        <div className="flex h-full flex-col p-4">
-          <nav>
-            <SidebarList isSidebarOpen={isSidebarOpen} />
-          </nav>
-          {isSidebarOpen && (
-            <div className="ml-auto mr-auto mt-auto">
-              <ModeToggle />
-            </div>
-          )}
-        </div>
+        <nav>
+          <SidebarList isSidebarOpen={isSidebarOpen} />
+        </nav>
+        {isSidebarOpen && (
+          <div className="absolute bottom-6">
+            <ModeToggle />
+          </div>
+        )}
       </aside>
     </div>
   )
