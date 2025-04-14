@@ -29,7 +29,7 @@ export function DashBoardTotal() {
     <div className="flex flex-col gap-8">
       {!!data?.totalCount && (
         <Input
-          placeholder="Pesquise pelo nome"
+          placeholder="Pesquisar por nome"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />

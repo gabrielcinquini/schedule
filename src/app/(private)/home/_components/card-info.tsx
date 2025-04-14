@@ -22,17 +22,17 @@ export function CardInfo({
   return (
     <>
       {currentPage === APP_ROUTES.private.schedule && (
-        <CardItem title="Total a Receber" total={totalHome || 0} isReceived />
+        <CardItem title="Total a Receber:" total={totalHome || 0} isReceived />
       )}{' '}
       {currentPage === APP_ROUTES.private.total && (
         <>
-          <div className="flex w-full items-center justify-center gap-2">
+          <div className="flex w-full gap-2 max-sm:flex-col sm:items-center sm:justify-center">
             <CardItem
-              title="Total Recebido"
+              title="Total Recebido:"
               total={totalReceived || 0}
               isReceived
             />
-            <CardItem title="Total Perdido" total={totalNotReceived || 0} />
+            <CardItem title="Total Perdido:" total={totalNotReceived || 0} />
           </div>
           <div />
         </>

@@ -15,9 +15,9 @@ export function HeaderTotal() {
   return (
     <Widget title="Total">
       {isLoading ? (
-        <div className="flex h-full w-full justify-center gap-2">
-          <Skeleton className="h-10 w-48" />
-          <Skeleton className="h-10 w-48" />
+        <div className="flex h-full w-full justify-center gap-2 max-sm:flex-col">
+          <Skeleton className="h-10 w-48 max-sm:w-full" />
+          <Skeleton className="h-10 w-48 max-sm:w-full" />
         </div>
       ) : (
         <>

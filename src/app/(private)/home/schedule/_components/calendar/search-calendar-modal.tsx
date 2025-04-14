@@ -29,9 +29,9 @@ export const SearchCalendarModal = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">
+        <Button variant="outline" className="max-sm:w-full">
+          <CalendarIcon className="mr-2" size={16} />
           Ver agenda por calendário
-          <CalendarIcon className="ml-2" size={16} />
         </Button>
       </DialogTrigger>
       <DialogContent className="flex max-md:flex-col md:max-w-xl">
