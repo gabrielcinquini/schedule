@@ -5,6 +5,7 @@ import { MenuIcon } from 'lucide-react'
 import { useState } from 'react'
 
 import { SidebarList } from './SidebarList'
+import ModeToggle from '../ui/mode-toggle'
 
 export function Sidebar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
@@ -28,6 +29,9 @@ export function Sidebar() {
         <nav>
           <SidebarList isSidebarOpen={isSidebarOpen} />
         </nav>
+        <div className="mt-auto">
+          <ModeToggle />
+        </div>
       </div>
     </aside>
   )
