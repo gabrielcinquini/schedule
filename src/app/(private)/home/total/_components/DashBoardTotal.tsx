@@ -1,38 +1,29 @@
-"use client";
+'use client'
 
-import React, { useState } from "react";
+import React, { useState } from 'react'
 
-import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { useSchedules } from "@/hooks/Schedule/useSchedules";
-import { useDebounce } from "@/hooks/useDebounce";
+import { Input } from '@/components/ui/input'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useSchedules } from '@/hooks/Schedule/useSchedules'
+import { useDebounce } from '@/hooks/useDebounce'
 
-import { Pagination } from "../../_components/pagination";
-import { TotalItemsList } from "./TotalItemsList";
+import { Pagination } from '../../_components/pagination'
+import { TotalItemsList } from './TotalItemsList'
 
 export function DashBoardTotal() {
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1)
 
-  const [search, setSearch] = useState("");
-  const debouncedSearch = useDebounce(search, 500);
+  const [search, setSearch] = useState('')
+  const debouncedSearch = useDebounce(search, 500)
 
-  const itemsPerPage = 15;
+  const itemsPerPage = 15
 
   const { data, isLoading } = useSchedules(
-    ["COMPLETED", "CANCELED"],
+    ['COMPLETED', 'CANCELED'],
     currentPage,
     itemsPerPage,
     debouncedSearch,
-  );
+  )
 
   return (
     <div className="flex flex-col gap-8">
@@ -61,5 +52,5 @@ export function DashBoardTotal() {
         totalCount={data?.totalCount}
       />
     </div>
-  );
+  )
 }

@@ -8,8 +8,8 @@ import { useSchedules } from '@/hooks/Schedule/useSchedules'
 import { useDebounce } from '@/hooks/useDebounce'
 
 import { Pagination } from '../../_components/pagination'
-import { SchedulesList } from './SchedulesList'
 import { SearchCalendarModal } from './calendar/search-calendar-modal'
+import { SchedulesList } from './SchedulesList'
 
 export function DashboardSchedule() {
   const [currentPage, setCurrentPage] = useState(1)
@@ -38,7 +38,7 @@ export function DashboardSchedule() {
           <SearchCalendarModal />
         </div>
       )}
-      <div className="grid grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 gap-4">
+      <div className="grid grid-cols-3 gap-4 max-md:grid-cols-2 max-sm:grid-cols-1">
         {isLoading &&
           Array.from({ length: itemsPerPage }).map((_, index) => (
             <Skeleton key={index} className="h-44 w-full" />

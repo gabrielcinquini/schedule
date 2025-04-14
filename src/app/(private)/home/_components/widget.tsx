@@ -9,7 +9,7 @@ interface HeaderProps {
 
 export function Widget({ title, children }: HeaderProps) {
   return (
-    <div className="flex justify-between mb-12 border-b pb-4">
+    <div className="mb-12 flex justify-between border-b pb-4">
       <h1 className="text-3xl font-bold max-sm:hidden max-sm:text-xl">
         {title}
       </h1>

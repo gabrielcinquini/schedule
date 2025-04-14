@@ -1,20 +1,16 @@
-import { LibraryIcon, Trash2Icon } from 'lucide-react'
+import { Trash2Icon } from 'lucide-react'
 import React from 'react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
-import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import {
   DropdownMenuContent,
   DropdownMenuGroup,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
 import { useDeletePatient } from '@/hooks/Patients/deletePatient'
 import { PatientType } from '@/validations/validations'
 
 import { Confirmation } from '../../_components/confirmation'
-import { DialogContentPatients } from './DialogContentPatients'
 
 interface DropdownMenuContentPatientsProps {
   patient: PatientType

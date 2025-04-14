@@ -33,7 +33,7 @@ export function DashboardPatients() {
           onChange={(e) => setSearch(e.target.value)}
         />
       )}
-      <div className="grid grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 gap-4">
+      <div className="grid grid-cols-3 gap-4 max-md:grid-cols-2 max-sm:grid-cols-1">
         {isLoading &&
           Array.from({ length: itemsPerPage }).map((_, index) => (
             <Skeleton key={index} className="h-44 w-full" />

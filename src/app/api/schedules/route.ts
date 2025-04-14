@@ -1,5 +1,5 @@
 import { ScheduleStatus } from '@prisma/client'
-import { addMinutes, subMinutes, isPast, isToday } from 'date-fns'
+import { addMinutes, isPast, isToday, subMinutes } from 'date-fns'
 import { NextRequest, NextResponse } from 'next/server'
 
 import { prismaClient } from '@/database/client'
@@ -32,10 +32,10 @@ export async function GET(req: NextRequest) {
     skip: (Number(currentPage) - 1) * Number(perPage),
   })
 
-  const schedulesWithDateInfo = schedules.map(schedule => ({
+  const schedulesWithDateInfo = schedules.map((schedule) => ({
     ...schedule,
     isPast: isPast(schedule.date),
-    isToday: isToday(schedule.date)
+    isToday: isToday(schedule.date),
   }))
 
   const totalSchedules = await prismaClient.schedule.count({

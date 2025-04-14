@@ -1,23 +1,19 @@
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { LibraryIcon, Trash2Icon } from 'lucide-react'
+import { Trash2Icon } from 'lucide-react'
 import React from 'react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
-import { Dialog, DialogTrigger } from '@/components/ui/dialog'
 import {
   DropdownMenuContent,
   DropdownMenuGroup,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
 import { useDeleteSchedule } from '@/hooks/Schedule/deleteSchedule'
 import { capitalize } from '@/utils/utils'
 import { ScheduleType } from '@/validations/validations'
 
 import { Confirmation } from '../../_components/confirmation'
-import { DialogContentTotal } from './DialogContentTotal'
 
 interface DropdownMenuContentTotalProps {
   service: ScheduleType
