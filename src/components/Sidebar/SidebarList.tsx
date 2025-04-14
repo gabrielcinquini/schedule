@@ -92,7 +92,10 @@ export function SidebarList({ isSidebarOpen }: SidebarListProps) {
   return (
     <ul className="flex w-full flex-col space-y-6">
       {sidebarList.map((category) => (
-        <li key={category.category}>
+        <li
+          key={category.category}
+          className={clsx(!isSidebarOpen && 'max-lg:hidden lg:block')}
+        >
           <h3
             className={clsx(
               'px-2 text-sm font-semibold uppercase tracking-widest text-primary/70',
@@ -131,7 +134,7 @@ export function SidebarList({ isSidebarOpen }: SidebarListProps) {
                     <span
                       className={clsx(
                         'transition-opacity duration-200',
-                        !isSidebarOpen && 'hidden lg:block',
+                        !isSidebarOpen && 'hidden sm:hidden lg:block',
                       )}
                     >
                       {item.label}
