@@ -1,3 +1,4 @@
+import { TZDate } from '@date-fns/tz'
 import { ScheduleStatus } from '@prisma/client'
 import { addMinutes, subMinutes } from 'date-fns'
 import { NextRequest, NextResponse } from 'next/server'
@@ -6,10 +7,10 @@ import { prismaClient } from '@/database/client'
 import { getUserFromSession } from '@/lib'
 import { createScheduleSchema } from '@/validations/validations'
 
-const getBrazilianDate = (date: Date) => {
-  return new Date(
-    date.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }),
-  )
+const zonedDate = (date: Date) => {
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
+  const zonedDate = new TZDate(date, tz)
+  return zonedDate
 }
 
 export async function GET(req: NextRequest) {
@@ -38,16 +39,17 @@ export async function GET(req: NextRequest) {
     skip: (Number(currentPage) - 1) * Number(perPage),
   })
 
-  const now = new Date()
+  const now = zonedDate(new Date())
 
   const schedulesWithDateInfo = schedules.map((schedule) => {
+    const scheduleDate = zonedDate(schedule.date)
     return {
       ...schedule,
-      isPast: schedule.date < now,
+      isPast: scheduleDate < now,
       isToday:
-        schedule.date.getDate() === now.getDate() &&
-        schedule.date.getMonth() === now.getMonth() &&
-        schedule.date.getFullYear() === now.getFullYear(),
+        scheduleDate.getDate() === now.getDate() &&
+        scheduleDate.getMonth() === now.getMonth() &&
+        scheduleDate.getFullYear() === now.getFullYear(),
     }
   })
 
@@ -83,10 +85,8 @@ export async function POST(req: NextRequest) {
 
   const { date, value, patientId, name } = parsedBody.data
 
-  const brazilianDate = getBrazilianDate(new Date(date))
-
-  const startDate = subMinutes(brazilianDate, 39)
-  const endDate = addMinutes(brazilianDate, 39)
+  const startDate = subMinutes(date, 39)
+  const endDate = addMinutes(date, 39)
 
   const existingSchedule = await prismaClient.schedule.findFirst({
     where: {
@@ -109,7 +109,7 @@ export async function POST(req: NextRequest) {
   await prismaClient.schedule.create({
     data: {
       name,
-      date: brazilianDate,
+      date,
       value,
       status: 'PENDING',
       userId: user.id,
