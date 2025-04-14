@@ -6,7 +6,6 @@ export const APP_ROUTES = {
   private: {
     schedule: '/home/schedule' as const,
     patients: '/home/patients' as const,
-    forgotPassword: '/forgot-password' as const,
     total: '/home/total' as const,
     profile: '/home/profile' as const,
   },
