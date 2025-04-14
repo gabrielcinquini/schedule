@@ -4,8 +4,8 @@ import clsx from 'clsx'
 import { MenuIcon } from 'lucide-react'
 import { useState } from 'react'
 
-import { SidebarList } from './SidebarList'
 import ModeToggle from '../ui/mode-toggle'
+import { SidebarList } from './SidebarList'
 
 export function Sidebar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
