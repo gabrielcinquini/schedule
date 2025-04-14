@@ -8,7 +8,7 @@ import { getUserFromSession } from '@/lib'
 import { createScheduleSchema } from '@/validations/validations'
 
 const zonedDate = (date: Date) => {
-  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
+  const tz = 'America/Sao_Paulo'
   const zonedDate = new TZDate(date, tz)
   return zonedDate
 }
