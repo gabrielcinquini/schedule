@@ -3,7 +3,6 @@ import React from 'react'
 import {
   DropdownMenuContent,
   DropdownMenuGroup,
-  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
 import { useChangeScheduleStatus } from '@/hooks/Schedule/changeScheduleStatus'
 import { useDeleteSchedule } from '@/hooks/Schedule/deleteSchedule'
@@ -43,7 +42,6 @@ export function DropdownMenuContentSchedule({
 
   return (
     <DropdownMenuContent>
-      <DropdownMenuSeparator className="sm:hidden" />
       <DropdownMenuGroup className="flex flex-col items-start">
         <ConfirmationsSchedule
           schedule={schedule}
