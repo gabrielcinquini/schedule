@@ -4,8 +4,8 @@ import axios from 'axios'
 
 import { QUERY_KEYS } from '@/constants/query-keys'
 
-interface UseSchedulesProps {
-  schedules: Schedule[]
+export interface UseSchedulesProps {
+  schedules: (Schedule & { isPast: boolean; isToday: boolean })[]
   totalPages: number
   totalCount: number
 }

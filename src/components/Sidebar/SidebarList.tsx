@@ -109,7 +109,7 @@ export function SidebarList({ isSidebarOpen }: SidebarListProps) {
                   className={clsx(
                     'block',
                     item.variant === 'link' && pathname === item.link
-                      ? 'text-red-400'
+                      ? 'text-blue-400'
                       : 'text-primary/70 hover:text-primary/80',
                   )}
                 >

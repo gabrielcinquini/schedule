@@ -9,13 +9,11 @@ interface HeaderProps {
 
 export function Widget({ title, children }: HeaderProps) {
   return (
-    <div className="border-b border-border/40 px-8 py-4 max-sm:h-1/6">
-      <div className="flex justify-between">
-        <h1 className="text-3xl font-bold max-sm:hidden max-sm:text-xl">
-          {title}
-        </h1>
-        {children}
-      </div>
+    <div className="flex justify-between mb-12 border-b pb-4">
+      <h1 className="text-3xl font-bold max-sm:hidden max-sm:text-xl">
+        {title}
+      </h1>
+      {children}
     </div>
   )
 }

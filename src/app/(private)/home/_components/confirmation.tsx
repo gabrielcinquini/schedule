@@ -27,7 +27,9 @@ export function Confirmation({
 }: ConfirmationType) {
   return (
     <AlertDialog>
-      <AlertDialogTrigger>{children}</AlertDialogTrigger>
+      <AlertDialogTrigger asChild className="flex w-full justify-start">
+        {children}
+      </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{text}</AlertDialogTitle>

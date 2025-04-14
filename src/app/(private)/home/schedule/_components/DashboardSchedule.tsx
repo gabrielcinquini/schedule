@@ -4,21 +4,12 @@ import { useState } from 'react'
 
 import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
 import { useSchedules } from '@/hooks/Schedule/useSchedules'
 import { useDebounce } from '@/hooks/useDebounce'
 
 import { Pagination } from '../../_components/pagination'
-import { SearchCalendarModal } from './calendar/search-calendar-modal'
 import { SchedulesList } from './SchedulesList'
+import { SearchCalendarModal } from './calendar/search-calendar-modal'
 
 export function DashboardSchedule() {
   const [currentPage, setCurrentPage] = useState(1)
@@ -26,7 +17,7 @@ export function DashboardSchedule() {
   const [search, setSearch] = useState('')
   const debouncedSearch = useDebounce(search, 500)
 
-  const itemsPerPage = 5
+  const itemsPerPage = 15
 
   const { data, isLoading } = useSchedules(
     ['PENDING'],
@@ -36,48 +27,24 @@ export function DashboardSchedule() {
   )
 
   return (
-    <div className="flex flex-col gap-2 sm:container">
+    <div className="flex flex-col gap-8">
       {!!data?.totalCount && (
-        <Input
-          placeholder="Pesquise pelo nome"
-          className="mt-2 w-1/3"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+        <div className="flex items-center justify-between gap-4">
+          <Input
+            placeholder="Pesquise pelo nome"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <SearchCalendarModal />
+        </div>
       )}
-      <Table>
-        {data?.totalCount ? (
-          <TableCaption>
-            <SearchCalendarModal />
-          </TableCaption>
-        ) : (
-          <>
-            <TableCaption>
-              Sua agenda parece estar vazia, agende uma consulta com um paciente
-            </TableCaption>
-          </>
-        )}
-        <TableHeader>
-          <TableRow>
-            <TableHead>Nome</TableHead>
-            <TableHead>Data</TableHead>
-            <TableHead className="max-sm:hidden">Hora</TableHead>
-            <TableHead className="max-sm:hidden">Valor</TableHead>
-            <TableHead></TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {isLoading &&
-            Array.from({ length: itemsPerPage }).map((_, index) => (
-              <TableRow key={index}>
-                <TableCell colSpan={5}>
-                  <Skeleton className="h-10" />
-                </TableCell>
-              </TableRow>
-            ))}
-          {!isLoading && <SchedulesList schedules={data?.schedules} />}
-        </TableBody>
-      </Table>
+      <div className="grid grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 gap-4">
+        {isLoading &&
+          Array.from({ length: itemsPerPage }).map((_, index) => (
+            <Skeleton key={index} className="h-44 w-full" />
+          ))}
+        {!isLoading && <SchedulesList schedules={data?.schedules} />}
+      </div>
 
       <Pagination
         lastPage={data?.totalPages}

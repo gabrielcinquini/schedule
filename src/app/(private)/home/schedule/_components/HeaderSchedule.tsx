@@ -17,7 +17,7 @@ export function HeaderSchedule() {
   return (
     <Widget title="Agenda">
       {isLoading ? (
-        <Skeleton className="max-sm:h-24 max-sm:w-1/2 sm:h-32 sm:w-1/4" />
+        <Skeleton className="h-10 w-48" />
       ) : (
         <CardInfo
           currentPage={APP_ROUTES.private.schedule}
