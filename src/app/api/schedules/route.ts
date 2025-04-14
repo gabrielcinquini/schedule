@@ -1,10 +1,16 @@
 import { ScheduleStatus } from '@prisma/client'
-import { addMinutes, isPast, isToday, subMinutes } from 'date-fns'
+import { addMinutes, subMinutes } from 'date-fns'
 import { NextRequest, NextResponse } from 'next/server'
 
 import { prismaClient } from '@/database/client'
 import { getUserFromSession } from '@/lib'
 import { createScheduleSchema } from '@/validations/validations'
+
+const getBrazilianDate = (date: Date) => {
+  return new Date(
+    date.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }),
+  )
+}
 
 export async function GET(req: NextRequest) {
   const user = await getUserFromSession()
@@ -32,11 +38,18 @@ export async function GET(req: NextRequest) {
     skip: (Number(currentPage) - 1) * Number(perPage),
   })
 
-  const schedulesWithDateInfo = schedules.map((schedule) => ({
-    ...schedule,
-    isPast: isPast(schedule.date),
-    isToday: isToday(schedule.date),
-  }))
+  const now = new Date()
+
+  const schedulesWithDateInfo = schedules.map((schedule) => {
+    return {
+      ...schedule,
+      isPast: schedule.date < now,
+      isToday:
+        schedule.date.getDate() === now.getDate() &&
+        schedule.date.getMonth() === now.getMonth() &&
+        schedule.date.getFullYear() === now.getFullYear(),
+    }
+  })
 
   const totalSchedules = await prismaClient.schedule.count({
     where: {
@@ -70,8 +83,10 @@ export async function POST(req: NextRequest) {
 
   const { date, value, patientId, name } = parsedBody.data
 
-  const startDate = subMinutes(date, 39)
-  const endDate = addMinutes(date, 39)
+  const brazilianDate = getBrazilianDate(new Date(date))
+
+  const startDate = subMinutes(brazilianDate, 39)
+  const endDate = addMinutes(brazilianDate, 39)
 
   const existingSchedule = await prismaClient.schedule.findFirst({
     where: {
@@ -94,7 +109,7 @@ export async function POST(req: NextRequest) {
   await prismaClient.schedule.create({
     data: {
       name,
-      date,
+      date: brazilianDate,
       value,
       status: 'PENDING',
       userId: user.id,
