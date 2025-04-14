@@ -4,15 +4,6 @@ import { useState } from 'react'
 
 import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
 import { usePatients } from '@/hooks/Patients/usePatients'
 import { useDebounce } from '@/hooks/useDebounce'
 
@@ -25,7 +16,7 @@ export function DashboardPatients() {
   const [search, setSearch] = useState('')
   const debouncedSearch = useDebounce(search, 500)
 
-  const itemsPerPage = 5
+  const itemsPerPage = 15
 
   const { data, isLoading } = usePatients(
     currentPage,
@@ -34,46 +25,21 @@ export function DashboardPatients() {
   )
 
   return (
-    <div className="flex flex-col gap-2 sm:container">
+    <div className="flex flex-col gap-8">
       {!!data?.totalCount && (
         <Input
           placeholder="Pesquisar por nome ou CPF"
-          className="mt-2 w-1/3"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
       )}
-      <Table>
-        {data?.totalCount ? (
-          <TableCaption className="max-sm:hidden">Seus pacientes</TableCaption>
-        ) : (
-          <>
-            <TableCaption>
-              Você ainda não tem pacientes, cadastre um paciente
-            </TableCaption>
-          </>
-        )}
-        <TableHeader>
-          <TableRow>
-            <TableHead>Nome</TableHead>
-            <TableHead>CPF</TableHead>
-            <TableHead className="max-sm:hidden">Convênio</TableHead>
-            <TableHead className="max-sm:hidden">Última Consulta</TableHead>
-            <TableHead></TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {isLoading &&
-            Array.from({ length: itemsPerPage }).map((_, index) => (
-              <TableRow key={index}>
-                <TableCell colSpan={5}>
-                  <Skeleton className="h-10" />
-                </TableCell>
-              </TableRow>
-            ))}
-          {!isLoading && <PatientsList patients={data?.patients} />}
-        </TableBody>
-      </Table>
+      <div className="grid grid-cols-3 max-md:grid-cols-2 max-sm:grid-cols-1 gap-4">
+        {isLoading &&
+          Array.from({ length: itemsPerPage }).map((_, index) => (
+            <Skeleton key={index} className="h-44 w-full" />
+          ))}
+        {!isLoading && <PatientsList patients={data?.patients} />}
+      </div>
 
       <Pagination
         lastPage={data?.totalPages}
