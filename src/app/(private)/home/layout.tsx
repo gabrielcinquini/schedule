@@ -15,9 +15,9 @@ export default async function PrivateLayoutRoot({
   }
 
   return (
-    <div className="grid min-h-screen grid-cols-[280px_1fr]">
+    <div className="flex">
       <Sidebar />
-      <main className="p-4">{children}</main>
+      <main className="flex-1 p-4">{children}</main>
     </div>
   )
 }

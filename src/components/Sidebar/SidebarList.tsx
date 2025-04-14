@@ -9,7 +9,11 @@ import { APP_ROUTES } from '@/routes/paths'
 
 import { Button } from '../ui/button'
 
-export function SidebarList() {
+interface SidebarListProps {
+  isSidebarOpen: boolean
+}
+
+export function SidebarList({ isSidebarOpen }: SidebarListProps) {
   const pathname = usePathname()
 
   const sidebarList = [
@@ -55,42 +59,73 @@ export function SidebarList() {
   ]
 
   return (
-    <ul className="flex w-full flex-col py-3">
+    <ul className="flex w-full flex-col space-y-6">
       {sidebarList.map((category) => (
-        <li key={category.category} className="mb-8">
-          <h3 className="px-2 text-sm font-semibold uppercase tracking-widest text-primary/70">
+        <li key={category.category}>
+          <h3
+            className={clsx(
+              'px-2 text-sm font-semibold uppercase tracking-widest text-primary/70',
+              !isSidebarOpen && 'hidden lg:block',
+            )}
+          >
             {category.category}
           </h3>
-          <ul className="mt-2">
+          <ul className="mt-2 space-y-1">
             {category.items.map((item) => (
               <li key={item.label}>
                 {item.variant === 'link' && item.link ? (
                   <Link
                     href={item.link}
                     className={clsx(
+                      'block',
                       pathname === item.link
                         ? 'text-red-400'
-                        : 'text-primary/70',
+                        : 'text-primary/70 hover:text-primary/80',
                     )}
                   >
                     <Button
-                      className="flex w-full justify-start gap-2"
+                      className={clsx(
+                        'flex w-full gap-2',
+                        isSidebarOpen
+                          ? 'justify-start'
+                          : 'justify-center lg:justify-start',
+                      )}
                       variant="ghost"
                     >
-                      {item.icon}
-                      {item.label}
+                      <span className="flex items-center justify-center">
+                        {item.icon}
+                      </span>
+                      <span
+                        className={clsx(
+                          'transition-opacity duration-200',
+                          !isSidebarOpen && 'hidden lg:block',
+                        )}
+                      >
+                        {item.label}
+                      </span>
                     </Button>
                   </Link>
                 ) : (
                   <Button
                     variant="ghost"
                     className={clsx(
-                      'flex w-full justify-start gap-2',
-                      'text-primary/70 hover:text-primary/80',
+                      'flex w-full gap-2 text-primary/70 hover:text-primary/80',
+                      isSidebarOpen
+                        ? 'justify-start'
+                        : 'justify-center lg:justify-start',
                     )}
                   >
-                    {item.icon}
-                    {item.label}
+                    <span className="flex items-center justify-center">
+                      {item.icon}
+                    </span>
+                    <span
+                      className={clsx(
+                        'transition-opacity duration-200',
+                        !isSidebarOpen && 'hidden lg:block',
+                      )}
+                    >
+                      {item.label}
+                    </span>
                   </Button>
                 )}
               </li>
