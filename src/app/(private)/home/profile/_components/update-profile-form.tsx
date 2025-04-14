@@ -1,10 +1,8 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ArrowLeftIcon } from '@radix-ui/react-icons'
 import axios, { AxiosError } from 'axios'
 import { Eye, EyeOff } from 'lucide-react'
-import Link from 'next/link'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -19,7 +17,6 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { APP_ROUTES } from '@/routes/paths'
 import {
   ForgotPasswordFormSchemaType,
   updateProfileFormSchema,
@@ -110,15 +107,6 @@ export function UpdateProfileForm() {
           >
             {form.formState.isSubmitting && <Loader />}
             Enviar
-          </Button>
-          <Button asChild variant={'secondary'}>
-            <Link
-              href={APP_ROUTES.private.schedule}
-              className="flex w-full gap-2"
-            >
-              <ArrowLeftIcon />
-              Voltar
-            </Link>
           </Button>
         </div>
       </form>

@@ -1,13 +1,41 @@
 'use client'
 
 import clsx from 'clsx'
-import { Calendar, Clipboard, LogOut, User, Users } from 'lucide-react'
+import {
+  CalendarIcon,
+  ClipboardIcon,
+  LogOutIcon,
+  UserIcon,
+  UsersIcon,
+} from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { signOut } from 'next-auth/react'
+import { ReactElement } from 'react'
 
 import { APP_ROUTES } from '@/routes/paths'
 
 import { Button } from '../ui/button'
+
+type LinkSidebarItem = {
+  variant: 'link'
+  link: string
+}
+
+type ButtonSidebarItem = {
+  variant: 'button'
+  onLogout: () => void
+}
+
+type SidebarItems = {
+  icon: ReactElement
+  label: string
+} & (LinkSidebarItem | ButtonSidebarItem)
+
+type SideBarContentList = {
+  category: string
+  items: SidebarItems[]
+}
 
 interface SidebarListProps {
   isSidebarOpen: boolean
@@ -16,25 +44,25 @@ interface SidebarListProps {
 export function SidebarList({ isSidebarOpen }: SidebarListProps) {
   const pathname = usePathname()
 
-  const sidebarList = [
+  const sidebarList: SideBarContentList[] = [
     {
       category: 'Sistema',
       items: [
         {
           variant: 'link',
-          icon: <Calendar size={18} />,
+          icon: <CalendarIcon size={18} />,
           label: 'Agenda',
           link: APP_ROUTES.private.schedule,
         },
         {
           variant: 'link',
-          icon: <Users size={18} />,
+          icon: <UsersIcon size={18} />,
           label: 'Pacientes',
           link: APP_ROUTES.private.patients,
         },
         {
           variant: 'link',
-          icon: <Clipboard size={18} />,
+          icon: <ClipboardIcon size={18} />,
           label: 'Total',
           link: APP_ROUTES.private.total,
         },
@@ -45,14 +73,17 @@ export function SidebarList({ isSidebarOpen }: SidebarListProps) {
       items: [
         {
           variant: 'link',
-          icon: <User size={18} />,
+          icon: <UserIcon size={18} />,
           label: 'Perfil',
           link: APP_ROUTES.private.profile,
         },
         {
           variant: 'button',
-          icon: <LogOut size={18} />,
+          icon: <LogOutIcon size={18} />,
           label: 'Sair',
+          onLogout: () => {
+            signOut()
+          },
         },
       ],
     },
@@ -73,47 +104,26 @@ export function SidebarList({ isSidebarOpen }: SidebarListProps) {
           <ul className="mt-2 space-y-1">
             {category.items.map((item) => (
               <li key={item.label}>
-                {item.variant === 'link' && item.link ? (
-                  <Link
-                    href={item.link}
-                    className={clsx(
-                      'block',
-                      pathname === item.link
-                        ? 'text-red-400'
-                        : 'text-primary/70 hover:text-primary/80',
-                    )}
-                  >
-                    <Button
-                      className={clsx(
-                        'flex w-full gap-2',
-                        isSidebarOpen
-                          ? 'justify-start'
-                          : 'justify-center lg:justify-start',
-                      )}
-                      variant="ghost"
-                    >
-                      <span className="flex items-center justify-center">
-                        {item.icon}
-                      </span>
-                      <span
-                        className={clsx(
-                          'transition-opacity duration-200',
-                          !isSidebarOpen && 'hidden lg:block',
-                        )}
-                      >
-                        {item.label}
-                      </span>
-                    </Button>
-                  </Link>
-                ) : (
+                <Link
+                  href={item.variant === 'link' ? item.link : '/'}
+                  className={clsx(
+                    'block',
+                    item.variant === 'link' && pathname === item.link
+                      ? 'text-red-400'
+                      : 'text-primary/70 hover:text-primary/80',
+                  )}
+                >
                   <Button
-                    variant="ghost"
                     className={clsx(
-                      'flex w-full gap-2 text-primary/70 hover:text-primary/80',
+                      'flex w-full gap-2',
                       isSidebarOpen
                         ? 'justify-start'
                         : 'justify-center lg:justify-start',
                     )}
+                    variant="ghost"
+                    onClick={
+                      item.variant === 'button' ? item.onLogout : undefined
+                    }
                   >
                     <span className="flex items-center justify-center">
                       {item.icon}
@@ -127,7 +137,7 @@ export function SidebarList({ isSidebarOpen }: SidebarListProps) {
                       {item.label}
                     </span>
                   </Button>
-                )}
+                </Link>
               </li>
             ))}
           </ul>

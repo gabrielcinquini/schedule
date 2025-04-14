@@ -1,7 +1,7 @@
 'use client'
 
 import clsx from 'clsx'
-import { MenuIcon, XIcon } from 'lucide-react'
+import { MenuIcon } from 'lucide-react'
 import { useState } from 'react'
 
 import { SidebarList } from './SidebarList'
