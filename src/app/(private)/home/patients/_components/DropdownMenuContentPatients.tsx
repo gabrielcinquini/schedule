@@ -31,19 +31,6 @@ export function DropdownMenuContentPatients({
 
   return (
     <DropdownMenuContent>
-      <DropdownMenuLabel>Detalhes</DropdownMenuLabel>
-      <DropdownMenuSeparator />
-      <DropdownMenuGroup>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="ghost" className="sm:hidden">
-              <LibraryIcon className="mr-2" /> Detalhes
-            </Button>
-          </DialogTrigger>
-          <DialogContentPatients patient={patient} />
-        </Dialog>
-      </DropdownMenuGroup>
-      <DropdownMenuSeparator className="sm:hidden" />
       <DropdownMenuGroup>
         <Confirmation
           text={`Deseja deletar o paciente ${patient.name}?`}

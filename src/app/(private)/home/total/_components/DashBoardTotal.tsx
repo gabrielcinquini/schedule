@@ -1,9 +1,9 @@
-'use client'
+"use client";
 
-import React, { useState } from 'react'
+import React, { useState } from "react";
 
-import { Input } from '@/components/ui/input'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -12,71 +12,45 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { useSchedules } from '@/hooks/Schedule/useSchedules'
-import { useDebounce } from '@/hooks/useDebounce'
+} from "@/components/ui/table";
+import { useSchedules } from "@/hooks/Schedule/useSchedules";
+import { useDebounce } from "@/hooks/useDebounce";
 
-import { Pagination } from '../../_components/pagination'
-import { TotalItemsList } from './TotalItemsList'
+import { Pagination } from "../../_components/pagination";
+import { TotalItemsList } from "./TotalItemsList";
 
 export function DashBoardTotal() {
-  const [currentPage, setCurrentPage] = useState(1)
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const [search, setSearch] = useState('')
-  const debouncedSearch = useDebounce(search, 500)
+  const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 500);
 
-  const itemsPerPage = 5
+  const itemsPerPage = 15;
 
   const { data, isLoading } = useSchedules(
-    ['COMPLETED', 'CANCELED'],
+    ["COMPLETED", "CANCELED"],
     currentPage,
     itemsPerPage,
     debouncedSearch,
-  )
+  );
 
   return (
-    <div className="sm:container">
+    <div className="flex flex-col gap-8">
       {!!data?.totalCount && (
         <Input
           placeholder="Pesquise pelo nome"
-          className="mt-2 w-1/3"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
       )}
-      <Table>
-        {data?.totalCount ? (
-          <TableCaption className="max-sm:hidden">
-            Suas consultas realizadas ou desmarcadas.
-          </TableCaption>
-        ) : (
-          <>
-            <TableCaption>
-              Você não tem consultas que foram realizadas ou desmarcadas.
-            </TableCaption>
-          </>
-        )}
-        <TableHeader>
-          <TableRow>
-            <TableHead>Nome</TableHead>
-            <TableHead>Data</TableHead>
-            <TableHead className="max-sm:hidden">Hora</TableHead>
-            <TableHead className="max-sm:hidden">Valor</TableHead>
-            <TableHead></TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {isLoading &&
-            Array.from({ length: itemsPerPage }).map((_, index) => (
-              <TableRow key={index}>
-                <TableCell colSpan={5}>
-                  <Skeleton className="h-10" />
-                </TableCell>
-              </TableRow>
-            ))}
-          {!isLoading && <TotalItemsList totalItems={data?.schedules} />}
-        </TableBody>
-      </Table>
+
+      <div className="grid grid-cols-3 gap-4 max-md:grid-cols-2 max-sm:grid-cols-1">
+        {isLoading &&
+          Array.from({ length: itemsPerPage }).map((_, index) => (
+            <Skeleton key={index} className="h-44 w-full" />
+          ))}
+        {!isLoading && <TotalItemsList totalItems={data?.schedules} />}
+      </div>
 
       <Pagination
         lastPage={data?.totalPages}
@@ -87,5 +61,5 @@ export function DashBoardTotal() {
         totalCount={data?.totalCount}
       />
     </div>
-  )
+  );
 }

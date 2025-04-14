@@ -16,8 +16,8 @@ export function HeaderTotal() {
     <Widget title="Total">
       {isLoading ? (
         <div className="flex h-full w-full justify-center gap-2">
-          <Skeleton className="h-32 w-1/4" />
-          <Skeleton className="h-32 w-1/4" />
+          <Skeleton className="h-10 w-48" />
+          <Skeleton className="h-10 w-48" />
         </div>
       ) : (
         <>

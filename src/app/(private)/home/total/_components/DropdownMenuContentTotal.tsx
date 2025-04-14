@@ -34,19 +34,6 @@ export function DropdownMenuContentTotal({
 
   return (
     <DropdownMenuContent>
-      <DropdownMenuLabel>Detalhes</DropdownMenuLabel>
-      <DropdownMenuSeparator />
-      <DropdownMenuGroup>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="ghost" className="sm:hidden">
-              <LibraryIcon className="mr-2" /> Detalhes
-            </Button>
-          </DialogTrigger>
-          <DialogContentTotal service={service} />
-        </Dialog>
-      </DropdownMenuGroup>
-      <DropdownMenuSeparator className="sm:hidden" />
       <DropdownMenuGroup>
         <Confirmation
           text={`Deseja deletar o registro da consulta com ${
