@@ -17,7 +17,7 @@ export default async function PrivateLayoutRoot({
   return (
     <div className="flex">
       <Sidebar />
-      <main className="flex-1 px-8 py-4 sm:container">{children}</main>
+      <main className="flex-1 px-8 py-4 lg:ml-60 max-lg:ml-16">{children}</main>
     </div>
   )
 }

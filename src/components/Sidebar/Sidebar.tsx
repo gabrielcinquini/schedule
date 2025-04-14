@@ -13,7 +13,7 @@ export function Sidebar() {
   return (
     <aside
       className={clsx(
-        'left-0 top-0 h-screen border-r transition-all duration-300',
+        'fixed left-0 top-0 h-screen border-r transition-all duration-300',
         'lg:w-60',
         isSidebarOpen ? 'w-60' : 'w-16',
         'z-50',
