@@ -1,17 +1,11 @@
-import { TZDate } from '@date-fns/tz'
 import { ScheduleStatus } from '@prisma/client'
 import { addMinutes, subMinutes } from 'date-fns'
 import { NextRequest, NextResponse } from 'next/server'
 
 import { prismaClient } from '@/database/client'
 import { getUserFromSession } from '@/lib'
+import { zonedDate } from '@/utils/utils'
 import { createScheduleSchema } from '@/validations/validations'
-
-const zonedDate = (date: Date) => {
-  const tz = 'America/Sao_Paulo'
-  const zonedDate = new TZDate(date, tz)
-  return zonedDate
-}
 
 export async function GET(req: NextRequest) {
   const user = await getUserFromSession()
