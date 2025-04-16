@@ -13,9 +13,11 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { MandatorySign } from '@/components/ui/mandatory-sign'
 import {
   Popover,
   PopoverContent,
@@ -118,6 +120,9 @@ export function CreateScheduleForm() {
               name="patientId"
               render={({ field }) => (
                 <FormItem>
+                  <FormLabel>
+                    Paciente <MandatorySign />
+                  </FormLabel>
                   <FormControl>
                     <Select
                       onValueChange={(e) => {
@@ -127,7 +132,7 @@ export function CreateScheduleForm() {
                       defaultValue={field.value}
                     >
                       <SelectTrigger className="px-2 py-5">
-                        <SelectValue placeholder="Selecione o paciente" />
+                        <SelectValue placeholder="Selecione um paciente" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
@@ -149,6 +154,9 @@ export function CreateScheduleForm() {
               name="date"
               render={({ field }) => (
                 <FormItem>
+                  <FormLabel>
+                    Data <MandatorySign />
+                  </FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -193,12 +201,15 @@ export function CreateScheduleForm() {
               name="time"
               render={({ field }) => (
                 <FormItem>
+                  <FormLabel>
+                    Hora <MandatorySign />
+                  </FormLabel>
                   <FormControl>
                     <Input
                       autoComplete="off"
                       type="time"
                       className="appearance-none px-2 py-5"
-                      placeholder="Hora"
+                      placeholder="Selecione a hora"
                       {...field}
                     />
                   </FormControl>
@@ -211,13 +222,14 @@ export function CreateScheduleForm() {
               name="value"
               render={({ field }) => (
                 <FormItem>
+                  <FormLabel>Valor</FormLabel>
                   <FormControl>
                     {selectedPatientConvenio !== 'Isento' && (
                       <Input
                         autoComplete="off"
                         type="text"
                         className="appearance-none px-2 py-5"
-                        placeholder="Valor"
+                        placeholder="R$ 0,00"
                         {...field}
                         onChange={(event) => {
                           formatValue(event)

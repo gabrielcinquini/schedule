@@ -12,9 +12,11 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { MandatorySign } from '@/components/ui/mandatory-sign'
 import {
   Select,
   SelectContent,
@@ -55,12 +57,15 @@ export function RegisterPatientForm() {
             name="name"
             render={({ field }) => (
               <FormItem>
+                <FormLabel>
+                  Nome <MandatorySign />
+                </FormLabel>
                 <FormControl>
                   <Input
                     autoComplete="off"
                     type="text"
                     className="px-2 py-5 max-sm:p-3"
-                    placeholder="Nome"
+                    placeholder="John"
                     {...field}
                     onChange={(event) => {
                       formatName(event)
@@ -77,12 +82,15 @@ export function RegisterPatientForm() {
             name="lastName"
             render={({ field }) => (
               <FormItem>
+                <FormLabel>
+                  Sobrenome <MandatorySign />
+                </FormLabel>
                 <FormControl>
                   <Input
                     autoComplete="off"
                     type="text"
                     className="appearance-none px-2 py-5 max-sm:p-3"
-                    placeholder="Sobrenome"
+                    placeholder="Doe"
                     {...field}
                     onChange={(event) => {
                       formatName(event)
@@ -100,12 +108,13 @@ export function RegisterPatientForm() {
           name="cpf"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>CPF</FormLabel>
               <FormControl>
                 <Input
                   autoComplete="off"
                   type="text"
                   className="px-2 py-5 max-sm:p-3"
-                  placeholder="CPF"
+                  placeholder="123.456.789-12"
                   {...field}
                   onChange={(event) => {
                     formatCPF(event)
@@ -122,6 +131,9 @@ export function RegisterPatientForm() {
           name="convenio"
           render={({ field }) => (
             <FormItem>
+              <FormLabel>
+                Convênio <MandatorySign />
+              </FormLabel>
               <FormControl>
                 <Select
                   onValueChange={field.onChange}

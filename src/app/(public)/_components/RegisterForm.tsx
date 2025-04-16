@@ -17,6 +17,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { MandatorySign } from '@/components/ui/mandatory-sign'
 import { api } from '@/lib/api'
 import { APP_ROUTES } from '@/routes/paths'
 import { formatName, formatUsername } from '@/utils/utils'
@@ -49,7 +50,9 @@ export const RegisterForm = () => {
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Usuário</FormLabel>
+              <FormLabel>
+                Usuário <MandatorySign />
+              </FormLabel>
               <FormControl>
                 <Input
                   {...field}
@@ -70,7 +73,9 @@ export const RegisterForm = () => {
             name="firstname"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Nome</FormLabel>
+                <FormLabel>
+                  Nome <MandatorySign />
+                </FormLabel>
                 <FormControl>
                   <Input
                     {...field}
@@ -91,7 +96,9 @@ export const RegisterForm = () => {
             name="lastname"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Sobrenome</FormLabel>
+                <FormLabel>
+                  Sobrenome <MandatorySign />
+                </FormLabel>
                 <FormControl>
                   <Input
                     {...field}
@@ -112,7 +119,9 @@ export const RegisterForm = () => {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>
+                Email <MandatorySign />
+              </FormLabel>
               <FormControl>
                 <Input placeholder="me@example.com" {...field} />
               </FormControl>
@@ -126,7 +135,9 @@ export const RegisterForm = () => {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Senha</FormLabel>
+              <FormLabel>
+                Senha <MandatorySign />
+              </FormLabel>
               <FormControl>
                 <Input type="password" {...field} />
               </FormControl>
@@ -139,7 +150,9 @@ export const RegisterForm = () => {
           name="confirmPassword"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Confirme sua senha</FormLabel>
+              <FormLabel>
+                Confirme sua senha <MandatorySign />
+              </FormLabel>
               <FormControl>
                 <Input type="password" {...field} />
               </FormControl>
