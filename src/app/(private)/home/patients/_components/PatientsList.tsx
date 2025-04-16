@@ -43,7 +43,9 @@ export function PatientsList({ patients }: PatientsListProps) {
             </p>
             <p className="flex gap-2">
               <span className="font-bold">CPF:{`${' '}`}</span>
-              <span className="text-muted-foreground">{patient.cpf}</span>
+              <span className="text-muted-foreground">
+                {patient.cpf ? patient.cpf : 'Não informado'}
+              </span>
             </p>
             <p>
               <span className="font-bold">Convênio: {`${' '}`}</span>

@@ -47,15 +47,15 @@ model Schedule {
 model Patient {
   id                  String      @id @default(uuid())
   name                String
-  cpf                 String
+  cpf                 String?
   convenio            String
   userId              String
   lastConsult         DateTime?
   createdAt           DateTime    @default(now())
   author              User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   Schedule            Schedule[]
-  CPF_Consent_version String
-  CPF_Consent         CpfConsent  @relation(fields: [CPF_Consent_version], references: [version])
+  CPF_Consent_version String?
+  CPF_Consent         CpfConsent? @relation(fields: [CPF_Consent_version], references: [version])
 }
 
 model CpfConsent {

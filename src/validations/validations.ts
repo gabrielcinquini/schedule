@@ -164,7 +164,8 @@ export const patientSchema = z.object({
         )
       },
       { message: 'CPF inválido' },
-    ),
+    )
+    .optional(),
   convenio: z.string().min(3, 'Deve conter ao menos 3 caracteres'),
   lastConsult: z.coerce.date().nullable(),
   createdAt: z.coerce.date(),

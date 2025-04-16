@@ -77,18 +77,20 @@ export async function POST(req: NextRequest) {
 
   const { fullName, cpf, convenio } = parsedBody.data
 
-  const patientRegistered = await prismaClient.patient.findFirst({
-    where: {
-      userId: user.id,
-      cpf,
-    },
-  })
+  if (cpf) {
+    const patientRegistered = await prismaClient.patient.findFirst({
+      where: {
+        userId: user.id,
+        cpf,
+      },
+    })
 
-  if (patientRegistered) {
-    return NextResponse.json(
-      { message: 'Paciente já cadastrado' },
-      { status: 400 },
-    )
+    if (patientRegistered) {
+      return NextResponse.json(
+        { message: 'Paciente já cadastrado' },
+        { status: 400 },
+      )
+    }
   }
 
   const activeCpfConsent = await prismaClient.cpfConsent.findFirstOrThrow({
@@ -103,7 +105,9 @@ export async function POST(req: NextRequest) {
       cpf,
       convenio,
       userId: user.id,
-      CPF_Consent_version: activeCpfConsent.version,
+      ...(cpf && {
+        CPF_Consent_version: activeCpfConsent.version,
+      }),
     },
   })
 
