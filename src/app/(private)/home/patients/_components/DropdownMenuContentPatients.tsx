@@ -1,3 +1,4 @@
+import { Patient } from '@prisma/client'
 import { Trash2Icon } from 'lucide-react'
 import React from 'react'
 import { toast } from 'sonner'
@@ -8,12 +9,11 @@ import {
   DropdownMenuGroup,
 } from '@/components/ui/dropdown-menu'
 import { useDeletePatient } from '@/hooks/Patients/deletePatient'
-import { PatientType } from '@/validations/validations'
 
 import { Confirmation } from '../../_components/confirmation'
 
 interface DropdownMenuContentPatientsProps {
-  patient: PatientType
+  patient: Patient
 }
 
 export function DropdownMenuContentPatients({
