@@ -1,3 +1,4 @@
+import { Patient } from '@prisma/client'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { MenuIcon } from 'lucide-react'
@@ -10,12 +11,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { capitalize } from '@/utils/utils'
-import { PatientType } from '@/validations/validations'
 
 import { DropdownMenuContentPatients } from './DropdownMenuContentPatients'
 
 interface PatientsListProps {
-  patients?: PatientType[]
+  patients?: Patient[]
 }
 
 export function PatientsList({ patients }: PatientsListProps) {
