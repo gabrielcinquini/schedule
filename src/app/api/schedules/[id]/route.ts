@@ -77,6 +77,8 @@ export async function PATCH(
     return NextResponse.json({ message: parsedBody.error }, { status: 404 })
   }
 
+  const { status, date } = parsedBody.data
+
   const user = await getUserFromSession()
 
   const hasPermission = await prismaClient.schedule.findFirst({
@@ -91,6 +93,12 @@ export async function PATCH(
       { status: 403 },
     )
   }
+
+  if (status === 'COMPLETED' && date > new Date())
+    return NextResponse.json(
+      { message: 'Não é possível você já ter realizado essa consulta' },
+      { status: 401 },
+    )
 
   const orderUpdated = await prismaClient.schedule.update({
     where: { id },
