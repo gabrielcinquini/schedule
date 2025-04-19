@@ -5,12 +5,19 @@ import { toast } from 'sonner'
 import { QUERY_KEYS } from '@/constants/query-keys'
 import { revalidateQueryKey } from '@/utils/utils'
 
+interface DeleteScheduleParams {
+  id: string
+  deleteAllFuture: boolean
+}
+
 export const useDeleteSchedule = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (id: string) => {
-      return await axios.delete(`/api/schedules/${id}`)
+    mutationFn: async ({ id, deleteAllFuture }: DeleteScheduleParams) => {
+      return await axios.delete(
+        `/api/schedules/${id}?deleteAllFuture=${deleteAllFuture}`,
+      )
     },
     onSuccess: (response: AxiosResponse) => {
       toast.success(response.data.message)

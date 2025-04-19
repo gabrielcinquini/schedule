@@ -68,13 +68,22 @@ export const scheduleSchema = z.object({
 })
 export type ScheduleType = z.infer<typeof scheduleSchema>
 
-export const createScheduleSchema = scheduleSchema.pick({
-  name: true,
-  date: true,
-  time: true,
-  value: true,
-  patientId: true,
-})
+export enum ScheduleFrequencyEnum {
+  NONE = 'NONE',
+  WEEKLY = 'WEEKLY',
+  MONTHLY = 'MONTHLY',
+}
+
+export const createScheduleSchema = scheduleSchema
+  .pick({
+    name: true,
+    date: true,
+    value: true,
+    patientId: true,
+  })
+  .extend({
+    frequency: z.nativeEnum(ScheduleFrequencyEnum),
+  })
 export type CreateScheduleSchema = z.infer<typeof createScheduleSchema>
 
 export const registerToScheduleFormSchema = z
@@ -95,6 +104,7 @@ export const registerToScheduleFormSchema = z
       },
     ),
     patientId: z.string().uuid(),
+    frequency: z.nativeEnum(ScheduleFrequencyEnum),
   })
   .refine(
     (data) => {

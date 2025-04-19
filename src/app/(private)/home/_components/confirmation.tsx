@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import React from 'react'
 
 import {
   AlertDialog,
@@ -12,32 +12,33 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 
-type ConfirmationType = {
+export interface ConfirmationType {
+  children: React.ReactNode
   text: string
   description: string
-  children: ReactNode
-  fn?: () => void
+  fn: () => void
+  additionalContent?: React.ReactNode
 }
 
 export function Confirmation({
+  children,
   text,
   description,
-  children,
   fn,
+  additionalContent,
 }: ConfirmationType) {
   return (
     <AlertDialog>
-      <AlertDialogTrigger asChild className="flex w-full justify-start">
-        {children}
-      </AlertDialogTrigger>
+      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{text}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>
+          {additionalContent}
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancelar</AlertDialogCancel>
-          <AlertDialogAction onClick={fn}>Continuar</AlertDialogAction>
+          <AlertDialogAction onClick={fn}>Confirmar</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

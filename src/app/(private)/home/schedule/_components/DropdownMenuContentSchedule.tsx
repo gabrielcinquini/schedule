@@ -20,8 +20,8 @@ export function DropdownMenuContentSchedule({
   const { mutateAsync: onDeleteSchedule, isPending } = useDeleteSchedule()
   const { mutateAsync: onChangeScheduleStatus } = useChangeScheduleStatus()
 
-  const handleDelete = async (id: string) => {
-    await onDeleteSchedule(id)
+  const handleDelete = async (id: string, deleteAllFuture: boolean) => {
+    await onDeleteSchedule({ id, deleteAllFuture })
   }
 
   const handleComplete = async (schedule: ScheduleType) => {

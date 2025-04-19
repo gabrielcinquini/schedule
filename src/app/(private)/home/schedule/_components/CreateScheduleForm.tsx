@@ -23,6 +23,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import {
   Select,
   SelectContent,
@@ -39,6 +40,7 @@ import { formatValue } from '@/utils/utils'
 import {
   RegisterScheduleFormType,
   registerToScheduleFormSchema,
+  ScheduleFrequencyEnum,
 } from '@/validations/validations'
 
 export function CreateScheduleForm() {
@@ -56,6 +58,7 @@ export function CreateScheduleForm() {
     mode: 'onChange',
     defaultValues: {
       value: 'R$ 0,00',
+      frequency: ScheduleFrequencyEnum.NONE,
     },
     resolver: zodResolver(registerToScheduleFormSchema),
   })
@@ -86,6 +89,7 @@ export function CreateScheduleForm() {
       date,
       value: Number(transformedValue),
       patientId: formValues.patientId,
+      frequency: formValues.frequency,
     }).catch((e) => e)
   })
 
@@ -237,6 +241,52 @@ export function CreateScheduleForm() {
                         }}
                       />
                     )}
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="frequency"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel>Frequência</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      className="flex flex-col space-y-1"
+                    >
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem value={ScheduleFrequencyEnum.NONE} />
+                        </FormControl>
+                        <FormLabel className="font-normal">
+                          Não se repete
+                        </FormLabel>
+                      </FormItem>
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem
+                            value={ScheduleFrequencyEnum.WEEKLY}
+                          />
+                        </FormControl>
+                        <FormLabel className="font-normal">
+                          Todas as semanas
+                        </FormLabel>
+                      </FormItem>
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem
+                            value={ScheduleFrequencyEnum.MONTHLY}
+                          />
+                        </FormControl>
+                        <FormLabel className="font-normal">
+                          Todos os meses
+                        </FormLabel>
+                      </FormItem>
+                    </RadioGroup>
                   </FormControl>
                   <FormMessage />
                 </FormItem>

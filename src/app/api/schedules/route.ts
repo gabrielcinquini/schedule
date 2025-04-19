@@ -1,11 +1,21 @@
 import { ScheduleStatus } from '@prisma/client'
-import { addMinutes, subMinutes } from 'date-fns'
+import {
+  addMinutes,
+  addMonths,
+  addWeeks,
+  differenceInMonths,
+  differenceInWeeks,
+  subMinutes,
+} from 'date-fns'
 import { NextRequest, NextResponse } from 'next/server'
 
 import { prismaClient } from '@/database/client'
 import { getUserFromSession } from '@/lib'
 import { zonedDate } from '@/utils/utils'
-import { createScheduleSchema } from '@/validations/validations'
+import {
+  createScheduleSchema,
+  ScheduleFrequencyEnum,
+} from '@/validations/validations'
 
 export async function GET(req: NextRequest) {
   const user = await getUserFromSession()
@@ -77,7 +87,7 @@ export async function POST(req: NextRequest) {
 
   const user = await getUserFromSession()
 
-  const { date, value, patientId, name } = parsedBody.data
+  const { date, value, patientId, name, frequency } = parsedBody.data
 
   const startDate = subMinutes(date, 39)
   const endDate = addMinutes(date, 39)
@@ -100,15 +110,43 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  await prismaClient.schedule.create({
-    data: {
-      name,
-      date,
-      value,
-      status: 'PENDING',
-      userId: user.id,
-      patientId,
-    },
+  const maxDate = addMonths(date, 6)
+  const baseSchedule = {
+    name,
+    value,
+    status: ScheduleStatus.PENDING,
+    userId: user.id,
+    patientId,
+  }
+
+  type ScheduleData = typeof baseSchedule & { date: Date }
+
+  const schedules: ScheduleData[] = (() => {
+    if (frequency === ScheduleFrequencyEnum.NONE) {
+      return [{ ...baseSchedule, date }]
+    }
+
+    if (frequency === ScheduleFrequencyEnum.WEEKLY) {
+      const weeks = differenceInWeeks(maxDate, date)
+      return Array.from({ length: weeks + 1 }, (_, index) => ({
+        ...baseSchedule,
+        date: addWeeks(date, index),
+      }))
+    }
+
+    if (frequency === ScheduleFrequencyEnum.MONTHLY) {
+      const months = differenceInMonths(maxDate, date)
+      return Array.from({ length: months + 1 }, (_, index) => ({
+        ...baseSchedule,
+        date: addMonths(date, index),
+      }))
+    }
+
+    return []
+  })()
+
+  await prismaClient.schedule.createMany({
+    data: schedules,
   })
 
   return NextResponse.json(

@@ -9,32 +9,53 @@ export async function DELETE(
   { params }: { params: { id: string } },
 ) {
   const { id } = params
+  const deleteAllFuture =
+    req.nextUrl.searchParams.get('deleteAllFuture') === 'true'
 
   const user = await getUserFromSession()
 
-  const hasPermission = await prismaClient.schedule.findFirst({
-    where: {
-      userId: user.id,
-    },
+  const schedule = await prismaClient.schedule.findUnique({
+    where: { id },
   })
 
-  if (!hasPermission) {
+  if (!schedule) {
+    return NextResponse.json(
+      { message: 'Agendamento não encontrado' },
+      { status: 404 },
+    )
+  }
+
+  if (schedule.userId !== user.id) {
     return NextResponse.json(
       { message: 'Você não tem permissão para deletar esse agendamento' },
       { status: 403 },
     )
   }
 
-  const orderDeleted = await prismaClient.schedule.delete({
-    where: { id },
-  })
+  if (deleteAllFuture) {
+    await prismaClient.schedule.deleteMany({
+      where: {
+        OR: [
+          { id: schedule.id },
+          {
+            patientId: schedule.patientId,
+            date: {
+              gt: schedule.date,
+            },
+          },
+        ],
+      },
+    })
 
-  if (!orderDeleted) {
     return NextResponse.json(
-      { message: 'Não foi possível deletar essa consulta' },
-      { status: 400 },
+      { message: 'Consultas deletadas com sucesso!' },
+      { status: 200 },
     )
   }
+
+  await prismaClient.schedule.delete({
+    where: { id },
+  })
 
   return NextResponse.json(
     { message: 'Consulta deletada com sucesso!' },
@@ -49,47 +70,42 @@ export async function PATCH(
   const { id } = params
 
   const body = await req.json()
+
   const parsedBody = updateScheduleSchema.safeParse(body)
+
   if (!parsedBody.success) {
     return NextResponse.json({ message: parsedBody.error }, { status: 404 })
   }
 
-  const { status, date } = parsedBody.data
+  const user = await getUserFromSession()
 
-  if (status === 'COMPLETED' && date > new Date())
-    return NextResponse.json(
-      { message: 'Não é possível você já ter realizado essa consulta' },
-      { status: 401 },
-    )
-
-  if (status === 'COMPLETED' && date < new Date()) {
-    const currentPatientSchedule = await prismaClient.schedule.findFirst({
-      where: {
-        id,
-      },
-      select: {
-        patientId: true,
-      },
-    })
-
-    await prismaClient.patient.update({
-      where: {
-        id: currentPatientSchedule?.patientId,
-      },
-      data: {
-        lastConsult: date,
-      },
-    })
-  }
-
-  await prismaClient.schedule.update({
+  const hasPermission = await prismaClient.schedule.findFirst({
     where: {
-      id,
-    },
-    data: {
-      status,
+      userId: user.id,
     },
   })
 
-  return NextResponse.json({ message: 'Movido para serviços com sucesso' })
+  if (!hasPermission) {
+    return NextResponse.json(
+      { message: 'Você não tem permissão para atualizar esse agendamento' },
+      { status: 403 },
+    )
+  }
+
+  const orderUpdated = await prismaClient.schedule.update({
+    where: { id },
+    data: parsedBody.data,
+  })
+
+  if (!orderUpdated) {
+    return NextResponse.json(
+      { message: 'Não foi possível atualizar essa consulta' },
+      { status: 400 },
+    )
+  }
+
+  return NextResponse.json(
+    { message: 'Consulta atualizada com sucesso!' },
+    { status: 200 },
+  )
 }

@@ -16,6 +16,7 @@ export const useCreateSchedule = () => {
         date: schedule.date,
         value: schedule.value,
         patientId: schedule.patientId,
+        frequency: schedule.frequency,
       })
     },
     onSuccess: (response: AxiosResponse) => {

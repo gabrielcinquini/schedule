@@ -1,10 +1,12 @@
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { CheckSquareIcon, Trash2Icon, XSquareIcon } from 'lucide-react'
-import React from 'react'
+import React, { useState } from 'react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { capitalize } from '@/utils/utils'
 import { ScheduleType } from '@/validations/validations'
 
@@ -14,7 +16,7 @@ interface ConfirmationsScheduleProps {
   schedule: ScheduleType
   handleComplete: (schedule: ScheduleType) => Promise<void>
   handleNotComplete: (schedule: ScheduleType) => Promise<void>
-  handleDelete: (id: string) => Promise<void>
+  handleDelete: (id: string, deleteAllFuture: boolean) => Promise<void>
   isPending: boolean
 }
 
@@ -25,6 +27,8 @@ export function ConfirmationsSchedule({
   handleDelete,
   isPending,
 }: ConfirmationsScheduleProps) {
+  const [deleteAllFuture, setDeleteAllFuture] = useState(false)
+
   return (
     <>
       <Confirmation
@@ -89,10 +93,30 @@ export function ConfirmationsSchedule({
         description={`Essa ação não pode ser desfeita. Isso deleterá permanentemente esse
               agendamento dos nossos servidores.`}
         fn={() => {
-          toast.promise(handleDelete(schedule.id), {
+          toast.promise(handleDelete(schedule.id, deleteAllFuture), {
             loading: 'Deletando...',
           })
         }}
+        additionalContent={
+          <div className="mt-4 text-start">
+            <RadioGroup
+              value={deleteAllFuture ? 'all' : 'single'}
+              onValueChange={(value) => setDeleteAllFuture(value === 'all')}
+              className="flex flex-col gap-2"
+            >
+              <div className="space-x-2">
+                <RadioGroupItem value="single" id="single" />
+                <Label htmlFor="single">Deletar apenas esta sessão</Label>
+              </div>
+              <div className="space-x-2">
+                <RadioGroupItem value="all" id="all" />
+                <Label htmlFor="all">
+                  Deletar esta sessão e todas as posteriores deste paciente
+                </Label>
+              </div>
+            </RadioGroup>
+          </div>
+        }
       >
         <Button variant="ghost" disabled={isPending} className="flex">
           <Trash2Icon className="mr-2" />
