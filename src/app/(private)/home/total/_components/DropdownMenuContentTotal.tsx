@@ -25,7 +25,7 @@ export function DropdownMenuContentTotal({
   const { mutateAsync: onDeleteSchedule, isPending } = useDeleteSchedule()
 
   const handleDelete = async (id: string) => {
-    await onDeleteSchedule(id)
+    await onDeleteSchedule({ id, deleteAllFuture: false })
   }
 
   return (
