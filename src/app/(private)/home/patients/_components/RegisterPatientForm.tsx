@@ -156,14 +156,13 @@ export function RegisterPatientForm() {
           )}
         />
         <span className="text-sm">
-          Ao continuar com o cadastro deste paciente, você concorda com os
-          nossos{' '}
+          Ao continuar com o cadastro deste paciente, você concorda com o nosso{' '}
           <Link
             className="inline-block underline"
             href={APP_ROUTES.therms.registerPatient}
             target="_blank"
           >
-            Termos de Responsabilidade
+            Termo de Responsabilidade e Consentimento para Inserção de Dados
           </Link>
         </span>
         <Button

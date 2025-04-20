@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 import { prismaClient } from '@/database/client'
 import { getUserFromSession } from '@/lib'
+import { getActiveConsentTherm } from '@/services/therms'
 import { registerPatientFormSchema } from '@/validations/validations'
 
 export async function GET(req: NextRequest) {
@@ -93,11 +94,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const activeCpfConsent = await prismaClient.cpfConsent.findFirstOrThrow({
-    where: {
-      isActive: true,
-    },
-  })
+  const activeConsentTherm = await getActiveConsentTherm()
 
   await prismaClient.patient.create({
     data: {
@@ -105,9 +102,7 @@ export async function POST(req: NextRequest) {
       cpf,
       convenio,
       userId: user.id,
-      ...(cpf && {
-        CPF_Consent_version: activeCpfConsent.version,
-      }),
+      CPF_Consent_version: activeConsentTherm.version,
     },
   })
 

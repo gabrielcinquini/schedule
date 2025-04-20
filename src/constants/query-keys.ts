@@ -15,7 +15,6 @@ export const QUERY_KEYS = {
     ) => ['schedules', status, currentPage, itemsPerPage, search],
     SCHEDULES_BY_DATE: (date: Date) => ['schedules', date],
     SUM_SCHEDULES: () => ['sumSchedules'],
-    THERMS_REGISTER_PATIENT: () => ['therms', 'registerPatient'],
   },
 
   MUTATE: {

@@ -1,26 +1,24 @@
-'use client'
+'use server'
 
 import React from 'react'
 
-import { Skeleton } from '@/components/ui/skeleton'
-import { useRegisterPatientTherm } from '@/hooks/Therms/useRegisterPatientTherm'
+import { getActiveConsentTherm } from '@/services/therms'
 
-export function ThermContent() {
-  const { data: therm, isLoading } = useRegisterPatientTherm()
+export async function ThermContent() {
+  const therm = await getActiveConsentTherm()
+
+  const processedText = therm.consent_text.replace(/\\n\\n/g, '\n\n')
 
   return (
     <div className="container flex flex-col items-center justify-center gap-10 py-10">
-      {isLoading ? (
-        <>
-          <Skeleton className="h-7 w-1/2" />
-          <Skeleton className="h-48 w-full" />
-        </>
-      ) : (
-        <>
-          <strong>{therm?.consent_title}</strong>
-          <p>{therm?.consent_text}</p>
-        </>
-      )}
+      <strong>{therm.consent_title}</strong>
+      <div>
+        {processedText.split('\n\n').map((paragraph, idx) => (
+          <p key={idx} className="mb-4">
+            {paragraph}
+          </p>
+        ))}
+      </div>
     </div>
   )
 }
