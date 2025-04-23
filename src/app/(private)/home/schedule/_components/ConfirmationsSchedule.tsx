@@ -8,12 +8,12 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { capitalize } from '@/utils/utils'
-import { ScheduleType } from '@/validations/validations'
+import type { PatientType, ScheduleType } from '@/validations/validations'
 
 import { Confirmation } from '../../_components/confirmation'
 
 interface ConfirmationsScheduleProps {
-  schedule: ScheduleType
+  schedule: ScheduleType & { patient: Pick<PatientType, 'name'> }
   handleComplete: (schedule: ScheduleType) => Promise<void>
   handleNotComplete: (schedule: ScheduleType) => Promise<void>
   handleDelete: (id: string, deleteAllFuture: boolean) => Promise<void>
@@ -32,7 +32,7 @@ export function ConfirmationsSchedule({
   return (
     <>
       <Confirmation
-        text={`A consulta com ${schedule.name} marcada para às ${format(
+        text={`A consulta com ${schedule.patient.name} marcada para às ${format(
           new Date(schedule.date),
           'HH:mm',
           {
@@ -56,7 +56,7 @@ export function ConfirmationsSchedule({
       </Confirmation>
 
       <Confirmation
-        text={`A consulta com ${schedule.name} marcada para às ${format(
+        text={`A consulta com ${schedule.patient.name} marcada para às ${format(
           new Date(schedule.date),
           'HH:mm',
           {
@@ -80,7 +80,7 @@ export function ConfirmationsSchedule({
       </Confirmation>
 
       <Confirmation
-        text={`Deseja deletar a consulta com ${schedule.name} marcada para às ${format(
+        text={`Deseja deletar a consulta com ${schedule.patient.name} marcada para às ${format(
           new Date(schedule.date),
           'HH:mm',
           {

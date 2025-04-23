@@ -120,7 +120,6 @@ export async function POST(req: NextRequest) {
 
   const maxDate = addMonths(date, 6)
   const baseSchedule = {
-    name,
     value,
     status: ScheduleStatus.PENDING,
     userId: user.id,

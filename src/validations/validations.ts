@@ -70,7 +70,6 @@ export enum ScheduleFrequencyEnum {
 
 export const createScheduleSchema = scheduleSchema
   .pick({
-    name: true,
     date: true,
     value: true,
     patientId: true,

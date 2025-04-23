@@ -11,12 +11,12 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useDeleteSchedule } from '@/hooks/Schedule/deleteSchedule'
 import { capitalize } from '@/utils/utils'
-import { ScheduleType } from '@/validations/validations'
+import type { PatientType, ScheduleType } from '@/validations/validations'
 
 import { Confirmation } from '../../_components/confirmation'
 
 interface DropdownMenuContentTotalProps {
-  service: ScheduleType
+  service: ScheduleType & { patient: Pick<PatientType, 'name'> }
 }
 
 export function DropdownMenuContentTotal({
@@ -33,7 +33,7 @@ export function DropdownMenuContentTotal({
       <DropdownMenuGroup>
         <Confirmation
           text={`Deseja deletar o registro da consulta com ${
-            service.name
+            service.patient.name
           } marcada para às ${format(new Date(service.date), 'HH:mm', {
             locale: ptBR,
           })} do dia ${format(new Date(service.date), 'dd/MM/yy')} -

@@ -85,7 +85,6 @@ export function CreateScheduleForm() {
       .replace(',', '.')
 
     await onCreateSchedule({
-      name: selectedPatient.name,
       date,
       value: Number(transformedValue),
       patientId: formValues.patientId,
