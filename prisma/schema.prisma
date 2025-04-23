@@ -1,13 +1,10 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
@@ -26,23 +23,19 @@ model User {
   Schedule      Schedule[]
 }
 
-enum ScheduleStatus {
-  PENDING
-  COMPLETED
-  CANCELED
-}
-
 model Schedule {
-  id        String          @id @default(uuid())
-  name      String
+  id        String         @id @default(uuid())
   date      DateTime
-  value     Int             @default(0)
+  value     Int            @default(0)
   status    ScheduleStatus
   userId    String
   patientId String
-  createdAt DateTime        @default(now())
-  User      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  patient   Patient         @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  createdAt DateTime       @default(now())
+  patient   Patient        @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  User      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([patientId], map: "Schedule_patientId_fkey")
+  @@index([userId], map: "Schedule_userId_fkey")
 }
 
 model Patient {
@@ -53,42 +46,50 @@ model Patient {
   userId              String
   lastConsult         DateTime?
   createdAt           DateTime    @default(now())
-  author              User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Schedule            Schedule[]
   CPF_Consent_version String?
   CPF_Consent         CpfConsent? @relation(fields: [CPF_Consent_version], references: [version])
+  author              User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Schedule            Schedule[]
+
+  @@index([CPF_Consent_version], map: "Patient_CPF_Consent_version_fkey")
+  @@index([userId], map: "Patient_userId_fkey")
 }
 
 model CpfConsent {
-  id              String   @id @default(uuid())
-  version         String   @unique
-  consent_title   String
-  consent_text    String   @db.Text
-  isActive        Boolean
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  patient         Patient[]
+  id            String    @id @default(uuid())
+  version       String    @unique
+  consent_title String
+  consent_text  String    @db.Text
+  isActive      Boolean
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  patient       Patient[]
 }
 
 model Account {
-  id                       String  @id @default(cuid())
-  userId                   String  @unique
+  id                       String   @id @default(cuid())
+  userId                   String   @unique
   type                     String
   provider                 String
   providerAccountId        String
-  refresh_token            String? @db.Text
-  access_token             String? @db.Text
+  refresh_token            String?  @db.Text
+  access_token             String?  @db.Text
   expires_at               Int?
   token_type               String?
   scope                    String?
-  id_token                 String? @db.Text
+  id_token                 String?  @db.Text
   session_state            String?
   refresh_token_expires_in Int?
-  user                     User?   @relation(fields: [userId], references: [id])
- 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
- 
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+  user                     User     @relation(fields: [userId], references: [id], onDelete: NoAction)
+
   @@unique([provider, providerAccountId])
   @@index([userId])
+}
+
+enum ScheduleStatus {
+  PENDING
+  COMPLETED
+  CANCELED
 }

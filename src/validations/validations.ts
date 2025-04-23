@@ -53,12 +53,6 @@ export type RegisterUserType = z.infer<typeof registerUserFormSchema>
 
 export const scheduleSchema = z.object({
   id: z.string().uuid(),
-  name: z
-    .string()
-    .regex(
-      /^[A-ZÁÉÍÓÚÃÕÂÊÎÔÇ][a-záéíóúãõâêîôç]+( [A-ZÁÉÍÓÚÃÕÂÊÎÔÇ][a-záéíóúãõâêîôç]+)+$/,
-      'Nome inválido(Joe)',
-    ),
   date: z.coerce.date(),
   value: z.coerce.number(),
   status: z.nativeEnum(ScheduleStatus),

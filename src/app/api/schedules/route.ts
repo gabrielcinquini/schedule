@@ -28,15 +28,21 @@ export async function GET(req: NextRequest) {
   const schedules = await prismaClient.schedule.findMany({
     where: {
       userId: user.id,
-      name: {
-        contains: search || undefined,
+      patient: {
+        name: {
+          contains: search || undefined,
+        },
       },
       status: {
         in: status,
       },
     },
     include: {
-      patient: true,
+      patient: {
+        select: {
+          name: true,
+        },
+      },
     },
     orderBy: { date: status.includes('PENDING') ? 'asc' : 'desc' },
     take: Number(perPage),
@@ -60,8 +66,10 @@ export async function GET(req: NextRequest) {
   const totalSchedules = await prismaClient.schedule.count({
     where: {
       userId: user.id,
-      name: {
-        contains: search || undefined,
+      patient: {
+        name: {
+          contains: search || undefined,
+        },
       },
       status: {
         in: status,
@@ -87,7 +95,7 @@ export async function POST(req: NextRequest) {
 
   const user = await getUserFromSession()
 
-  const { date, value, patientId, name, frequency } = parsedBody.data
+  const { date, value, patientId, frequency } = parsedBody.data
 
   const startDate = subMinutes(date, 39)
   const endDate = addMinutes(date, 39)

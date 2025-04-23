@@ -11,12 +11,12 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { cn } from '@/lib'
 import { capitalize } from '@/utils/utils'
-import { ScheduleType } from '@/validations/validations'
+import { PatientType, ScheduleType } from '@/validations/validations'
 
 import { DropdownMenuContentTotal } from './DropdownMenuContentTotal'
 
 interface TotalItemsListProps {
-  totalItems?: ScheduleType[]
+  totalItems?: (ScheduleType & { patient: Pick<PatientType, 'name'> })[]
 }
 
 export function TotalItemsList({ totalItems }: TotalItemsListProps) {
@@ -32,7 +32,7 @@ export function TotalItemsList({ totalItems }: TotalItemsListProps) {
         >
           <CardHeader>
             <CardTitle className="flex w-full items-center justify-between">
-              {service.name}
+              {service.patient.name}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button className="p-2" variant="ghost">

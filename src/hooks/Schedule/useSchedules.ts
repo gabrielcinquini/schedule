@@ -3,9 +3,12 @@ import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 
 import { QUERY_KEYS } from '@/constants/query-keys'
+import { type PatientType } from '@/validations/validations'
 
 export interface UseSchedulesProps {
-  schedules: (Schedule & { isPast: boolean; isToday: boolean })[]
+  schedules: (Schedule & { isPast: boolean; isToday: boolean } & {
+    patient: Pick<PatientType, 'name'>
+  })[]
   totalPages: number
   totalCount: number
 }

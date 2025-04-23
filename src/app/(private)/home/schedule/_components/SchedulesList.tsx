@@ -35,7 +35,7 @@ export function SchedulesList({ schedules }: PatientsListProps) {
         >
           <CardHeader>
             <CardTitle className="flex w-full items-center justify-between">
-              {schedule.name}
+              {schedule.patient.name}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button className="p-2" variant="ghost">

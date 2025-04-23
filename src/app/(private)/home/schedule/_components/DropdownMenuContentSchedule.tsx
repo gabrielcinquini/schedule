@@ -6,12 +6,12 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useChangeScheduleStatus } from '@/hooks/Schedule/changeScheduleStatus'
 import { useDeleteSchedule } from '@/hooks/Schedule/deleteSchedule'
-import { ScheduleType } from '@/validations/validations'
+import type { PatientType, ScheduleType } from '@/validations/validations'
 
 import { ConfirmationsSchedule } from './ConfirmationsSchedule'
 
 interface DropdownMenuContentScheduleProps {
-  schedule: ScheduleType
+  schedule: ScheduleType & { patient: Pick<PatientType, 'name'> }
 }
 
 export function DropdownMenuContentSchedule({
