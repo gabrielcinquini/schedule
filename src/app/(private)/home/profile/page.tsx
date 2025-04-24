@@ -1,6 +1,8 @@
+import { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import React from 'react'
 
+import { BASE_TITLE } from '@/constants/title'
 import { getServerSessionApp } from '@/lib'
 
 import { UpdateProfileForm } from './_components/update-profile-form'
@@ -15,4 +17,8 @@ export default async function UpdateProfilePage() {
       <UpdateProfileForm />
     </div>
   )
+}
+
+export const metadata: Metadata = {
+  title: `${BASE_TITLE} - Perfil`,
 }

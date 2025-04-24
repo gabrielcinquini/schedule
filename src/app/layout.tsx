@@ -5,13 +5,14 @@ import { Inter } from 'next/font/google'
 import { Toaster } from 'sonner'
 
 import { ThemeProvider } from '@/components/ui/theme-provider'
+import { BASE_TITLE } from '@/constants/title'
 
 import { ClientProviderLayout } from './layouts/client-provider'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Agenda',
+  title: BASE_TITLE,
 }
 
 export default function RootLayout({
