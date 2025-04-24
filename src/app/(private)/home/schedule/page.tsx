@@ -16,5 +16,5 @@ export default function HomePage() {
 }
 
 export const metadata: Metadata = {
-  title: `${BASE_TITLE} - Agendamentos`,
+  title: `${BASE_TITLE} - Calendário`,
 }
