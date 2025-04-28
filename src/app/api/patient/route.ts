@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 import { prismaClient } from '@/database/client'
 import { getUserFromSession } from '@/lib'
-import { getActiveConsentTherm } from '@/services/therms'
+import { getActiveRegisterPatientConsentTherm } from '@/services/therms'
 import { registerPatientFormSchema } from '@/validations/validations'
 
 export async function GET(req: NextRequest) {
@@ -94,7 +94,7 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  const activeConsentTherm = await getActiveConsentTherm()
+  const activeConsentTherm = await getActiveRegisterPatientConsentTherm()
 
   await prismaClient.patient.create({
     data: {

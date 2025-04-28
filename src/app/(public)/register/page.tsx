@@ -32,16 +32,9 @@ export default function Home() {
               Ao registrar, você concorda com os nossos{' '}
               <Link
                 className="inline-block text-sm underline"
-                href={APP_ROUTES.therms.termsOfService}
+                href={APP_ROUTES.public.therms.privacyPolicy_serviceTherm}
               >
-                Termos de Serviço
-              </Link>
-              &nbsp;e&nbsp;
-              <Link
-                className="inline-block text-sm underline"
-                href={APP_ROUTES.therms.privacyPolicy}
-              >
-                Política de Privacidade
+                Termo de Responsabilidade e Política de Privacidade
               </Link>
             </CardDescription>
           </CardHeader>

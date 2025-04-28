@@ -6,6 +6,10 @@ import GoogleProvider from 'next-auth/providers/google'
 
 import { prismaClient } from '@/database/client'
 import { APP_ROUTES } from '@/routes/paths'
+import {
+  getActiveRegisterConsentTherm,
+  hasUserAgreedWithLatestRegisterTherm,
+} from '@/services/therms'
 
 export const authConfigs: NextAuthOptions = {
   adapter: PrismaAdapter(prismaClient),
@@ -31,6 +35,9 @@ export const authConfigs: NextAuthOptions = {
           where: {
             username: credentials?.username,
           },
+          include: {
+            Register_Consent: true,
+          },
         })
 
         if (!credentials?.password) {
@@ -39,6 +46,13 @@ export const authConfigs: NextAuthOptions = {
 
         if (!user || !compareSync(credentials.password, user.password!)) {
           throw new Error('Credenciais não encontradas')
+        }
+
+        const hasUserAgreedWithActiveRegisterTherm =
+          await hasUserAgreedWithLatestRegisterTherm(user.id)
+
+        if (!hasUserAgreedWithActiveRegisterTherm) {
+          throw new Error('CONSENT_REQUIRED')
         }
 
         if (user) {
@@ -53,13 +67,34 @@ export const authConfigs: NextAuthOptions = {
   ],
 
   callbacks: {
+    async signIn({ user, account }) {
+      if (account?.provider === 'google') {
+        const activeConsent = await getActiveRegisterConsentTherm()
+
+        await prismaClient.user.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            Register_Consent_version: activeConsent.version,
+          },
+        })
+      }
+      return true
+    },
     jwt({ token, user, account }) {
       if (account && user) token.user = user
 
       return token
     },
 
-    session({ session }) {
+    session({ session, token }) {
+      if (token.user) {
+        session.user = {
+          ...session.user,
+          id: token.user.id,
+        }
+      }
       return session
     },
   },

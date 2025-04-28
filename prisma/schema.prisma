@@ -21,6 +21,9 @@ model User {
   Account       Account?
   patients      Patient[]
   Schedule      Schedule[]
+
+  Register_Consent_version String?
+  Register_Consent         RegisterConsent? @relation(fields: [Register_Consent_version], references: [version])
 }
 
 model Schedule {
@@ -53,6 +56,17 @@ model Patient {
 
   @@index([CPF_Consent_version], map: "Patient_CPF_Consent_version_fkey")
   @@index([userId], map: "Patient_userId_fkey")
+}
+
+model RegisterConsent {
+  id            String   @id @default(uuid())
+  version       String   @unique
+  consent_title String
+  consent_text  String   @db.Text
+  isActive      Boolean
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  user          User[]
 }
 
 model CpfConsent {

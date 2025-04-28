@@ -4,7 +4,12 @@ import { withAuth } from 'next-auth/middleware'
 
 import { APP_ROUTES } from './routes/paths'
 
-const publicPages = [APP_ROUTES.public.login, APP_ROUTES.public.register]
+const publicPages = [
+  APP_ROUTES.public.login,
+  APP_ROUTES.public.register,
+  APP_ROUTES.public.therms.privacyPolicy_serviceTherm,
+  APP_ROUTES.public.therms.registerPatient,
+]
 
 const authMiddleware = withAuth({
   callbacks: {

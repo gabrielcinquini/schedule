@@ -1,9 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { signIn } from 'next-auth/react'
 
-import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -16,6 +14,7 @@ import ModeToggle from '@/components/ui/mode-toggle'
 import { Typography } from '@/components/ui/typography'
 import { APP_ROUTES } from '@/routes/paths'
 
+import { GoogleLoginButton } from './_components/GoogleLoginButton'
 import { LoginForm } from './_components/LoginForm'
 
 export default function LoginPage() {
@@ -37,17 +36,7 @@ export default function LoginPage() {
         <CardContent className="flex flex-col items-center gap-2">
           <LoginForm />
           <Typography variant="small">OU</Typography>
-          <Button
-            className="w-full max-sm:text-sm"
-            variant="secondary"
-            onClick={() =>
-              signIn('google', {
-                callbackUrl: APP_ROUTES.private.schedule,
-              })
-            }
-          >
-            Entrar com Google
-          </Button>
+          <GoogleLoginButton />
         </CardContent>
 
         <CardFooter className="flex-col">

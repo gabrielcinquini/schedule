@@ -215,3 +215,7 @@ export const updateProfileFormSchema = z
 export type ForgotPasswordFormSchemaType = z.infer<
   typeof updateProfileFormSchema
 >
+
+export const registerThermLogin = loginUserFormSchema.extend({
+  version: z.string().min(1).max(10),
+})

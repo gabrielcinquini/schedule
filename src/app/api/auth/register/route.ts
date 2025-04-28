@@ -2,6 +2,7 @@ import { hashSync } from 'bcryptjs'
 import { NextRequest, NextResponse } from 'next/server'
 
 import { prismaClient } from '@/database/client'
+import { getActiveRegisterConsentTherm } from '@/services/therms'
 import { registerUserFormSchema } from '@/validations/validations'
 
 export async function POST(req: NextRequest) {
@@ -27,12 +28,15 @@ export async function POST(req: NextRequest) {
     )
   }
 
+  const activeRegisterConsent = await getActiveRegisterConsentTherm()
+
   await prismaClient.user.create({
     data: {
       username,
       email,
       password: hashSync(password, 10),
       name: fullname,
+      Register_Consent_version: activeRegisterConsent.version,
     },
   })
 

@@ -1,8 +1,10 @@
 import { redirect } from 'next/navigation'
 import React from 'react'
 
+import { ClearCookies } from '@/components/ClearCookies'
 import { Sidebar } from '@/components/Sidebar/Sidebar'
 import { getServerSessionApp } from '@/lib'
+import { hasUserAgreedWithLatestRegisterTherm } from '@/services/therms'
 export default async function PrivateLayoutRoot({
   children,
 }: {
@@ -11,7 +13,14 @@ export default async function PrivateLayoutRoot({
   const session = await getServerSessionApp()
 
   if (!session) {
-    redirect('/')
+    return redirect('/')
+  }
+
+  const hasUserAgreedWithActiveRegisterTherm =
+    await hasUserAgreedWithLatestRegisterTherm(session?.user.id)
+
+  if (!hasUserAgreedWithActiveRegisterTherm) {
+    return <ClearCookies />
   }
 
   return (

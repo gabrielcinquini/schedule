@@ -1,12 +1,13 @@
 'use server'
 
+import { CpfConsent, RegisterConsent } from '@prisma/client'
 import React from 'react'
 
-import { getActiveConsentTherm } from '@/services/therms'
+interface ThermContentProps {
+  therm: RegisterConsent | CpfConsent
+}
 
-export async function ThermContent() {
-  const therm = await getActiveConsentTherm()
-
+export async function ThermContent({ therm }: ThermContentProps) {
   const processedText = therm.consent_text.replace(/\\n\\n/g, '\n\n')
 
   return (
