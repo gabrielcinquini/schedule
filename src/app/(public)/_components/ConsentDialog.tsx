@@ -1,7 +1,7 @@
 'use client'
 
 import { RegisterConsent } from '@prisma/client'
-import router from 'next/router'
+import { useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import { toast } from 'sonner'
 
@@ -30,6 +30,7 @@ export function ConsentDialog({
   pendingLoginData,
   onClose,
 }: ConsentDialogProps) {
+  const router = useRouter()
   const processedText = consent.consent_text.replace(/\\n\\n/g, '\n\n')
 
   const handleAcceptConsent = async () => {
