@@ -3,9 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider          = "mysql"
+  provider          = "postgresql"
   url               = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  directUrl         = env("DIRECT_URL")
 }
 
 model User {
@@ -34,8 +34,8 @@ model Schedule {
   userId    String
   patientId String
   createdAt DateTime       @default(now())
-  patient   Patient        @relation(fields: [patientId], references: [id], onDelete: Cascade)
-  User      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  patient   Patient        @relation(fields: [patientId], references: [id], onDelete: Cascade, map: "fk_patient")
+  User      User           @relation(fields: [userId], references: [id], onDelete: Cascade, map: "fk_user")
 
   @@index([patientId], map: "Schedule_patientId_fkey")
   @@index([userId], map: "Schedule_userId_fkey")
@@ -50,8 +50,8 @@ model Patient {
   lastConsult         DateTime?
   createdAt           DateTime    @default(now())
   CPF_Consent_version String?
-  CPF_Consent         CpfConsent? @relation(fields: [CPF_Consent_version], references: [version])
-  author              User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  CPF_Consent         CpfConsent? @relation(fields: [CPF_Consent_version], references: [version], map: "fk_cpf_consent")
+  author              User        @relation(fields: [userId], references: [id], onDelete: Cascade, map: "fk_author")
   Schedule            Schedule[]
 
   @@index([CPF_Consent_version], map: "Patient_CPF_Consent_version_fkey")
