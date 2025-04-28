@@ -71,14 +71,45 @@ export const authConfigs: NextAuthOptions = {
       if (account?.provider === 'google') {
         const activeConsent = await getActiveRegisterConsentTherm()
 
-        await prismaClient.user.update({
-          where: {
-            id: user.id,
-          },
-          data: {
-            Register_Consent_version: activeConsent.version,
-          },
+        const existingUser = await prismaClient.user.findUnique({
+          where: { email: user.email! },
         })
+
+        if (!existingUser) {
+          const newUser = await prismaClient.user.create({
+            data: {
+              email: user.email!,
+              name: user.name!,
+              image: user.image,
+              Register_Consent_version: activeConsent.version,
+            },
+          })
+
+          await prismaClient.account.create({
+            data: {
+              userId: newUser.id,
+              type: account.type,
+              provider: account.provider,
+              providerAccountId: account.providerAccountId,
+              refresh_token: account.refresh_token,
+              access_token: account.access_token,
+              expires_at: account.expires_at,
+              token_type: account.token_type,
+              scope: account.scope,
+              id_token: account.id_token,
+              session_state: account.session_state,
+            },
+          })
+        } else {
+          await prismaClient.user.update({
+            where: {
+              id: existingUser.id,
+            },
+            data: {
+              Register_Consent_version: activeConsent.version,
+            },
+          })
+        }
       }
       return true
     },

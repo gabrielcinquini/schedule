@@ -49,12 +49,17 @@ export function ConsentDialog({
         return
       }
 
-      router.push(APP_ROUTES.private.schedule)
+      await signIn('credentials', {
+        redirect: false,
+        username: pendingLoginData.username,
+        password: pendingLoginData.password,
+      })
     } else {
-      signIn('google', {
+      await signIn('google', {
         callbackUrl: APP_ROUTES.private.schedule,
       })
     }
+    router.push(APP_ROUTES.private.schedule)
   }
 
   return (
