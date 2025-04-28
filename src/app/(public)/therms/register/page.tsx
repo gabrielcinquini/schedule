@@ -1,5 +1,3 @@
-'use server'
-
 import React from 'react'
 
 import { getActiveRegisterConsentTherm } from '@/services/therms'
