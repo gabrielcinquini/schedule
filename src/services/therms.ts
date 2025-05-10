@@ -19,8 +19,11 @@ export const getActiveRegisterConsentTherm = async () => {
   })
 }
 
-export const hasCurrentUserAgreedWithLatestRegisterTherm = async () => {
-  const { id: userId } = await getUserFromSession()
+export const hasUserAgreedWithLatestRegisterTherm = async (userId?: string) => {
+  if (!userId) {
+    const { id: userIdFromSession } = await getUserFromSession()
+    userId = userIdFromSession
+  }
 
   const latestTherm = await getActiveRegisterConsentTherm()
 

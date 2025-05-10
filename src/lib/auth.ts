@@ -8,7 +8,7 @@ import { prismaClient } from '@/database/client'
 import { APP_ROUTES } from '@/routes/paths'
 import {
   getActiveRegisterConsentTherm,
-  hasCurrentUserAgreedWithLatestRegisterTherm,
+  hasUserAgreedWithLatestRegisterTherm,
 } from '@/services/therms'
 
 export const authConfigs: NextAuthOptions = {
@@ -31,7 +31,7 @@ export const authConfigs: NextAuthOptions = {
         password: { label: 'Senha', type: 'password' },
       },
       async authorize(credentials) {
-        const user = await prismaClient.user.findFirst({
+        const user = await prismaClient.user.findUnique({
           where: {
             username: credentials?.username,
           },
@@ -48,10 +48,10 @@ export const authConfigs: NextAuthOptions = {
           throw new Error('Credenciais não encontradas')
         }
 
-        const hasCurrentUserAgreedWithActiveRegisterTherm =
-          await hasCurrentUserAgreedWithLatestRegisterTherm()
+        const hasUserAgreedWithActiveRegisterTherm =
+          await hasUserAgreedWithLatestRegisterTherm(user.id)
 
-        if (!hasCurrentUserAgreedWithActiveRegisterTherm) {
+        if (!hasUserAgreedWithActiveRegisterTherm) {
           throw new Error('CONSENT_REQUIRED')
         }
 
