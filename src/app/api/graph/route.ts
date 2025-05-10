@@ -52,7 +52,7 @@ export async function GET(req: NextRequest) {
         !isSameYear(new Date(startDate), new Date(endDate))
 
       const month = new Date(schedule.date).toLocaleString('pt-BR', {
-        month: 'long',
+        month: 'short',
         ...(shouldShowYear && { year: 'numeric' }),
       })
 
