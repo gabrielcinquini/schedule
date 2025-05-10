@@ -1,4 +1,3 @@
-import { getDay, getHours, getMinutes } from 'date-fns'
 import { NextRequest, NextResponse } from 'next/server'
 
 import { prismaClient } from '@/database/client'
@@ -45,23 +44,13 @@ export async function DELETE(
       },
     })
 
-    const matchingSchedules = futureSchedules.filter((s) => {
-      return (
-        getDay(schedule.date) === getDay(s.date) &&
-        getHours(schedule.date) === getHours(s.date) &&
-        getMinutes(schedule.date) === getMinutes(s.date)
-      )
-    })
-
-    console.log(matchingSchedules)
-
     await prismaClient.schedule.deleteMany({
       where: {
         OR: [
           { id: schedule.id },
           {
             id: {
-              in: matchingSchedules.map((s) => s.id),
+              in: futureSchedules.map((s) => s.id),
             },
           },
         ],

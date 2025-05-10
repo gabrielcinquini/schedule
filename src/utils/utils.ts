@@ -1,4 +1,3 @@
-import { TZDate } from '@date-fns/tz'
 import { QueryClient } from '@tanstack/react-query'
 
 export function formatUsername(event: React.ChangeEvent<HTMLInputElement>) {
@@ -91,10 +90,4 @@ export const revalidateQueryKey = (
   } else {
     queryClient.invalidateQueries({ queryKey: paths as string[] })
   }
-}
-
-export const zonedDate = (date: Date) => {
-  const tz = 'America/Sao_Paulo'
-  const zonedDate = new TZDate(date, tz)
-  return zonedDate
 }

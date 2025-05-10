@@ -5,13 +5,14 @@ import {
   addWeeks,
   differenceInMonths,
   differenceInWeeks,
+  isPast,
+  isSameDay,
   subMinutes,
 } from 'date-fns'
 import { NextRequest, NextResponse } from 'next/server'
 
 import { prismaClient } from '@/database/client'
 import { getUserFromSession } from '@/lib'
-import { zonedDate } from '@/utils/utils'
 import {
   createScheduleSchema,
   ScheduleFrequencyEnum,
@@ -49,17 +50,14 @@ export async function GET(req: NextRequest) {
     skip: (Number(currentPage) - 1) * Number(perPage),
   })
 
-  const now = zonedDate(new Date())
+  const now = new Date()
 
   const schedulesWithDateInfo = schedules.map((schedule) => {
-    const scheduleDate = zonedDate(schedule.date)
+    const scheduleDate = schedule.date
     return {
       ...schedule,
-      isPast: scheduleDate < now,
-      isToday:
-        scheduleDate.getDate() === now.getDate() &&
-        scheduleDate.getMonth() === now.getMonth() &&
-        scheduleDate.getFullYear() === now.getFullYear(),
+      isPast: isPast(scheduleDate),
+      isToday: isSameDay(scheduleDate, now),
     }
   })
 
