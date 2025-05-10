@@ -18,7 +18,7 @@ export function CardItem({ title, total, isReceived }: CardItemProps) {
           end={total}
           duration={2}
           prefix="R$ "
-          decimal=","
+          decimal="."
           decimals={2}
         />
       </span>

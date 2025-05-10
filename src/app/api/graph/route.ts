@@ -1,0 +1,81 @@
+import { ScheduleStatus } from '@prisma/client'
+import { isSameYear } from 'date-fns'
+import { NextRequest } from 'next/server'
+
+import { prismaClient } from '@/database/client'
+import { getUserFromSession } from '@/lib'
+
+export async function GET(req: NextRequest) {
+  const user = await getUserFromSession()
+
+  if (!user) {
+    return Response.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const searchParams = req.nextUrl.searchParams
+  const patientId = searchParams.get('patientId')
+  const startDate = searchParams.get('startDate')
+  const endDate = searchParams.get('endDate')
+  const sessionStatus = searchParams.getAll(
+    'sessionStatus[]',
+  ) as ScheduleStatus[]
+
+  const schedules = await prismaClient.schedule.groupBy({
+    by: ['date'],
+    where: {
+      userId: user.id,
+      ...(startDate && endDate
+        ? {
+            date: {
+              gte: new Date(startDate),
+              lte: new Date(endDate),
+            },
+          }
+        : {}),
+      ...(patientId && patientId !== 'all' ? { patientId } : {}),
+      ...(sessionStatus &&
+        sessionStatus.length > 0 && { status: { in: sessionStatus } }),
+    },
+    _sum: {
+      value: true,
+    },
+    _count: {
+      id: true,
+    },
+  })
+
+  const monthlyData = schedules.reduce(
+    (acc, schedule) => {
+      const shouldShowYear =
+        startDate &&
+        endDate &&
+        !isSameYear(new Date(startDate), new Date(endDate))
+
+      const month = new Date(schedule.date).toLocaleString('pt-BR', {
+        month: 'long',
+        ...(shouldShowYear && { year: 'numeric' }),
+      })
+
+      if (!acc[month]) {
+        acc[month] = {
+          totalValue: 0,
+          totalSessions: 0,
+        }
+      }
+
+      acc[month].totalValue += schedule._sum.value || 0
+      acc[month].totalSessions += schedule._count.id
+
+      return acc
+    },
+    {} as Record<string, { totalValue: number; totalSessions: number }>,
+  )
+
+  const formattedData = Object.entries(monthlyData).map(([month, data]) => ({
+    month,
+    totalValue: data.totalValue,
+    totalSessions: data.totalSessions,
+  }))
+
+  return Response.json(formattedData)
+}

@@ -15,6 +15,12 @@ export const QUERY_KEYS = {
     ) => ['schedules', status, currentPage, itemsPerPage, search],
     SCHEDULES_BY_DATE: (date: Date) => ['schedules', date],
     SUM_SCHEDULES: () => ['sumSchedules'],
+    GRAPH_STATS: (
+      patient?: string,
+      startDate?: Date,
+      endDate?: Date,
+      sessionStatus?: ScheduleStatus[],
+    ) => ['graphStats', patient, startDate, endDate, sessionStatus],
   },
 
   MUTATE: {

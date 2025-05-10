@@ -7,6 +7,7 @@ interface SumSchedulesProps {
   pending: number
   completed: number
   canceled: number
+  average: number
 }
 
 export const useSumSchedules = () => {

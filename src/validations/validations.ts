@@ -219,3 +219,13 @@ export type ForgotPasswordFormSchemaType = z.infer<
 export const registerThermLogin = loginUserFormSchema.extend({
   version: z.string().min(1).max(10),
 })
+
+export const dashboardFiltersFormSchema = z.object({
+  patient: z.string().optional(),
+  startDate: z.coerce.date().optional(),
+  endDate: z.coerce.date().optional(),
+  sessionStatus: z.array(z.nativeEnum(ScheduleStatus)).optional(),
+})
+export type DashboardFiltersFormType = z.infer<
+  typeof dashboardFiltersFormSchema
+>

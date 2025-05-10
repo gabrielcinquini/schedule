@@ -4,6 +4,7 @@ import clsx from 'clsx'
 import {
   CalendarIcon,
   ClipboardIcon,
+  LineChartIcon,
   LogOutIcon,
   UserIcon,
   UsersIcon,
@@ -65,6 +66,12 @@ export function SidebarList({ isSidebarOpen }: SidebarListProps) {
           icon: <ClipboardIcon size={18} />,
           label: 'Total',
           link: APP_ROUTES.private.total,
+        },
+        {
+          variant: 'link',
+          icon: <LineChartIcon size={18} />,
+          label: 'Gráficos',
+          link: APP_ROUTES.private.graph,
         },
       ],
     },

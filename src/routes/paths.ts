@@ -12,5 +12,6 @@ export const APP_ROUTES = {
     patients: '/home/patients' as const,
     total: '/home/total' as const,
     profile: '/home/profile' as const,
+    graph: '/home/graph' as const,
   },
 }
