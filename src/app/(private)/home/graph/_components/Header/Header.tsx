@@ -19,7 +19,7 @@ export function Header() {
   const isLoading = isLoadingSumSchedules || isLoadingPatients
 
   return (
-    <div className="grid gap-4 max-xl:grid-cols-2 xl:grid-cols-4">
+    <div className="grid gap-4 max-xl:grid-cols-2 max-sm:grid-cols-1 xl:grid-cols-4">
       {isLoading ? (
         Array.from({ length: 4 }).map((_, index) => (
           <Skeleton key={index} className="h-32 w-full" />
