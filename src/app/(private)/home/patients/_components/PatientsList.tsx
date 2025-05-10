@@ -38,10 +38,6 @@ export function PatientsList({ patients }: PatientsListProps) {
           </CardHeader>
           <CardContent>
             <p className="flex gap-2">
-              <span className="font-bold">Nome:{`${' '}`}</span>
-              <span className="text-muted-foreground">{patient.name}</span>
-            </p>
-            <p className="flex gap-2">
               <span className="font-bold">CPF:{`${' '}`}</span>
               <span className="text-muted-foreground">
                 {patient.cpf ? patient.cpf : 'Não informado'}
