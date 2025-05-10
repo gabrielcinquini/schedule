@@ -22,10 +22,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Skeleton } from '@/components/ui/skeleton'
 import { usePatients } from '@/hooks/Patients/usePatients'
 import { cn } from '@/lib'
 import { useGraphStore } from '@/store'
-import { Skeleton } from '@/components/ui/skeleton'
 
 export function DashboardFiltersForm() {
   const { data, isLoading } = usePatients()
@@ -51,11 +51,7 @@ export function DashboardFiltersForm() {
         {isLoading ? (
           <Skeleton className="h-10 w-full" />
         ) : (
-          <Select
-            onValueChange={setPatient}
-            value={patient}
-            defaultValue="all"
-          >
+          <Select onValueChange={setPatient} value={patient} defaultValue="all">
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
