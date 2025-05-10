@@ -1,6 +1,7 @@
 'use server'
 
 import { prismaClient } from '@/database/client'
+import { getUserFromSession } from '@/lib'
 
 export const getActiveRegisterPatientConsentTherm = async () => {
   return await prismaClient.cpfConsent.findFirstOrThrow({
@@ -18,7 +19,9 @@ export const getActiveRegisterConsentTherm = async () => {
   })
 }
 
-export const hasUserAgreedWithLatestRegisterTherm = async (userId: string) => {
+export const hasCurrentUserAgreedWithLatestRegisterTherm = async () => {
+  const { id: userId } = await getUserFromSession()
+
   const latestTherm = await getActiveRegisterConsentTherm()
 
   const user = await prismaClient.user.findUnique({

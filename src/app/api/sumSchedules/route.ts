@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server'
 
 import { prismaClient } from '@/database/client'
 import { getUserFromSession } from '@/lib'
-import { prisma } from '@/lib/prisma'
 
 export async function GET() {
   const user = await getUserFromSession()
@@ -44,7 +43,7 @@ export async function GET() {
     }),
   ])
 
-  const averageSchedules = await prisma.schedule.aggregate({
+  const averageSchedules = await prismaClient.schedule.aggregate({
     _avg: {
       value: true,
     },

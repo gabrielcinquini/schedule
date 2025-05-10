@@ -4,7 +4,7 @@ import React from 'react'
 import { ClearCookies } from '@/components/ClearCookies'
 import { Sidebar } from '@/components/Sidebar/Sidebar'
 import { getServerSessionApp } from '@/lib'
-import { hasUserAgreedWithLatestRegisterTherm } from '@/services/therms'
+import { hasCurrentUserAgreedWithLatestRegisterTherm } from '@/services/therms'
 export default async function PrivateLayoutRoot({
   children,
 }: {
@@ -16,10 +16,10 @@ export default async function PrivateLayoutRoot({
     return redirect('/')
   }
 
-  const hasUserAgreedWithActiveRegisterTherm =
-    await hasUserAgreedWithLatestRegisterTherm(session?.user.id)
+  const hasCurrentUserAgreedWithActiveRegisterTherm =
+    await hasCurrentUserAgreedWithLatestRegisterTherm()
 
-  if (!hasUserAgreedWithActiveRegisterTherm) {
+  if (!hasCurrentUserAgreedWithActiveRegisterTherm) {
     return <ClearCookies />
   }
 
