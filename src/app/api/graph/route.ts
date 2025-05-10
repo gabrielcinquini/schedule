@@ -52,36 +52,45 @@ export async function GET(req: NextRequest) {
 
   const monthlyData = schedules.reduce(
     (acc, schedule) => {
-      const shouldShowYear =
-        startDate &&
-        endDate &&
-        !isSameYear(new Date(startDate), new Date(endDate))
+      const date = new Date(schedule.date)
+      const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
 
-      const month = new Date(schedule.date).toLocaleString('pt-BR', {
-        month: 'short',
-        ...(shouldShowYear && { year: 'numeric' }),
-      })
-
-      if (!acc[month]) {
-        acc[month] = {
+      if (!acc[monthKey]) {
+        acc[monthKey] = {
+          date,
           totalValue: 0,
           totalSessions: 0,
         }
       }
 
-      acc[month].totalValue += schedule._sum.value || 0
-      acc[month].totalSessions += schedule._count.id
+      acc[monthKey].totalValue += schedule._sum.value || 0
+      acc[monthKey].totalSessions += schedule._count.id
 
       return acc
     },
-    {} as Record<string, { totalValue: number; totalSessions: number }>,
+    {} as Record<
+      string,
+      { date: Date; totalValue: number; totalSessions: number }
+    >,
   )
 
-  const formattedData = Object.entries(monthlyData).map(([month, data]) => ({
-    month,
-    totalValue: data.totalValue,
-    totalSessions: data.totalSessions,
-  }))
+  const formattedData = Object.entries(monthlyData)
+    .sort(([a], [b]) => a.localeCompare(b)) // garante ordem cronológica
+    .map(([, data]) => {
+      const shouldShowYear =
+        startDate &&
+        endDate &&
+        !isSameYear(new Date(startDate), new Date(endDate))
+
+      return {
+        month: data.date.toLocaleString('pt-BR', {
+          month: 'short',
+          ...(shouldShowYear && { year: 'numeric' }),
+        }),
+        totalValue: data.totalValue,
+        totalSessions: data.totalSessions,
+      }
+    })
 
   return Response.json(formattedData)
 }
