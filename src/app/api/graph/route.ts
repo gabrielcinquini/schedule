@@ -20,15 +20,21 @@ export async function GET(req: NextRequest) {
     'sessionStatus[]',
   ) as ScheduleStatus[]
 
+  const start = startDate ? new Date(startDate) : undefined
+  const end = endDate ? new Date(endDate) : undefined
+
+  if (start) start.setHours(0, 0, 0, 0)
+  if (end) end.setHours(23, 59, 59, 999)
+
   const schedules = await prismaClient.schedule.groupBy({
     by: ['date'],
     where: {
       userId: user.id,
-      ...(startDate && endDate
+      ...(start && end
         ? {
             date: {
-              gte: new Date(startDate),
-              lte: new Date(endDate),
+              gte: start,
+              lte: end,
             },
           }
         : {}),
