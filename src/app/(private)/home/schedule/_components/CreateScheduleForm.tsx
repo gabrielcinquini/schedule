@@ -220,14 +220,14 @@ export function CreateScheduleForm() {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="value"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Valor</FormLabel>
-                  <FormControl>
-                    {selectedPatientConvenio !== 'Isento' && (
+            {selectedPatientConvenio !== 'Isento' && (
+              <FormField
+                control={form.control}
+                name="value"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Valor</FormLabel>
+                    <FormControl>
                       <Input
                         autoComplete="off"
                         type="text"
@@ -239,12 +239,12 @@ export function CreateScheduleForm() {
                           field.onChange(event)
                         }}
                       />
-                    )}
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             <FormField
               control={form.control}
               name="frequency"
