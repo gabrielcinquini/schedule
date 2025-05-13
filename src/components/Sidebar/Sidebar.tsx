@@ -46,11 +46,9 @@ export function Sidebar() {
         <nav>
           <SidebarList isSidebarOpen={isSidebarOpen} />
         </nav>
-        {isSidebarOpen && (
-          <div className="mt-12 flex justify-center">
-            <ModeToggle />
-          </div>
-        )}
+        <div className="absolute bottom-4 right-1/2">
+          <ModeToggle />
+        </div>
       </aside>
     </div>
   )
