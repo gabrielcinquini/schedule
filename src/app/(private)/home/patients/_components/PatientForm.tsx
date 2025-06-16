@@ -154,7 +154,7 @@ export function PatientForm() {
         Ao continuar com o cadastro deste paciente, você concorda com o nosso{' '}
         <Link
           className="inline-block underline"
-          href={APP_ROUTES.public.therms.registerPatient}
+          href={APP_ROUTES.private.therms.registerPatient}
           target="_blank"
         >
           Termo de Responsabilidade e Consentimento para Inserção de Dados

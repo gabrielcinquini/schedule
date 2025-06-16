@@ -3,7 +3,6 @@ export const APP_ROUTES = {
     login: '/' as const,
     register: '/register' as const,
     therms: {
-      registerPatient: '/therms/register-patient' as const,
       privacyPolicy_serviceTherm: '/therms/register' as const,
     },
   },
@@ -13,5 +12,8 @@ export const APP_ROUTES = {
     total: '/home/total' as const,
     profile: '/home/profile' as const,
     graph: '/home/graph' as const,
+    therms: {
+      registerPatient: '/home/therms/register-patient' as const,
+    },
   },
 }

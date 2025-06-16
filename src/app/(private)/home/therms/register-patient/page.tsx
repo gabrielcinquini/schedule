@@ -1,8 +1,7 @@
 import React from 'react'
 
+import { ThermContent } from '@/components/therm-content'
 import { getActiveRegisterPatientConsentTherm } from '@/services/therms'
-
-import { ThermContent } from '../_components/therm-content'
 
 export const dynamic = 'force-dynamic'
 
