@@ -68,7 +68,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const body = await req.json()
-  const parsedBody = registerPatientFormSchema.safeParse(body)
+  const parsedBody = await registerPatientFormSchema.safeParseAsync(body)
 
   if (!parsedBody.success) {
     return NextResponse.json({ error: parsedBody.error })
@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
 
   const user = await getUserFromSession()
 
-  const { fullName, cpf, convenio } = parsedBody.data
+  const { fullName, cpf, phone, convenio } = parsedBody.data
 
   if (cpf) {
     const patientRegistered = await prismaClient.patient.findFirst({
@@ -100,6 +100,7 @@ export async function POST(req: NextRequest) {
     data: {
       name: fullName,
       cpf,
+      phone,
       convenio,
       userId: user.id,
       CPF_Consent_version: activeConsentTherm.version,

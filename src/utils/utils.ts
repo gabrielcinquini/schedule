@@ -91,3 +91,16 @@ export const revalidateQueryKey = (
     queryClient.invalidateQueries({ queryKey: paths as string[] })
   }
 }
+
+export const formatPhone = (phone: string) => {
+  const cleaned = phone.replace(/[^\d+]/g, '')
+
+  const countryCode = cleaned.slice(0, 3)
+  const number = cleaned.slice(3)
+
+  const ddd = number.slice(0, 2)
+  const firstPart = number.slice(2, 7)
+  const secondPart = number.slice(7)
+
+  return `${countryCode} (${ddd}) ${firstPart}-${secondPart}`
+}

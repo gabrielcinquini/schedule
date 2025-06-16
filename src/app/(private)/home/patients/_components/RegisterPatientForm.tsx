@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { MandatorySign } from '@/components/ui/mandatory-sign'
+import { PhoneInput } from '@/components/ui/phone-input'
 import {
   Select,
   SelectContent,
@@ -120,6 +121,23 @@ export function RegisterPatientForm() {
                     formatCPF(event)
                     field.onChange(event)
                   }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="phone"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Telefone(Celular)</FormLabel>
+              <FormControl>
+                <PhoneInput
+                  placeholder="(34) 9 1234-1234"
+                  defaultCountry="BR"
+                  {...field}
                 />
               </FormControl>
               <FormMessage />

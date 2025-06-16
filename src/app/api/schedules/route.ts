@@ -42,6 +42,7 @@ export async function GET(req: NextRequest) {
       patient: {
         select: {
           name: true,
+          phone: true,
         },
       },
     },

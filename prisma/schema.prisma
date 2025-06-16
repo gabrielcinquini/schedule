@@ -45,6 +45,7 @@ model Patient {
   id                  String      @id @default(uuid())
   name                String
   cpf                 String?
+  phone               String?
   convenio            String
   userId              String
   lastConsult         DateTime?

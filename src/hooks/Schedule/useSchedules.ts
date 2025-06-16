@@ -7,7 +7,7 @@ import { type PatientType } from '@/validations/validations'
 
 export interface UseSchedulesProps {
   schedules: (Schedule & { isPast: boolean; isToday: boolean } & {
-    patient: Pick<PatientType, 'name'>
+    patient: Pick<PatientType, 'name' | 'phone'>
   })[]
   totalPages: number
   totalCount: number

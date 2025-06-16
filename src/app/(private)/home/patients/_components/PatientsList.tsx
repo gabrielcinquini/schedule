@@ -10,7 +10,7 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { capitalize } from '@/utils/utils'
+import { capitalize, formatPhone } from '@/utils/utils'
 
 import { DropdownMenuContentPatients } from './DropdownMenuContentPatients'
 
@@ -41,6 +41,12 @@ export function PatientsList({ patients }: PatientsListProps) {
               <span className="font-bold">CPF:{`${' '}`}</span>
               <span className="text-muted-foreground">
                 {patient.cpf ? patient.cpf : 'Não informado'}
+              </span>
+            </p>
+            <p className="flex gap-2">
+              <span className="font-bold">Celular:{`${' '}`}</span>
+              <span className="text-muted-foreground">
+                {patient.phone ? formatPhone(patient.phone) : 'Não informado'}
               </span>
             </p>
             <p>

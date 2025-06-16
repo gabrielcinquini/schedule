@@ -14,6 +14,7 @@ export const useCreatePatient = () => {
         name: data.name,
         lastName: data.lastName,
         cpf: data.cpf,
+        phone: data.phone,
         convenio: data.convenio,
       })
     },

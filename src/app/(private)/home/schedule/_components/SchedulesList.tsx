@@ -1,6 +1,7 @@
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { MenuIcon } from 'lucide-react'
+import { MenuIcon, MessageCircleIcon } from 'lucide-react'
+import Link from 'next/link'
 import React from 'react'
 
 import { Button } from '@/components/ui/button'
@@ -20,6 +21,17 @@ interface PatientsListProps {
 }
 
 export function SchedulesList({ schedules }: PatientsListProps) {
+  function handleSendMessage({
+    phone,
+    message,
+  }: {
+    phone: string
+    message: string
+  }) {
+    const formattedPhone = phone.replace(/^\+55/, '').replace(/^(\d{2})9/, '$1')
+    return `https://api.whatsapp.com/send/?phone=${formattedPhone}&text=${message}&type=phone_number&app_absent=0`
+  }
+
   return (
     <>
       {schedules?.map((schedule) => (
@@ -36,14 +48,29 @@ export function SchedulesList({ schedules }: PatientsListProps) {
           <CardHeader>
             <CardTitle className="flex w-full items-center justify-between">
               {schedule.patient.name}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button className="p-2" variant="ghost">
-                    <MenuIcon />
+              <div className="flex items-center">
+                {schedule.patient.phone && (
+                  <Button variant="ghost" className="p-2">
+                    <Link
+                      href={handleSendMessage({
+                        phone: schedule.patient.phone,
+                        message: `Olá ${schedule.patient.name}, gostaria de confirmar sua consulta na ${format(new Date(schedule.date), 'EE', { locale: ptBR })} do dia ${format(new Date(schedule.date), 'dd/MM')} às ${format(new Date(schedule.date), 'HH:mm', { locale: ptBR })}?`,
+                      })}
+                      target="_blank"
+                    >
+                      <MessageCircleIcon />
+                    </Link>
                   </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContentSchedule schedule={schedule} />
-              </DropdownMenu>
+                )}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button className="p-2" variant="ghost">
+                      <MenuIcon />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContentSchedule schedule={schedule} />
+                </DropdownMenu>
+              </div>
             </CardTitle>
           </CardHeader>
           <CardContent>

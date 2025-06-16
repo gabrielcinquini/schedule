@@ -1,6 +1,19 @@
 import { ScheduleStatus } from '@prisma/client'
 import { z } from 'zod'
 
+// Import the validation function dynamically to avoid SSR issues
+const isValidPhoneNumber = async (phone: string) => {
+  if (typeof window === 'undefined') {
+    // Server-side validation - basic check
+    return phone.length === 14
+  }
+
+  // Client-side validation using react-phone-number-input
+  const { isValidPhoneNumber } = await import('react-phone-number-input')
+  console.log(phone.length)
+  return isValidPhoneNumber(phone) && phone.length === 14
+}
+
 export const userSchema = z.object({
   id: z.string().uuid(),
   username: z
@@ -169,6 +182,15 @@ export const patientSchema = z.object({
       { message: 'CPF inválido' },
     )
     .optional(),
+  phone: z
+    .string()
+    .refine(
+      async (value) => {
+        return isValidPhoneNumber(value)
+      },
+      { message: 'Número de telefone inválido' },
+    )
+    .optional(),
   convenio: z.string().min(3, 'Deve conter ao menos 3 caracteres'),
   lastConsult: z.coerce.date().nullable(),
   createdAt: z.coerce.date(),
@@ -180,6 +202,7 @@ export const registerPatientFormSchema = patientSchema
   .pick({
     name: true,
     cpf: true,
+    phone: true,
     convenio: true,
   })
   .extend({
