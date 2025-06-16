@@ -144,9 +144,10 @@ export const patientSchema = z.object({
     .regex(/^[A-ZÁÉÍÓÚÃÕÂÊÎÔÇ][a-záéíóúãõâêîôç]+$/, 'Nome inválido(Joe)'),
   cpf: z
     .string()
-    .regex(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, 'Formato inválido(123.456.789-00)')
+    .optional()
     .refine(
       (value) => {
+        if (!value) return true
         const cleanDigits = value.replace(/[^\d]/g, '')
 
         if (cleanDigits.length !== 11) {
@@ -180,17 +181,17 @@ export const patientSchema = z.object({
         )
       },
       { message: 'CPF inválido' },
-    )
-    .optional(),
+    ),
   phone: z
     .string()
+    .optional()
     .refine(
       async (value) => {
+        if (!value) return true
         return isValidPhoneNumber(value)
       },
       { message: 'Número de telefone inválido' },
-    )
-    .optional(),
+    ),
   convenio: z.string().min(3, 'Deve conter ao menos 3 caracteres'),
   lastConsult: z.coerce.date().nullable(),
   createdAt: z.coerce.date(),
@@ -198,7 +199,7 @@ export const patientSchema = z.object({
 })
 export type PatientType = z.infer<typeof patientSchema>
 
-export const registerPatientFormSchema = patientSchema
+export const registerOrUpdatePatientFormSchema = patientSchema
   .pick({
     name: true,
     cpf: true,
@@ -217,7 +218,9 @@ export const registerPatientFormSchema = patientSchema
     ...data,
     fullName: `${data.name} ${data.lastName}`,
   }))
-export type RegisterPatientFormType = z.infer<typeof registerPatientFormSchema>
+export type RegisterOrUpdatePatientFormType = z.infer<
+  typeof registerOrUpdatePatientFormSchema
+>
 
 export const updateProfileFormSchema = z
   .object({

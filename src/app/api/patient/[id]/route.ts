@@ -2,6 +2,47 @@ import { NextRequest, NextResponse } from 'next/server'
 
 import { prismaClient } from '@/database/client'
 import { getUserFromSession } from '@/lib'
+import { getActiveRegisterPatientConsentTherm } from '@/services/therms'
+import { registerOrUpdatePatientFormSchema } from '@/validations'
+
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: { id: string } },
+) {
+  const { id } = params
+  const body = await req.json()
+  const parsedBody =
+    await registerOrUpdatePatientFormSchema.safeParseAsync(body)
+
+  if (!parsedBody.success) {
+    return NextResponse.json({ error: parsedBody.error })
+  }
+
+  const user = await getUserFromSession()
+
+  const { fullName, cpf, phone, convenio } = parsedBody.data
+
+  const activeConsentTherm = await getActiveRegisterPatientConsentTherm()
+
+  await prismaClient.patient.update({
+    where: {
+      id,
+    },
+    data: {
+      name: fullName,
+      cpf,
+      phone,
+      convenio,
+      userId: user.id,
+      CPF_Consent_version: activeConsentTherm.version,
+    },
+  })
+
+  return NextResponse.json(
+    { message: 'Paciente atualizado com sucesso!' },
+    { status: 201 },
+  )
+}
 
 export async function DELETE(
   req: NextRequest,

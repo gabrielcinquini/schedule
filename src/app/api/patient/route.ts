@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prismaClient } from '@/database/client'
 import { getUserFromSession } from '@/lib'
 import { getActiveRegisterPatientConsentTherm } from '@/services/therms'
-import { registerPatientFormSchema } from '@/validations/validations'
+import { registerOrUpdatePatientFormSchema } from '@/validations/validations'
 
 export async function GET(req: NextRequest) {
   const user = await getUserFromSession()
@@ -68,7 +68,8 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const body = await req.json()
-  const parsedBody = await registerPatientFormSchema.safeParseAsync(body)
+  const parsedBody =
+    await registerOrUpdatePatientFormSchema.safeParseAsync(body)
 
   if (!parsedBody.success) {
     return NextResponse.json({ error: parsedBody.error })

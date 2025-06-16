@@ -5,12 +5,12 @@ import { toast } from 'sonner'
 import { revalidateQueryKey } from '@/utils/utils'
 import { RegisterOrUpdatePatientFormType } from '@/validations/validations'
 
-export const useCreatePatient = () => {
+export const useMutatePatient = (id: string) => {
   const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async (data: RegisterOrUpdatePatientFormType) => {
-      return await axios.post('/api/patient', {
+      return await axios.patch(`/api/patient/${id}`, {
         name: data.name,
         lastName: data.lastName,
         cpf: data.cpf,
