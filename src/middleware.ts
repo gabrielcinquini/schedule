@@ -8,7 +8,6 @@ const publicPages = [
   APP_ROUTES.public.login,
   APP_ROUTES.public.register,
   APP_ROUTES.public.therms.privacyPolicy_serviceTherm,
-  APP_ROUTES.public.therms.registerPatient,
 ]
 
 const authMiddleware = withAuth({
